@@ -1,12 +1,12 @@
-GLOBAL exc_invalidOpCode
-GLOBAL exc_divisionByZero
+GLOBAL exc_invalid_op_code
+GLOBAL exc_division_by_zero
 
 section .text
-exc_invalidOpCode:
+exc_invalid_op_code:
     mov cr6, rax    ; -> InvalidOpCode Exception
     ret
 
-exc_divisionByZero:
+exc_division_by_zero:
     mov rax, 0
     div rax     ; -> DivideByZero Exception
     ret

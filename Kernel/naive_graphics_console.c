@@ -1,4 +1,4 @@
-#include <naiveGraphicsConsole.h>
+#include <naive_graphics_console.h>
 #include <font.h>
 #include <stdint.h>
 #include <string.h>

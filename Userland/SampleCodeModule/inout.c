@@ -1,52 +1,52 @@
 #include <syscalls.h>
 #include <stdint.h>
 #include <inout.h>
-#include <stringUtil.h>
+#include <string_util.h>
 #include <stdarg.h>
 #include <exceptions.h>
 
 #define MAX_BUFFER 255
 
-void do_printColor(const char * buffer, uint64_t color){
-	sys_printColor(buffer, color);
+void do_print_color(const char * buffer, uint64_t color){
+	sys_print_color(buffer, color);
 }
 
-void do_changeFontSize(uint64_t level){
-	sys_changeFontSize(level);
+void do_change_font_size(uint64_t level){
+	sys_change_font_size(level);
 }
 
-static void putString(const char *buffer){
+static void put_string(const char *buffer){
     //lamo al syswrite 1=stdout
-    sys_write(STDOUT, buffer, _strlen(buffer));
+    sys_write(STDOUT, buffer, _str_len(buffer));
 }
 
-void bufferAction(char * buffer, uint64_t length){
-	int foundEnter = 0;
+void buffer_action(char * buffer, uint64_t length){
+	int found_enter = 0;
 	if (length == 0){
 		return;
 	}
 	char c;
 	int i = 0;
-	while(!foundEnter){
+	while(!found_enter){
 		
-		c = do_getChar();
+		c = do_get_char();
 		//if (c != 0xFF){
 			// si se ingresa un enter se termina el string y salimos del loop
 			if (c == '\n'){
 				buffer[i] = '\0';
-				do_putChar(c);
-				foundEnter = 1; 
+				do_put_char(c);
+				found_enter = 1; 
 			}
 			// agregamos el char ingresado al buffer
-			else if(c >= 0){
-				do_putChar(c);
-				if (c == 0x7F && i >= 0){
+			else if (c >= 0) {
+				do_put_char(c);
+				if (c == 0x7F && i >= 0) {
 					if (i > 0){
 						i--;
 					}
 				}
 				// validacion del maximo de scan
-				else if (i < length-1){
+				else if (i < length-1) {
 					buffer[i] = c;
 					i++;
 				}    
@@ -55,7 +55,7 @@ void bufferAction(char * buffer, uint64_t length){
 	}
 }
 
-static uint64_t getFormat(uint64_t n) {
+static uint64_t get_format(uint64_t n) {
 	uint64_t dec = n & 240;
 	dec = dec >> 4;
 	uint64_t units = n & 15;
@@ -63,37 +63,37 @@ static uint64_t getFormat(uint64_t n) {
 }
 
 
-void do_getTime(char * buffer){
+void do_get_time(char * buffer) {
     char* p = buffer;
 	uint64_t time = sys_time();
-	itoa(getFormat(time & 0xFF), p);
+	itoa(get_format(time & 0xFF), p);
 	p[2] = ':';
-	itoa(getFormat((time >> 8) & 0xFF), &p[3]);
+	itoa(get_format((time >> 8) & 0xFF), &p[3]);
 	p[5] = ':';
-	itoa(getFormat((time >> 16) & 0xFF), &p[6]);
+	itoa(get_format((time >> 16) & 0xFF), &p[6]);
     p[8] = 0;
 }
 
-void do_divisionByZero(){
-	exc_divisionByZero();
+void do_division_by_zero(){
+	exc_division_by_zero();
 }
 
-void do_invalidOpCode(){
-	exc_invalidOpCode();
+void do_invalid_op_code(){
+	exc_invalid_op_code();
 }
 
-char * getRestOfString(char string[]){
+char * get_rest_of_string(char string[]){
 	return string;
 }
 
-char do_getChar(){
+char do_get_char(){
 	char out;
     while(sys_read(STDIN, &out, 1) == 0);
     return out;
 }
 
 //en fmt nos pasa formato ... nos van a mandar las variables a dnd asignar
-void scanf(char * format,...){
+void scanf(char * format, ...){
 	//lectura del buffer
 	char buffer[MAX_BUFFER];
 	if(sys_read(KBDIN, buffer, MAX_BUFFER) == -1) { //agarra de mas, habria q hacer q lea hasta q termine ??
@@ -109,7 +109,7 @@ void scanf(char * format,...){
 
 	va_list vl;
 	va_start(vl, format);
-	int buffIdx = 0;
+	int buff_idx = 0;
 	while (*format != '\0'){
 		if(*format != '%'){ //letra o espacio
 			if ( *format != ' '){
@@ -125,14 +125,14 @@ void scanf(char * format,...){
 			switch (*format) { //caso en el q estoy en una letra 
             	case 'd':
 				case 'D':
-					*(int *)va_arg( vl, int* ) = strtoi(buffer, &buffIdx);	
+					*(int *)va_arg( vl, int* ) = _str_toi(buffer, &buff_idx);	
 					//sys_read(d terminal)
 					//asignacion a la direccion d memoria pasada  hola que tal
                 	//putInt(va_arg(p_arg, int));
                 	break;
             	case 'c':
 				case 'C':
-					*(char *)va_arg( vl, char* ) = buffer[buffIdx++];
+					*(char *)va_arg( vl, char* ) = buffer[buff_idx++];
                 	//putChar(va_arg(p_arg, int));  // char promociona a int
                 	break;
 				case ' ':
@@ -146,10 +146,10 @@ void scanf(char * format,...){
 	va_end(vl);
 }
 
-void do_printInfoReg(){
+void do_print_inforeg(){
 	uint64_t reg[17];
-	uint8_t huboScreenshot = sys_inforeg(reg);
-	if (huboScreenshot){
+	uint8_t screenshot = sys_inforeg(reg);
+	if (screenshot){
 		//rip, rax, rbx, rcx, rdx, rsi, rdi, rbp, rsp, r8, r9, r10, r11, r12, r13, r14, r15 
 		printf("rip = %x\n", reg[0]);
 		printf("rax = %x\n", reg[1]);
@@ -174,23 +174,23 @@ void do_printInfoReg(){
 }
 
 
-void do_clearScreen(uint64_t color) {
+void do_clear_screen(uint64_t color) {
 	sys_clear_screen(color);	
 }
 
 
-void do_putChar(char c) {
+void do_put_char(char c) {
 	sys_write(STDOUT, &c, 1);
 }
 
-void putBase(int num, int base){
+void put_base(int num, int base){
 
 	int i = 12;
 	int j = 0;
 
 	char hex[13];
 
-	putString("0x");
+	put_string("0x");
 	do{
 		hex[i] = "0123456789ABCDEF"[num % base];
 		i--;
@@ -203,13 +203,13 @@ void putBase(int num, int base){
 
 	hex[j] = 0;
 
-	putString(hex);
+	put_string(hex);
 }
 
-void putInt(int num){
+void put_int(int num){
 	char strnum[MAX_INT];
 	itoa(num,strnum);
-	putString(strnum);
+	put_string(strnum);
 }
 
 // para una cantidad de argumentos variable usamos la lib stdarg.h
@@ -222,7 +222,7 @@ void printf (const char *format, ...) {
     while (*format != '\0') {
 		// loop mientras se impriman char normales
         if (*format != '%') {
-            do_putChar(*format);
+            do_put_char(*format);
             format++;
         } 
 
@@ -234,19 +234,19 @@ void printf (const char *format, ...) {
         switch (*format) {
             case 'd':
 			case 'D':
-                putInt(va_arg(p_arg, int));
+                put_int(va_arg(p_arg, int));
                 break;
             case 'c':
 			case 'C':
-                do_putChar(va_arg(p_arg, int));  // char promociona a int
+                do_put_char(va_arg(p_arg, int));  // char promociona a int
                 break;
             case 's':
 			case 'S':
-                putString(va_arg(p_arg, char *));
+                put_string(va_arg(p_arg, char *));
                 break;
 			case 'x':
             case 'X':
-                putBase(va_arg(p_arg, int), 16);
+                put_base(va_arg(p_arg, int), 16);
         }
 
         format++;

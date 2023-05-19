@@ -1,5 +1,5 @@
 #include <keyboard.h>
-#include <naiveGraphicsConsole.h>
+#include <naive_graphics_console.h>
 #include <stdint.h>
 #include <string.h>
 

@@ -1,11 +1,11 @@
-#include <stringUtil.h>
+#include <string_util.h>
 #include <inout.h>
 #include <stdint.h>
 
 
-int hexStrToInt(char* s, uint8_t **result) {
+int hex_str_to_int(char* s, uint8_t **result) {
     int i = 0;
-    int len = _strlen(s);
+    int len = _str_len(s);
     uint64_t res = 0;
 
     // check if s begins with 0x
@@ -64,7 +64,7 @@ uint64_t itoa(uint64_t number, char* s) {
 }
 
 
-void _strcpy(char * dest, char * src, int n){
+void _str_cpy(char * dest, char * src, int n){
     while (*src != '\0' && n > 0){
         *dest++ = *src++;
         n--;
@@ -72,7 +72,7 @@ void _strcpy(char * dest, char * src, int n){
     *dest = '\0';
 }
 
-uint64_t _strlen(const char * str){
+uint64_t _str_len(const char * str){
 	uint64_t ans = 0;
     while(str[ans] != '\0'){
         ans++;
@@ -81,7 +81,7 @@ uint64_t _strlen(const char * str){
 	return ans;
 }
 
-int _strcmp(char *str1, char *str2){
+int _str_cmp(char *str1, char *str2){
 	while( ( *str1 != '\0' && *str2 != '\0' ) && *str1 == *str2 )
     {
         str1++;
@@ -99,13 +99,13 @@ int _strcmp(char *str1, char *str2){
     }
 }
 
-int strtoi(char * buffer, int * i){
-	char strnum[MAX_INT];
+int _str_toi(char * buffer, int * i){
+	char str_num[MAX_INT];
 	int numsize=0;
 	while(buffer[*i] != ' ' && buffer[*i] != '\n' && buffer[*i] != '\0'){
-		strnum[numsize++] = buffer[*i];
+		str_num[numsize++] = buffer[*i];
 		(*i)++;
 	}
-	uint64_t out = atoi(strnum);
+	uint64_t out = atoi(str_num);
 	return out;
 }

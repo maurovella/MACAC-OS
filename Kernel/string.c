@@ -1,7 +1,7 @@
 #include <string.h>
 #include <stdint.h>
 
-void _strcpy(char * dest, char * src, int n){
+void _str_cpy(char * dest, char * src, int n){
    while ( *src != '\0' && *src != ' ' && n > 0 ){
         *dest++ = *src++;
         n--;
@@ -9,7 +9,7 @@ void _strcpy(char * dest, char * src, int n){
     *dest = '\0';
 }
 
-int _strcmp(char *str1, char *str2){
+int _str_cmp(char *str1, char *str2){
 	while( ( *str1 != '\0' && *str2 != '\0' ) && *str1 == *str2 )
     {
         str1++;
