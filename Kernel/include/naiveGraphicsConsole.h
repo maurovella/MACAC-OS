@@ -14,22 +14,22 @@ typedef struct {
 } Color;
 
 
-void ngc_printNewline(void);
+void ngc_print_new_line(void);
 
-void ngc_printChar(char c);
+void ngc_print_char(char c);
 
 void ngc_print(const char * s);
 
-uint16_t ngc_getHeight(); 
+uint16_t ngc_get_height(); 
 
-uint16_t ngc_getWidth(); 
+uint16_t ngc_get_width(); 
 
-void ngc_printColor(const char * buffer, uint64_t color);
+void ngc_print_color(const char * buffer, uint64_t color);
 
-void changeFontSize(uint64_t newlevel);
+void change_font_size(uint64_t new_level);
 
 void ngc_paint_screen(uint64_t bg_color);
 
-void ngc_print_pixels(uint64_t fromX, uint64_t fromY, uint16_t width, uint16_t height, uint64_t color);
+void ngc_print_pixels(uint64_t from_x, uint64_t from_y, uint16_t width, uint16_t height, uint64_t color);
 
 #endif

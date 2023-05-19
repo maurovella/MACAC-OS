@@ -1,26 +1,26 @@
-GLOBAL picMasterMask
-GLOBAL picSlaveMask
-GLOBAL haltcpu
+GLOBAL pic_master_mask
+GLOBAL pic_slave_mask
+GLOBAL halt_cpu
 GLOBAL _hlt
 GLOBAL _cli
 GLOBAL _sti
 
-GLOBAL _irq00Handler
-GLOBAL _irq01Handler
-GLOBAL _irq02Handler
-GLOBAL _irq03Handler
-GLOBAL _irq04Handler
-GLOBAL _irq05Handler
-GLOBAL _irq10Handler
-GLOBAL _irq80Handler
+GLOBAL _irq00_handler
+GLOBAL _irq01_handler
+GLOBAL _irq02_handler
+GLOBAL _irq03_handler
+GLOBAL _irq04_handler
+GLOBAL _irq05_handler
+GLOBAL _irq10_handler
+GLOBAL _irq80_handler
 
 
-GLOBAL _invalidOpCodeInterruption
-GLOBAL _divisionByZeroInterruption
+GLOBAL _invalid_op_code_interruption
+GLOBAL _division_by_zero_interruption
 
-EXTERN irqDispatcher
-EXTERN exceptionDispatcher
-EXTERN syscallDispatcher
+EXTERN irq_dispatcher
+EXTERN exception_dispatcher
+EXTERN syscall_dispatcher
 EXTERN keyboard_handler
 
 GLOBAL info
@@ -29,7 +29,7 @@ GLOBAL screenshot
 
 SECTION .text
 
-%macro pushState 0
+%macro push_state 0
 	push rax
 	push rbx
 	push rcx
@@ -47,7 +47,7 @@ SECTION .text
 	push r15
 %endmacro
 
-%macro popState 0
+%macro pop_state 0
 	pop r15
 	pop r14
 	pop r13
@@ -65,7 +65,7 @@ SECTION .text
 	pop rax
 %endmacro
 
-%macro pushStateNoRax 0
+%macro push_state_no_rax 0
 	push rbx
 	push rcx
 	push rdx
@@ -82,7 +82,7 @@ SECTION .text
 	push r15
 %endmacro
 
-%macro popStateNoRax 0
+%macro pop_state_no_rax 0
 	pop r15
 	pop r14
 	pop r13
@@ -99,28 +99,28 @@ SECTION .text
 	pop rbx
 %endmacro
 
-%macro irqHandlerMaster 1
-	pushState
+%macro irq_handler_master 1
+	push_state
 
 	mov rdi, %1 ; pasaje de parametro
-	call irqDispatcher
+	call irq_dispatcher
 
 	; signal pic EOI (End of Interrupt)
 	mov al, 20h
 	out 20h, al
 
-	popState
+	pop_state
 	iretq
 %endmacro
 
 
 
-%macro exceptionHandler 1
+%macro exception_handler 1
 	; opcion que trae el valor de RIP cuando ocurre la excepcion tomando la direccion de retorno de la interrupcion
 	mov [regdata + (1*8)], rax	;rax
 	mov rax, [rsp]
 	mov [regdata], rax			;rip
-	pushState
+	push_state
 	
 	;me guardo los registros para imprimir
 	;Guardo: rip, rax, rbx, rcx, rdx, rsi, rdi, rbp, rsp, r8, r9, r10, r11, r12, r13, r14, r15, rflags
@@ -156,9 +156,9 @@ SECTION .text
 
 	mov rdi, %1 ; pasaje de parametro
 	mov rsi, regdata
-	call exceptionDispatcher
+	call exception_dispatcher
 
-	popState
+	pop_state
 	iretq
 %endmacro
 
@@ -177,7 +177,7 @@ _sti:
 	sti
 	ret
 
-picMasterMask:
+pic_master_mask:
 	push	rbp
     mov rbp, rsp   
     mov ax, di
@@ -185,7 +185,7 @@ picMasterMask:
     pop		rbp
     retn
 
-picSlaveMask:
+pic_slave_mask:
 	push	rbp
     mov     rbp, rsp
     mov     ax, di  ; ax = mascara de 16 bits
@@ -195,19 +195,19 @@ picSlaveMask:
 
 
 ;8254 Timer (Timer Tick)
-_irq00Handler: irqHandlerMaster 0
+_irq00_handler: irq_handler_master 0
 
 ;Keyboard
-_irq01Handler:
-	;irqHandlerMaster 1
-	pushState
+_irq01_handler:
+	;irq_handler_master 1
+	push_state
  	mov rax, 0
     in al, 0x60
 	cmp al, 0x1D ;me fijo si la tecla es un ctrl
 	jne .continue
-	popState
-	pushState
-.saveRegs:
+	pop_state
+	push_state
+.save_regs:
 	;Guardo: rip, rax, rbx, rcx, rdx, rsi, rdi, rbp, rsp, r8, r9, r10, r11, r12, r13, r14, r15 
 	mov [info+(1*8)], rax	;rax
 	mov rax, [rsp+(15*8)]
@@ -239,46 +239,46 @@ _irq01Handler:
 	mov al, 20h
 	out 20h, al
 
-	popState
+	pop_state
 	iretq
 	
 
 ;Cascade pic never called
-_irq02Handler: irqHandlerMaster 2
+_irq02Handler: irq_handler_master 2
 
 ;Serial Port 2 and 4
-_irq03Handler: irqHandlerMaster 3
+_irq03Handler: irq_handler_master 3
 
 ;Serial Port 1 and 3
-_irq04Handler: irqHandlerMaster 4
+_irq04Handler: irq_handler_master 4
 
 ;USB
-_irq05Handler: irqHandlerMaster 5
+_irq05Handler: irq_handler_master 5
 
 
 ;Syscall
-_irq80Handler:
-	pushStateNoRax
+_irq80_handler:
+	push_state_no_rax
 	;Syscall params: rdi rsi rdx r10 r8	r9
 	;C params: rdi rsi rdx rcx r8 r9
 
 	mov rcx, r10
 	mov r9, rax
-	call syscallDispatcher
+	call syscall_dispatcher
 	
-	popStateNoRax
+	pop_state_no_rax
 	iretq
 
 ;Zero Division Exception
-_divisionByZeroInterruption:
-	exceptionHandler 00h
+_division_by_zero_interruption:
+	exception_handler 00h
 
 ;Invalid Op Code Exception
-_invalidOpCodeInterruption:
-	exceptionHandler 06h
+_invalid_op_code_interruption:
+	exception_handler 06h
 
 
-haltcpu:
+halt_cpu:
 	cli
 	hlt
 	ret

@@ -1,5 +1,5 @@
-GLOBAL getKey
-GLOBAL tKey
+GLOBAL get_key
+GLOBAL t_key
 
 section .text
 
@@ -22,7 +22,7 @@ loop:
     pop rbp
     ret
 
-tKey:
+t_key:
     push rbp
     mov rbp, rsp
 
