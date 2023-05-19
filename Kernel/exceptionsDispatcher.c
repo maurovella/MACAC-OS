@@ -10,16 +10,16 @@
 
 extern void restart();
 
-static const char* registerNames[REGISTERS] = {
+static const char* register_names[REGISTERS] = {
     "rip", "rax", "rbx", "rcx", "rdx", "rsi", "rdi", "rbp", "rsp", "r8 ", "r9 ", "r10", "r11", "r12", "r13", "r14", "r15", "rflags"
 };
 
-static const char* errMsg = "The program aborted due to an exception: ";
+static const char* error_msg = "The program aborted due to an exception: ";
 
-static const char* errNames[7] = {"Divide by Zero\n", "","","","","","Invalid Operation Code\n"};
+static const char* error_names[7] = {"Divide by Zero\n", "","","","","","Invalid Operation Code\n"};
 
 //Convertion from int to hex of 16 chars (para que queden todos los registros de la misma longitud)
-static void intToHex(uint64_t num, char buffer[17]){
+static void int_to_hex(uint64_t num, char buffer[17]){
 	int i = 16;
 	while (i-- != 0){
 		int digit = num % 16;
@@ -28,24 +28,24 @@ static void intToHex(uint64_t num, char buffer[17]){
 	}
 }
 
-static void printRegisters(uint64_t reg[18]){
+static void print_registers(uint64_t reg[18]){
 	char buf[19];
 	buf[0] = '0';
 	buf[1] = 'x';
 	buf[18] = '\0';
 	for (int i = 0; i < REGISTERS; i++){
-		ngc_printColor(registerNames[i], RED);
-		ngc_printColor(" : ", RED);
-		intToHex(reg[i], buf + 2);
-		ngc_printColor(buf, RED);
-		ngc_printNewline();
+		ngc_print_color(register_names[i], RED);
+		ngc_print_color(" : ", RED);
+		int_to_hex(reg[i], buf + 2);
+		ngc_print_color(buf, RED);
+		ngc_print_new_line();
 	}
 	
 }
 
-void exceptionDispatcher(uint64_t exception, uint64_t regdata[18]) {
-	ngc_printColor(errMsg, RED);
-	ngc_printColor(errNames[exception], RED);
-	printRegisters(regdata);
+void exception_dispatcher(uint64_t exception, uint64_t regdata[18]) {
+	ngc_print_color(error_msg, RED);
+	ngc_print_color(error_names[exception], RED);
+	print_registers(regdata);
 	restart();
 }

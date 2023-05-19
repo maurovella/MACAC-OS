@@ -1,24 +1,24 @@
-GLOBAL _NRTCGetHours
-GLOBAL _NRTCGetMins
-GLOBAL _NRTCGetSeconds
+GLOBAL _NRTC_get_hours
+GLOBAL _NRTC_get_mins
+GLOBAL _NRTC_get_seconds
 
 section .text
 
-_NRTCGetHours:
+_NRTC_get_hours:
 
     mov rax, 0x04
     call _RTC
 
     ret
 
-_NRTCGetMins:
+_NRTC_get_mins:
 
     mov rax, 0x02
     call _RTC
     
     ret
 
-_NRTCGetSeconds:
+_NRTC_get_seconds:
     
     mov rax, 0x00
     call _RTC

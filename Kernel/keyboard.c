@@ -6,7 +6,7 @@
 #define BUFFER_SIZE 1024
 
 
-static const uint8_t charHexMap[256] = {       
+static const uint8_t char_hex_map[256] = {       
         0,    0,  '1',  '2',  '3',  '4',  '5',  '6',   '7',  '8',  '9',   '0',   '-',  '=',    0x7F,
     '\t', 'q',  'w',  'e',  'r',  't',  'y',  'u',  'i',   'o',  'p',  '[',   ']', '\n',   
         0,     'a',  's', 'd',  'f',  'g',  'h',  'j',  'k',  'l',  ';',  '\"',
@@ -17,39 +17,39 @@ static const uint8_t charHexMap[256] = {
 };
 
 static uint8_t buffer[BUFFER_SIZE] = {0};
-static uint64_t qElements = 0;
-static uint64_t readIndex = 0;          // iter first element
-static uint64_t writeIndex = 0;         // iter last element
+static uint64_t q_elements = 0;
+static uint64_t read_index = 0;          // iter first element
+static uint64_t write_index = 0;         // iter last element
 
 
-void keyboard_handler(uint64_t teclahex){
-    if (teclahex < 0x53){
-        if(qElements >= BUFFER_SIZE) return;  // buffer is full
+void keyboard_handler(uint64_t tecla_hex){
+    if (tecla_hex < 0x53){
+        if(q_elements >= BUFFER_SIZE) return;  // buffer is full
         
         // MAKE IT ROUNDY
-        if (writeIndex >= BUFFER_SIZE)     writeIndex = 0;
+        if (write_index >= BUFFER_SIZE)     write_index = 0;
 
-        buffer[writeIndex] = charHexMap[teclahex];
+        buffer[write_index] = char_hex_map[tecla_hex];
 
         // update iterators
-        qElements++;
-        writeIndex++;
+        q_elements++;
+        write_index++;
     }
 }
 
-char getFirstChar(){
-    if (qElements == 0) { 
+char get_first_char(){
+    if (q_elements == 0) { 
         return 0xFF; // buffer is empty
     }
 
-    char toReturn = buffer[readIndex];
+    char to_return = buffer[read_index];
     
     // update iterators
-    qElements--;
-    readIndex++;
+    q_elements--;
+    read_index++;
 
     // MAKE IT ROUNDY
-    if (readIndex == BUFFER_SIZE) readIndex = 0;
+    if (read_index == BUFFER_SIZE) read_index = 0;
     
-    return toReturn;
+    return to_return;
 }

@@ -1,7 +1,7 @@
-GLOBAL cpuVendor
+GLOBAL cpu_vendor
 section .text
 	
-cpuVendor:
+cpu_vendor:
 	push rbp
 	mov rbp, rsp
 
