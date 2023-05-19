@@ -1,12 +1,12 @@
 #include <stdint.h>
 #include <string.h>
 #include <lib.h>
-#include <moduleLoader.h>
-#include <naiveRTC.h>
-#include <idtLoader.h>
+#include <module_loader.h>
+#include <naive_RTC.h>
+#include <idt_loader.h>
 #include <time.h>
 #include <defs.h>
-#include <naiveGraphicsConsole.h>
+#include <naive_graphics_console.h>
 #include <interrupts.h>
 #include <speaker.h>
 

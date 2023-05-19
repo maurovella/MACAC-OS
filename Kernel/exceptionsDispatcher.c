@@ -1,4 +1,4 @@
-#include <naiveGraphicsConsole.h>
+#include <naive_graphics_console.h>
 #include <time.h>
 #include <stdint.h>
 

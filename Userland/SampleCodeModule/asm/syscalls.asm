@@ -2,12 +2,12 @@ GLOBAL sys_write
 GLOBAL sys_read
 GLOBAL sys_time
 GLOBAL sys_inforeg
-GLOBAL sys_changeFontSize
-GLOBAL sys_printColor
+GLOBAL sys_change_font_size
+GLOBAL sys_print_color
 GLOBAL sys_clear_screen
-GLOBAL sys_getScreenData
+GLOBAL sys_get_screen_data
 GLOBAL sys_paint_rect
-GLOBAL sys_getTicks
+GLOBAL sys_get_ticks
 GLOBAL sys_timed_read
 GLOBAL sys_beeper
 
@@ -32,12 +32,12 @@ sys_inforeg:
     int 80h
     ret
 
-sys_changeFontSize:
+sys_change_font_size:
     mov rax, 0x04
     int 80h
     ret
 
-sys_printColor:
+sys_print_color:
     mov rax, 0x05
     int 80h
     ret
@@ -47,7 +47,7 @@ sys_clear_screen:
     int 80h
     ret
 
-sys_getScreenData:
+sys_get_screen_data:
     mov rax, 0x07
     int 80h
     ret
@@ -58,7 +58,7 @@ sys_paint_rect:
     int 80h
     ret
 
-sys_getTicks:
+sys_get_ticks:
     mov rax, 0x09
     int 80h
     ret

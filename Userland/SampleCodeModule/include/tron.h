@@ -4,8 +4,8 @@
 
 void play_tron();
 
-void setPlayers(uint16_t width, uint16_t height);
+void set_players(uint16_t width, uint16_t height);
 
-void setScreen(uint16_t width,uint16_t height);
+void set_screen(uint16_t width,uint16_t height);
 
 #endif

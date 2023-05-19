@@ -1,7 +1,7 @@
 #include <inout.h>
 #include <commands.h>
 #include <stdint.h>
-#include <stringUtil.h>
+#include <string_util.h>
 #include <tron.h>
 #include <syscalls.h>
 #include <colors.h>
@@ -14,24 +14,24 @@ static char* commands[] = {"help", "invalidopcode", "dividebyzero", "inforeg", "
 
 static void (*commands_functions[])(int argc, char parameters[MAX_PARAMETERS][LENGTH_PARAMETERS]) = {
 	help, 
-	invalidOPCode, 
-	divideByZero, 
+	invalid_op_code, 
+	divide_by_zero, 
 	inforeg, 
-	printMem, 
+	print_mem, 
 	time, 
-	changeFontSize, 
+	change_font_size, 
 	tron, 
-	clearScreen
+	clear_screen
 };
 
-static int findIdxCommand(char *buff);
+static int find_idx_command(char *buff);
 
-static int parseBuffer(char command[BUFFER_LENGTH], char parameters[MAX_PARAMETERS][LENGTH_PARAMETERS], char readbuf[BUFFER_LENGTH]);
+static int parse_buffer(char command[BUFFER_LENGTH], char parameters[MAX_PARAMETERS][LENGTH_PARAMETERS], char read_buffer[BUFFER_LENGTH]);
 
 
 int 
 main() {
-	do_printColor("WELCOME! Type \"HELP\" for command list\n", WHITE);
+	do_print_color("WELCOME! Type \"HELP\" for command list\n", WHITE);
 	while(1){
 			printf("$>");
 			char buff_command[BUFFER_LENGTH] = {0};
@@ -40,37 +40,37 @@ main() {
 			// parametros enviados junto al comando
 			char parameters[MAX_PARAMETERS][LENGTH_PARAMETERS] = {{0}};
 
-			bufferAction(buff_command, BUFFER_LENGTH); //sys_read de todo
-			int size = parseBuffer(command, parameters, buff_command);
-			int idx = findIdxCommand(command);
+			buffer_action(buff_command, BUFFER_LENGTH); //sys_read de todo
+			int size = parse_buffer(command, parameters, buff_command);
+			int idx = find_idx_command(command);
 			if(idx >= 0 ){
-				commands_functions[idx](size,parameters);
+				commands_functions[idx](size, parameters);
 			}
 			else if (idx == -1){
-				do_printColor("Command not found: try again\n", RED);
+				do_print_color("Command not found: try again\n", RED);
 			}
 	}
 	return 0;
 }
 
 
-static int parseBuffer(char command[BUFFER_LENGTH], char parameters[MAX_PARAMETERS][LENGTH_PARAMETERS], char readbuf[BUFFER_LENGTH]) {
+static int parse_buffer(char command[BUFFER_LENGTH], char parameters[MAX_PARAMETERS][LENGTH_PARAMETERS], char read_buffer[BUFFER_LENGTH]) {
 	int i=0, j;
 	//i = bufferidx, commandlength
 	//k = paramsidx
-	while(i < BUFFER_LENGTH && readbuf[i] == ' '){
+	while(i < BUFFER_LENGTH && read_buffer[i] == ' '){
 		i++;
 	}
-	for(j = 0; i < BUFFER_LENGTH && readbuf[i] != ' ' && readbuf[i] != '\0'; i++){
-			command[j++] = readbuf[i];
+	for(j = 0; i < BUFFER_LENGTH && read_buffer[i] != ' ' && read_buffer[i] != '\0'; i++){
+			command[j++] = read_buffer[i];
 	}
 
 	int k=0;
 	command[j] = 0;
-	while(i < BUFFER_LENGTH && readbuf[i] == ' '){
+	while(i < BUFFER_LENGTH && read_buffer[i] == ' '){
 		i++;
 	}
-	if (readbuf[i]=='\0'){
+	if (read_buffer[i]=='\0'){
 		return k;
 	}
 
@@ -81,16 +81,16 @@ static int parseBuffer(char command[BUFFER_LENGTH], char parameters[MAX_PARAMETE
 		//casos: a: estoy en un espacio => aumento k pues termino un param
 		//		 b: estoy en una caracter => o es el ultimo o no
 		// => si es el ultimo ++k y si no sigo leyendo
-		if(readbuf[i]!=' ') { //estoy en un caracter y hay un siguiente
-			parameters[k-1][j++] = readbuf[i++];
+		if(read_buffer[i]!=' ') { //estoy en un caracter y hay un siguiente
+			parameters[k-1][j++] = read_buffer[i++];
 		}
 		else {
 			parameters[k-1][j] = 0;
 			j=0;
-			while(i<BUFFER_LENGTH && readbuf[i]==' '){
+			while(i<BUFFER_LENGTH && read_buffer[i]==' '){
 				i++;
 			}
-			if (readbuf[i]=='\0'){
+			if (read_buffer[i]=='\0'){
 				return k;
 			}
 			k++;
@@ -99,14 +99,14 @@ static int parseBuffer(char command[BUFFER_LENGTH], char parameters[MAX_PARAMETE
 	return k;
 }
 
-static int findIdxCommand(char *buff){
+static int find_idx_command(char *buff){
 
-	if (_strlen(buff) == 0) { //Me pasan un enter suelto
+	if (_str_len(buff) == 0) { //Me pasan un enter suelto
 		return -2;            //Para diferenciar de command not found
 	}
 	
 	for (int i = 0; i < COMMANDS_LENGTH ; i++){
-		if (_strcmp(buff, commands[i]) == 0){
+		if (_str_cmp(buff, commands[i]) == 0){
 			return i;
 		}
 	}

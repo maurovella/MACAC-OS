@@ -9,20 +9,20 @@
 
 void help(int argc, char params[MAX_PARAMETERS][LENGTH_PARAMETERS]);
 
-void invalidOPCode(int argc, char  params[][LENGTH_PARAMETERS]);
+void invalid_op_code(int argc, char  params[][LENGTH_PARAMETERS]);
 
-void divideByZero(int argc, char  params[][LENGTH_PARAMETERS]);
+void divide_by_zero(int argc, char  params[][LENGTH_PARAMETERS]);
 
 void inforeg(int argc, char params[][LENGTH_PARAMETERS]);
 
-void printMem(int argc, char params[][LENGTH_PARAMETERS]);
+void print_mem(int argc, char params[][LENGTH_PARAMETERS]);
 
 void time(int argc, char params[][LENGTH_PARAMETERS]);
 
-void changeFontSize(int argc, char params[][LENGTH_PARAMETERS]);
+void change_font_size(int argc, char params[][LENGTH_PARAMETERS]);
 
 void tron(int argc, char params[][LENGTH_PARAMETERS]);
 
-void clearScreen(int argc, char params[][LENGTH_PARAMETERS]);
+void clear_screen(int argc, char params[][LENGTH_PARAMETERS]);
 
 #endif

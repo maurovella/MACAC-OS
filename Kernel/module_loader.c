@@ -1,6 +1,6 @@
 #include <stdint.h>
 #include <lib.h>
-#include <moduleLoader.h>
+#include <module_loader.h>
 
 static void load_module(uint8_t ** module, void * target_module_address);
 static uint32_t read_uint32(uint8_t ** address);

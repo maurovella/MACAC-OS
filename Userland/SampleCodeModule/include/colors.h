@@ -3,7 +3,7 @@
 
 // BLUE GREEN RED (BGR INSTEAD OF RGB)
 #define CYAN        0xEEEE00
-#define DARKERCYAN  0xAAAA00
+#define DARKER_CYAN  0xAAAA00
 #define WHITE       0xFFFFFF
 #define BLACK       0x000000
 #define GREY        0x7F7F7F
@@ -13,7 +13,7 @@
 #define YELLOW      0x00FFFF
 #define ORANGE      0x00A5FF
 #define PINK        0xF813E5
-#define DARKBLUE    0x1A0500//0x78021B
+#define DARK_BLUE    0x1A0500//0x78021B
 
 #define CYBER_GRAPE     0x713A53
 #define GLAUCOUSE       0xD88461

@@ -2,8 +2,8 @@
 #include <defs.h>
 #include <string.h>
 #include <keyboard.h>
-#include <naiveRTC.h>
-#include <naiveGraphicsConsole.h>
+#include <naive_RTC.h>
+#include <naive_graphics_console.h>
 #include <time.h>
 #include <speaker.h>
 #include <interrupts.h>
