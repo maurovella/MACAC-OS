@@ -1,19 +1,22 @@
 #ifndef SCHEDULER_H
 #define SCHEDULER_H
 
-#define FLAGS                0x202				
-#define STACK_SEGMENT        0x0				
-#define CODE_SEGMENT         0x8
-#define MAX_PROCESSES        20
-#define NO_PROCESS_FOUND     -1
-#define TRUE                 1
-#define DEAD                 0
-#define BLOCK                1
-#define READY                2
-#define PAUSED               3
-#define NO_SPACE_FOR_PROCESS -2
+#define FLAGS                      	0x202				
+#define STACK_SEGMENT              	0x0				
+#define CODE_SEGMENT               	0x8
+#define MAX_PROCESSES              	20
+#define NO_PROCESS_FOUND           -1
+#define TRUE                       	1
+#define FALSE                      	0
+#define DEAD                       	0
+#define BLOCK                      	1
+#define READY                      	2
+#define PAUSED                     	3
+#define RUNNING					   	4	
+#define NO_SPACE_FOR_PROCESS       -2
 #define PROCESSES_LIMIT_REACHED    -3
-#define STACK_SIZE           4096 // 4KB
+#define CANT_KILL_IMMORTAL_PROCESS -4
+#define STACK_SIZE                 4096 // 4KB
 
 // Stack structure 
 #define STACK_POINT_OF_ENTRY (21*8)   	/*  	|	RAX, RBX  |		*/

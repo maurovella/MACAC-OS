@@ -18,10 +18,15 @@ GLOBAL _irq80_handler
 GLOBAL _invalid_op_code_interruption
 GLOBAL _division_by_zero_interruption
 
+GLOBAL force_timer_tick
+GLOBAL force_current_process
+
 EXTERN irq_dispatcher
 EXTERN exception_dispatcher
 EXTERN syscall_dispatcher
 EXTERN keyboard_handler
+EXTERN get_RSP
+EXETERN has_ticks_left
 
 GLOBAL info
 GLOBAL screenshot
@@ -195,7 +200,20 @@ pic_slave_mask:
 
 
 ;8254 Timer (Timer Tick)
-_irq00_handler: irq_handler_master 0
+_irq00_handler: 
+	push_state
+
+	call has_ticks_left
+	cmp rax, 1
+	je .continue
+	mov rdi, rsp
+	mov rsi, ss
+	call next_process
+	mov rsp, rax
+	.continue:
+	irq_handler_master 0
+	pop_state
+	iretq
 
 ;Keyboard
 _irq01_handler:
@@ -283,6 +301,16 @@ halt_cpu:
 	hlt
 	ret
 
+
+force_timer_tick:
+	int 20h
+	ret
+
+force_current_process:
+	call get_RSP
+	mov rsp, rax
+	pop_state
+	iretq
 
 SECTION .bss
 	aux resq 1
