@@ -2,10 +2,7 @@
 #include "scheduler.h"
 #include "interrupts.h"
 
-#define FLAGS            0x202				
-#define STACK_SEGMENT    0x0				
-#define CODE_SEGMENT     0x8
-#define MAX_PROCESSES    20
+
 
 typedef struct process {
     uint8_t pid;                    // ID del proceso
@@ -27,10 +24,58 @@ typedef struct process {
 
 process process_list[MAX_PROCESSES];    // Lista de procesos
 
-static uint8_t current_pid = 1;         // Indice del proceso actual
+static uint8_t pid_value = 1;         // ID de los procesos (va incrementando)
+static uint8_t iter = 0;
+static uint8_t dim = 0;
+static uint8_t current_process_idx = 0;
 
 void idle_process() {
     while (1) {
         _hlt();
     }
+}
+
+uint8_t get_pid() {
+    return process_list[current_process_idx].pid;
+}
+
+uint8_t get_process_idx(uint8_t pid) {
+    for (int i = 0; i < dim; i++) {
+        if (process_list[i].pid == pid) {
+            return i;
+        }
+    }
+    return NO_PROCESS_FOUND;
+}
+
+uint8_t change_priority(uint8_t pid, uint8_t priority) {
+    uint8_t idx = get_process_idx(pid);
+    if (idx == NO_PROCESS_FOUND) {
+        return NO_PROCESS_FOUND;
+    }
+    if (priority > 5) {
+        process_list[idx].priority = 5;
+    } else if (priority < 1) {
+        process_list[idx].priority = 1;
+    } else {
+        process_list[idx].priority = priority;
+    }
+    return TRUE;
+}
+
+uint8_t get_state(uint8_t pid) {
+    uint8_t idx = get_process_idx(pid);
+    if (idx == NO_PROCESS_FOUND) {
+        return NO_PROCESS_FOUND;
+    }
+    return process_list[idx].state;
+}
+
+uint8_t block_or_unblock(uint8_t pid) {
+    uint8_t idx = get_process_idx(pid);
+    if (idx == NO_PROCESS_FOUND) {
+        return NO_PROCESS_FOUND;
+    }
+    process_list[idx].state = (process_list[idx].state == BLOCK) ? READY : BLOCK;
+    return TRUE;
 }
