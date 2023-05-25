@@ -1,4 +1,4 @@
-#include "include/memory_manager.h"
+#include "memory_manager.h"
 
 static struct memory_info mem_info = { 0 };
 
