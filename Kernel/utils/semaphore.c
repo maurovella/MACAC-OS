@@ -10,7 +10,7 @@ typedef struct sem_info{
     // vamos a necesitar manejar los procesos que esperan
     // 1) uint64_t sem_waiters;
     // 2) o con una cola de procesos esperando
-    queueADT waiters;
+    uint64_t/*queueADT*/ waiters;
 } sem_info;
 
 static uint8_t current_sem_amount = 0;
@@ -124,6 +124,6 @@ uint8_t post_sem(uint64_t sem_id) {
     */
     semaphores[pos_found].sem_val++;
     unlock(&(semaphores[pos_found].is_locked));
-    
+
     return SUCCESS;
 }
