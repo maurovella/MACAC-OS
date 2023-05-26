@@ -26,7 +26,8 @@ EXTERN exception_dispatcher
 EXTERN syscall_dispatcher
 EXTERN keyboard_handler
 EXTERN get_RSP
-EXETERN has_ticks_left
+EXTERN has_ticks_left
+EXTERN next_process
 
 GLOBAL info
 GLOBAL screenshot

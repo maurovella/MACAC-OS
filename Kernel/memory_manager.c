@@ -18,7 +18,7 @@ void memory_free(void * ptr) {
     mem_info.allocated_bytes -= size;
     mem_info.free_bytes += size;
     mem_info.allocated_blocks--;
-    freeBlock(block);
+    free_block(block);
 }
 
 void free_block(header_info * ptr) {

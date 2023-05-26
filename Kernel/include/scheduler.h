@@ -1,6 +1,8 @@
 #ifndef SCHEDULER_H
 #define SCHEDULER_H
 
+#include <stdint.h>
+
 #define FLAGS                      	0x202				
 #define STACK_SEGMENT              	0x0				
 #define CODE_SEGMENT               	0x8
@@ -33,6 +35,12 @@
 #define STACK_POSITION(stack_start, pos) (uint64_t *) ((stack_start) - (pos))
 #define CALCULATE_TICKS(priority) (priority) * 2
 
+void scheduler_init();
+
+void change_process_state(uint8_t pid, uint8_t new_state);
+
+uint8_t create_process(char **params, uint8_t priority, uint8_t input, uint8_t output, uint8_t immortal, uint64_t entry_point);
+
 void idle_process();
 
 uint8_t get_pid();
@@ -44,5 +52,11 @@ uint8_t change_priority(uint8_t pid, uint8_t priority);
 uint8_t get_state(uint8_t pid);
 
 uint8_t block_or_unblock(uint8_t pid);
+
+void end_process();
+
+void destroy_process();
+
+void free_params(char **params);
 
 #endif // SCHEDULER_H

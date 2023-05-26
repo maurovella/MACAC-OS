@@ -28,7 +28,7 @@ typedef struct process {
 process process_list[MAX_PROCESSES];    // Lista de procesos
 
 static uint8_t pid_value = 1;         // ID de los procesos (va incrementando)
-static uint8_t iter = 0;
+//static uint8_t iter = 0;
 static uint8_t dim = 0;
 static uint8_t current_process_idx = 0;
 static uint8_t idle_pid = 1;
@@ -45,7 +45,7 @@ void scheduler_init() {
 }
 
 void change_process_state(uint8_t pid, uint8_t new_state){
-	int pos = findTask(pid);
+	int pos = get_process_idx(pid);
 	if (pos == NO_PROCESS_FOUND) {
         return;
     }
@@ -121,7 +121,7 @@ uint64_t build_stack(uint64_t entry_point, uint64_t stack_end, char **params) {
     *(STACK_POSITION(stack_start, FLAGS_POS)) = FLAGS;
     *(STACK_POSITION(stack_start, SP_POS)) = stack_start - RET_POS;
     *(STACK_POSITION(stack_start, SS_POS)) = STACK_SEGMENT;
-    *(STACK_POSITION(stack_start, RET_POS)) = &end_process;
+    *(STACK_POSITION(stack_start, RET_POS)) = (uint64_t)&end_process;
     return stack_start;
     
 }
@@ -143,14 +143,14 @@ uint8_t create_process(char **params, uint8_t priority, uint8_t input, uint8_t o
         return NO_SPACE_FOR_PROCESS;
     }
     
-    uint8_t *stack_start = (uint8_t *) build_stack(entry_point, stack_end, params);
+    uint8_t *stack_start = (uint8_t *) build_stack(entry_point, (uint64_t)stack_end, params);
 
     process_list[pos].pid = pid_value++;
     process_list[pos].priority = priority;
     process_list[pos].params = params;
     process_list[pos].stack_start = stack_start;
     process_list[pos].stack_end = stack_end;
-    process_list[pos].stack_pointer = stack_start;
+    process_list[pos].stack_pointer = (uint64_t)stack_start;
     process_list[pos].stack_segment = STACK_SEGMENT;
     process_list[pos].state = READY;
     process_list[pos].ticks = CALCULATE_TICKS(priority);

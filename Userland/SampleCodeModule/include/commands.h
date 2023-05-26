@@ -25,4 +25,6 @@ void tron(int argc, char params[][LENGTH_PARAMETERS]);
 
 void clear_screen(int argc, char params[][LENGTH_PARAMETERS]);
 
+void test_memory_manager(int argc, char params[][LENGTH_PARAMETERS]);
+
 #endif

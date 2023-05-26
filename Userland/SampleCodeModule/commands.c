@@ -4,6 +4,7 @@
 #include <colors.h>
 #include <inout.h>
 #include <string_util.h>
+#include <test_util.h>
 
 #define is_hexa(a) ( (((a) >= '0' && (a) <= '9') || ((a) >= 'a' && (a) <= 'f') || ((a) >= 'A' && (a) <= 'F')) ? 1 : 0 )
 
@@ -25,7 +26,8 @@ void help(int argc, char params[MAX_PARAMETERS][LENGTH_PARAMETERS]){
 	"TIME                 Command to display the system day and time.\n"
 	"CHANGEFONTSIZE       Changes font size: insert 1 2 3 for the desired level.\n"
 	"TRON                 Get ready to play Tron!.\n"
-	"CLEAR                Clear screen\n";
+	"CLEAR                Clear screen\n"
+	"TEST_MM			  Tests the memory manager\n";
 	printf(help_string);
 }
 
@@ -191,3 +193,8 @@ void clear_screen(int argc, char params[][LENGTH_PARAMETERS]) {
 	return;
 }
 
+void test_memory_manager(int argc, char params[][LENGTH_PARAMETERS]) {
+	printf("Testeando memory manager..\n");
+	test_mm();
+	return;
+}
