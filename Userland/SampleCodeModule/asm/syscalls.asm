@@ -10,6 +10,9 @@ GLOBAL sys_paint_rect
 GLOBAL sys_get_ticks
 GLOBAL sys_timed_read
 GLOBAL sys_beeper
+GLOBAL sys_malloc
+GLOBAL sys_free
+GLOBAL sys_mm_init
 
 section .text
 sys_read:
@@ -66,5 +69,20 @@ sys_get_ticks:
 
 sys_beeper:
     mov rax, 0x0A
+    int 80h
+    ret
+
+sys_malloc:
+    mov rax, 0x0B
+    int 80h
+    ret
+
+sys_free:
+    mov rax, 0x0C
+    int 80h
+    ret
+
+sys_mm_init:
+    mov rax, 0x0D
     int 80h
     ret

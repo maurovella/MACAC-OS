@@ -29,4 +29,10 @@ void sys_clear_screen(uint64_t color);
 
 void sys_beeper(uint64_t frequency, uint64_t seconds);
 
+uint64_t sys_malloc(uint64_t len);
+
+void sys_free(void * ptr);
+
+void sys_mm_init();
+
 #endif

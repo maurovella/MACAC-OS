@@ -1,12 +1,13 @@
 #include <stdint.h>
-#include <defs.h>
+#include "defs.h"
 #include <string.h>
-#include <keyboard.h>
-#include <naive_RTC.h>
-#include <naive_graphics_console.h>
-#include <time.h>
-#include <speaker.h>
-#include <interrupts.h>
+#include "keyboard.h"
+#include "naive_RTC.h"
+#include "naive_graphics_console.h"
+#include "time.h"
+#include "speaker.h"
+#include "interrupts.h"
+#include "memory_manager.h"
 
 extern uint64_t info[17];
 extern uint8_t screenshot;
@@ -80,6 +81,18 @@ static void sys_beeper_handler(uint64_t frequency, uint64_t interval) {
     stop_beep();
 }
 
+static uint64_t sys_malloc(uint64_t len) {
+    return (uint64_t)memory_alloc(len);
+}
+
+static void sys_free(void * ptr) {
+    memory_free(ptr);
+}
+
+static void sys_mm_init() {
+    memory_init();
+}
+
 static syscall_type syscalls[]  = {
     (syscall_type) sys_read_handler, 
     (syscall_type) sys_write_handler, 
@@ -91,7 +104,10 @@ static syscall_type syscalls[]  = {
     (syscall_type) sys_screen_data_handler, 
     (syscall_type) sys_paint_rect_handler, 
     (syscall_type) sys_ticks_handler, 
-    (syscall_type) sys_beeper_handler
+    (syscall_type) sys_beeper_handler,
+    (syscall_type) sys_malloc,
+    (syscall_type) sys_free,
+    (syscall_type) sys_mm_init
 };
 
 //  paso syscall_id por rax, se come r10 por rcx, y r9 por rax
