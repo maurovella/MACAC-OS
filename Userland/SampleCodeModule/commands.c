@@ -5,7 +5,6 @@
 #include <inout.h>
 #include <string_util.h>
 #include <test_util.h>
-#include <test_util.h>
 
 #define is_hexa(a) ( (((a) >= '0' && (a) <= '9') || ((a) >= 'a' && (a) <= 'f') || ((a) >= 'A' && (a) <= 'F')) ? 1 : 0 )
 
