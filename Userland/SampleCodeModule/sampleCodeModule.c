@@ -6,7 +6,7 @@
 #include <syscalls.h>
 #include <colors.h>
 //le sacamos const por el momento por el warning
-static char* commands[] = {"help", "invalidopcode", "dividebyzero", "inforeg", "printmem", "time", "changefontsize", "tron", "clear", "test memory manager"};
+static char* commands[] = {"help", "invalidopcode", "dividebyzero", "inforeg", "printmem", "time", "changefontsize", "tron", "clear", "testmm"};
 
 
 
