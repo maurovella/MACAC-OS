@@ -59,4 +59,6 @@ void destroy_process();
 
 void free_params(char **params);
 
+uint8_t kill_process(uint8_t pid);
+
 #endif // SCHEDULER_H

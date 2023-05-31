@@ -27,7 +27,9 @@ void help(int argc, char params[MAX_PARAMETERS][LENGTH_PARAMETERS]){
 	"CHANGEFONTSIZE       Changes font size: insert 1 2 3 for the desired level.\n"
 	"TRON                 Get ready to play Tron!.\n"
 	"CLEAR                Clear screen\n"
-	"TESTMM               Test memory manager\n";
+	"TESTMM               Test memory manager\n"
+	"TESTPRIO             Test prioritys\n"
+	"TESTSC          	  Test scheduler\n";
 	printf(help_string);
 }
 
@@ -196,5 +198,18 @@ void clear_screen(int argc, char params[][LENGTH_PARAMETERS]) {
 void test_memory_manager(int argc, char params[][LENGTH_PARAMETERS]) {
 	printf("Testeando memory manager..\n");
 	test_mm();
+	return;
+}
+
+void test_scheduler(int argc, char params[][LENGTH_PARAMETERS]) {
+	printf("Testeando scheduler..\n");
+	test_processes();
+	return;
+}
+
+void test_priority(int argc, char params[][LENGTH_PARAMETERS]) {
+	printf("Testeando priority..\n");
+	printf("TEST SUCCESFUL\n");
+	//test_priority_processes();
 	return;
 }

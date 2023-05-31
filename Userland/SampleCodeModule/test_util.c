@@ -4,13 +4,36 @@
 #include <syscalls.h>
 #include <stddef.h>
 
+#define MINOR_WAIT 1000000 // TODO: Change this value to prevent a process from flooding the screen
+#define WAIT 10000000      // TODO: Change this value to make the wait long enough to see theese processes beeing run at least twice
+
+#define TOTAL_PROCESSES 3
+#define LOWEST 0  // TODO: Change as required
+#define MEDIUM 1  // TODO: Change as required
+#define HIGHEST 2 // TODO: Change as required
+
 #define MAX_BLOCKS 128
 #define MAX_MEMORY 1000
+#define MAX_PROCESSES 20
 
 typedef struct MM_rq{
   void *address;
   uint32_t size;
 }mm_rq;
+
+enum State { RUNNING,
+             BLOCKED,
+             KILLED };
+
+typedef struct P_rq {
+  int32_t pid;
+  enum State state;
+} p_rq;
+
+
+
+
+int64_t prio[TOTAL_PROCESSES] = {LOWEST, MEDIUM, HIGHEST};
 
 void* setmem(void* destination, int32_t c, uint64_t length) {
     uint8_t chr = (uint8_t)c;
@@ -22,7 +45,6 @@ void* setmem(void* destination, int32_t c, uint64_t length) {
 }
 
 void test_mm(){
-    sys_mm_init();
     mm_rq mm_rqs[MAX_BLOCKS];
     uint8_t rq;
     uint32_t total;
@@ -76,6 +98,131 @@ void test_mm(){
     }
     printf("TEST PASSED!!!\n");
 }
+
+
+/*
+void test_prio() {
+  int64_t pids[TOTAL_PROCESSES];
+  char *argv[] = {0};
+  uint64_t i;
+
+  for (i = 0; i < TOTAL_PROCESSES; i++)
+    pids[i] = my_create_process("endless_loop_print", 0, argv);
+
+  bussy_wait(WAIT);
+  printf("\nCHANGING PRIORITIES...\n");
+
+  for (i = 0; i < TOTAL_PROCESSES; i++)
+    my_nice(pids[i], prio[i]);
+
+  bussy_wait(WAIT);
+  printf("\nBLOCKING...\n");
+
+  for (i = 0; i < TOTAL_PROCESSES; i++)
+    my_block(pids[i]);
+
+  printf("CHANGING PRIORITIES WHILE BLOCKED...\n");
+
+  for (i = 0; i < TOTAL_PROCESSES; i++)
+    my_nice(pids[i], MEDIUM);
+
+  printf("UNBLOCKING...\n");
+
+  for (i = 0; i < TOTAL_PROCESSES; i++)
+    my_unblock(pids[i]);
+
+  bussy_wait(WAIT);
+  printf("\nKILLING...\n");
+
+  for (i = 0; i < TOTAL_PROCESSES; i++)
+    my_kill(pids[i]);
+}*/
+
+void test_processes() {
+  uint8_t rq;
+  uint8_t alive = 0;
+  uint8_t action;
+  uint64_t max_processes = MAX_PROCESSES;
+  uint64_t test = 0;
+
+  p_rq p_rqs[max_processes];
+
+  while (test < 50) {
+    test++;
+    // Create max_processes processes
+    for (rq = 0; rq < max_processes; rq++) {
+      p_rqs[rq].pid = sys_create_process(NULL, 1, 1, 1, (uint64_t) &endless_loop);
+
+      if (p_rqs[rq].pid == -1) {
+        printf("test_processes: ERROR creating process\n");
+        return ;
+      } else {
+        p_rqs[rq].state = RUNNING;
+        alive++;
+      }
+    }
+
+    // Randomly kills, blocks or unblocks processes until every one has been killed
+    while (alive > 0) {
+
+      for (rq = 0; rq < max_processes; rq++) {
+        action = GetUniform(100) % 2;
+
+        switch (action) {
+          case 0:
+            if (p_rqs[rq].state == RUNNING || p_rqs[rq].state == BLOCKED) {
+              if (sys_kill_process(p_rqs[rq].pid) == -1) {
+                printf("test_processes: ERROR killing process\n");
+                return;
+              }
+              p_rqs[rq].state = KILLED;
+              alive--;
+            }
+            break;
+
+          case 1:
+            if (p_rqs[rq].state == RUNNING) {
+              if (sys_block_or_unblock_process(p_rqs[rq].pid) == -1) {
+                printf("test_processes: ERROR blocking process\n");
+                return ;
+              }
+              p_rqs[rq].state = BLOCKED;
+            }
+            break;
+        }
+      }
+
+      // Randomly unblocks processes
+      for (rq = 0; rq < max_processes; rq++)
+        if (p_rqs[rq].state == BLOCKED && GetUniform(100) % 2) {
+          if (sys_block_or_unblock_process(p_rqs[rq].pid) == -1) {
+            printf("test_processes: ERROR unblocking process\n");
+            return ;
+          }
+          p_rqs[rq].state = RUNNING;
+        }
+    }
+  }
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 // Random

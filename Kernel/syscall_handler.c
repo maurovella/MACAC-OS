@@ -8,6 +8,7 @@
 #include "speaker.h"
 #include "interrupts.h"
 #include "memory_manager.h"
+#include "scheduler.h"
 
 extern uint64_t info[17];
 extern uint8_t screenshot;
@@ -93,6 +94,20 @@ static void sys_mm_init() {
     memory_init();
 }
 
+static uint8_t sys_create_process(char ** params, uint8_t priority, uint8_t input, uint8_t output, uint64_t entry_point) {
+    return create_process(params, priority, input, output, FALSE, entry_point);
+}
+
+
+static uint8_t sys_kill_process(uint8_t pid) {
+    return kill_process(pid);
+}
+
+static uint8_t sys_block_or_unblock_process(uint8_t pid) {
+    return block_or_unblock(pid);
+}
+
+
 static syscall_type syscalls[]  = {
     (syscall_type) sys_read_handler, 
     (syscall_type) sys_write_handler, 
@@ -107,7 +122,10 @@ static syscall_type syscalls[]  = {
     (syscall_type) sys_beeper_handler,
     (syscall_type) sys_malloc,
     (syscall_type) sys_free,
-    (syscall_type) sys_mm_init
+    (syscall_type) sys_mm_init,
+    (syscall_type) sys_create_process,
+    (syscall_type) sys_kill_process,
+    (syscall_type) sys_block_or_unblock_process,
 };
 
 //  paso syscall_id por rax, se come r10 por rcx, y r9 por rax

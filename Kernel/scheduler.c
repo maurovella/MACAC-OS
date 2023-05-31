@@ -189,7 +189,7 @@ uint8_t kill_process(uint8_t pid) {
         return NO_PROCESS_FOUND;
     }
     if (process_list[idx].immortal) {
-        return CANT_KILL_IMMORTAL_PROCESS;
+        return -1/*CANT_KILL_IMMORTAL_PROCESS*/;
     }
     destroy_process();
     if (current_process_idx == idx) {
@@ -219,7 +219,7 @@ uint64_t next_process(uint64_t stack_pointer, uint64_t stack_segment) {
     }
 
     if (inactive_processes == dim) {
-        current_process_idx = 0;
+        current_process_idx = get_process_idx(idle_pid);
         change_process_state(idle_pid, RUNNING);
     } else if (process_list[current_process_idx].pid != idle_pid) {
         change_process_state(idle_pid, PAUSED);

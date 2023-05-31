@@ -204,14 +204,19 @@ pic_slave_mask:
 _irq00_handler: 
 	push_state
 
+	cmp BYTE [scheduler_enabled], 1
+	jne enable_scheduler
+
 	call has_ticks_left
 	cmp rax, 1
-	je .continue
+	je handle_timer_tick
+
 	mov rdi, rsp
 	mov rsi, ss
 	call next_process
 	mov rsp, rax
-	.continue:
+
+	handle_timer_tick:
 	irq_handler_master 0
 	pop_state
 	iretq
@@ -313,8 +318,15 @@ force_current_process:
 	pop_state
 	iretq
 
+enable_scheduler:
+	mov BYTE [scheduler_enabled], 1
+	jmp handle_timer_tick	
+
 SECTION .bss
 	aux resq 1
 	info resq 17
 	regdata resq 18
 	screenshot resb 1 ;reservo un bit para poner en 1 si hubo un screenshot
+
+SECTION .data
+	scheduler_enabled db 0

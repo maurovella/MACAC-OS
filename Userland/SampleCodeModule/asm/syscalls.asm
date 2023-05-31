@@ -13,6 +13,9 @@ GLOBAL sys_beeper
 GLOBAL sys_malloc
 GLOBAL sys_free
 GLOBAL sys_mm_init
+GLOBAL sys_create_process
+GLOBAL sys_kill_process
+GLOBAL sys_block_or_unblock_process
 
 section .text
 sys_read:
@@ -84,5 +87,20 @@ sys_free:
 
 sys_mm_init:
     mov rax, 0x0D
+    int 80h
+    ret
+
+sys_create_process:
+    mov rax, 0x0E
+    int 80h
+    ret
+
+sys_kill_process:
+    mov rax, 0x0F
+    int 80h
+    ret
+
+sys_block_or_unblock_process:
+    mov rax, 0x10
     int 80h
     ret

@@ -9,6 +9,8 @@
 #include <naive_graphics_console.h>
 #include <interrupts.h>
 #include <speaker.h>
+#include <memory_manager.h>
+#include <scheduler.h>
 
 extern uint8_t text;
 extern uint8_t rodata;
@@ -57,7 +59,10 @@ int main()
 {	
 	//carga
 	load_idt();
-	((entry_point)sample_code_module_address)();
+	memory_init();
+	scheduler_init();
+	create_process(NULL, 1, STDIN, STDOUT, TRUE, (uint64_t) sample_code_module_address);
+	//((entry_point)sample_code_module_address)();
 	while(1);
 	return 0;
 }
