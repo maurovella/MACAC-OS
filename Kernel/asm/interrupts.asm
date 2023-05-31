@@ -216,11 +216,6 @@ _irq00_handler:
 	call next_process
 	mov rsp, rax
 
-	handle_timer_tick:
-	irq_handler_master 0
-	pop_state
-	iretq
-
 ;Keyboard
 _irq01_handler:
 	;irq_handler_master 1
@@ -307,6 +302,10 @@ halt_cpu:
 	hlt
 	ret
 
+handle_timer_tick:
+	irq_handler_master 0
+	pop_state
+	iretq
 
 force_timer_tick:
 	int 20h
