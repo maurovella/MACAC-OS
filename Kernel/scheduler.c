@@ -168,15 +168,15 @@ uint8_t create_process(char ** params, uint8_t priority, uint8_t input, uint8_t 
 void end_process() {
     _cli();
     // seteamos el proceso como DEAD y liberamos la memoria del stack y los parametros (free_params) y cambiamos al siguiente proceso
-    destroy_process();
+    destroy_process(current_process_idx);
     force_timer_tick();
     return;
 }
 
-void destroy_process() {
-    process_list[current_process_idx].state = DEAD;
-    free_params(process_list[current_process_idx].params);
-    memory_free(process_list[current_process_idx].stack_end);
+void destroy_process(uint8_t idx) {
+    process_list[idx].state = DEAD;
+    free_params(process_list[idx].params);
+    memory_free(process_list[idx].stack_end);
     dim--;
     return;
 }
@@ -197,7 +197,7 @@ uint8_t kill_process(uint8_t pid) {
     if (process_list[idx].immortal) {
         return -1/*CANT_KILL_IMMORTAL_PROCESS*/;
     }
-    destroy_process();
+    destroy_process(idx);
     if (current_process_idx == idx) {
         force_timer_tick();
     }
@@ -230,6 +230,7 @@ uint64_t next_process(uint64_t stack_pointer, uint64_t stack_segment) {
     } else if (process_list[current_process_idx].pid != idle_pid) {
         change_process_state(idle_pid, PAUSED);
     }
+    process_list[current_process_idx].remaining_ticks = process_list[current_process_idx].assigned_ticks;
     return process_list[current_process_idx].stack_pointer;
 }
 

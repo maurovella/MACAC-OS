@@ -55,7 +55,7 @@ uint8_t block_or_unblock(uint8_t pid);
 
 void end_process();
 
-void destroy_process();
+void destroy_process(uint8_t idx);
 
 void free_params(char **params);
 
