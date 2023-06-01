@@ -208,13 +208,22 @@ _irq00_handler:
 	jne enable_scheduler
 
 	call consume_tick
-	cmp rax, 1
+	cmp eax, 1
 	je handle_timer_tick
 
 	mov rdi, rsp
 	mov rsi, ss
 	call next_process
 	mov rsp, rax
+
+	handle_timer_tick:
+	mov rdi, 0				
+	call irq_dispatcher
+
+	mov al, 20h	
+	out 20h, al 	
+	pop_state
+	iretq
 
 ;Keyboard
 _irq01_handler:
