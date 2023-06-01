@@ -2,6 +2,7 @@
 #define _SEMAPHORE_H_
 
 #include <stdint.h>
+#include <queue.h>
 
 #define EMPTY_SEM 0
 
