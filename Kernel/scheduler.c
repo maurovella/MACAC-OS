@@ -14,8 +14,8 @@ typedef struct process {
     
     void *stack_start;              // start of the stack of the process
     void *stack_end;                // end of the stack of the process
-    uint64_t stack_pointer;            // pointer to the stack of the process
-    uint64_t stack_segment;            // segment of the stack of the process
+    uint64_t stack_pointer;         // pointer to the stack of the process
+    uint64_t stack_segment;         // segment of the stack of the process
     
     uint8_t state;                  // state of the process 
     uint32_t assigned_ticks;                 // asigned ticks to the process
