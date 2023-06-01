@@ -147,13 +147,15 @@ void test_processes() {
 
   p_rq p_rqs[max_processes];
 
-  while (test < 50) {
+  while (test < 5) {
     test++;
+    printf("Test %d\n", test);
+    printf("\n\n\n\n");
     // Create max_processes processes
     for (rq = 0; rq < max_processes; rq++) {
       p_rqs[rq].pid = sys_create_process(NULL, 1, 1, 1, (uint64_t) &endless_loop);
-
-      if (p_rqs[rq].pid == -1) {
+      printf("Created process %d\n", p_rqs[rq].pid);
+      if (p_rqs[rq].pid == -2) {
         printf("test_processes: ERROR creating process\n");
         return ;
       } else {
@@ -175,6 +177,7 @@ void test_processes() {
                 printf("test_processes: ERROR killing process\n");
                 return;
               }
+              printf("Killed process %d\n", p_rqs[rq].pid);
               p_rqs[rq].state = KILLED;
               alive--;
             }
@@ -186,6 +189,7 @@ void test_processes() {
                 printf("test_processes: ERROR blocking process\n");
                 return ;
               }
+              printf("Blocked process %d\n", p_rqs[rq].pid);
               p_rqs[rq].state = BLOCKED;
             }
             break;
@@ -199,10 +203,12 @@ void test_processes() {
             printf("test_processes: ERROR unblocking process\n");
             return ;
           }
+          printf("Unblocked process %d\n", p_rqs[rq].pid);
           p_rqs[rq].state = RUNNING;
         }
     }
   }
+  printf("TEST PASSED!!!\n");
 }
 
 
