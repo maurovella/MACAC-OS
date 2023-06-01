@@ -217,8 +217,8 @@ _irq00_handler:
 	mov rsp, rax
 
 	handle_timer_tick:
-	mov rdi, 0				
-	call irq_dispatcher
+		mov rdi, 0				
+		call irq_dispatcher
 
 	mov al, 20h	
 	out 20h, al 	
@@ -310,11 +310,6 @@ halt_cpu:
 	cli
 	hlt
 	ret
-
-handle_timer_tick:
-	irq_handler_master 0
-	pop_state
-	iretq
 
 force_timer_tick:
 	int 20h
