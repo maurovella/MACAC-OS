@@ -18,8 +18,8 @@ typedef struct process {
     uint64_t stack_segment;         // segment of the stack of the process
     
     uint8_t state;                  // state of the process 
-    uint32_t assigned_ticks;        // asigned ticks to the process
-    uint32_t remaining_ticks;       // remaining ticks to the process    
+    uint32_t assigned_ticks;                 // asigned ticks to the process
+    uint32_t remaining_ticks;                // remaining ticks to the process
     uint8_t immortal;               // indicates if the process is immortal (1) or not (0)
     
     uint8_t input;                 // direction of the input
@@ -33,7 +33,7 @@ static uint8_t pid_value = 0;         // ID de los procesos (va incrementando)
 static uint8_t dim = 0;
 static uint8_t current_process_idx = 0;
 static uint8_t idle_pid = 1;
-static uint8_t current_remaining_ticks = 0;
+//static uint8_t current_remaining_ticks = 0;
 
 static char * idleArg[] = {"idle", NULL};
 
@@ -46,12 +46,12 @@ void scheduler_init() {
 }
 
 void change_process_state(uint8_t pid, uint8_t new_state){
-	uint8_t pos = get_process_idx(pid);
-	if (pos == NO_PROCESS_FOUND) {
+	uint8_t first_free_pos = get_process_idx(pid);
+	if (first_free_pos == NO_PROCESS_FOUND) {
         return;
     }
 	
-	process_list[pos].state = new_state;
+	process_list[first_free_pos].state = new_state;
     return;
 }
 
@@ -135,8 +135,8 @@ uint8_t create_process(char ** params, uint8_t priority, uint8_t input, uint8_t 
     }
     // TODO "remember it´s a premature Operative System, please don´t abuse"
 
-    int pos;
-	for(pos = 0; process_list[pos].state != DEAD; pos++);	// find a free space
+    int first_free_pos;
+	for(first_free_pos = 0; process_list[first_free_pos].state != DEAD; first_free_pos++);	// find a free space
 
     // Build the stack process
     uint64_t * stack_end = (uint64_t *) memory_alloc(STACK_SIZE);
@@ -147,22 +147,22 @@ uint8_t create_process(char ** params, uint8_t priority, uint8_t input, uint8_t 
     
     uint64_t * stack_start = (uint64_t *) build_stack(entry_point, (uint64_t)stack_end, params);
 
-    process_list[pos].pid = pid_value++;
-    process_list[pos].priority = priority;
-    process_list[pos].params = params;
-    process_list[pos].stack_start = stack_start;
-    process_list[pos].stack_end = stack_end;
-    process_list[pos].stack_pointer = (uint64_t)stack_start;
-    process_list[pos].stack_segment = STACK_SEGMENT;
-    process_list[pos].state = READY;
-    process_list[pos].assigned_ticks = CALCULATE_TICKS(priority);
-    process_list[pos].remaining_ticks = process_list[pos].assigned_ticks;
-    process_list[pos].immortal = immortal;
-    process_list[pos].input = input;
-    process_list[pos].output = output;
+    process_list[first_free_pos].pid = pid_value++;
+    process_list[first_free_pos].priority = priority;
+    process_list[first_free_pos].params = params;
+    process_list[first_free_pos].stack_start = stack_start;
+    process_list[first_free_pos].stack_end = stack_end;
+    process_list[first_free_pos].stack_pointer = (uint64_t) stack_start - 21*8;
+    process_list[first_free_pos].stack_segment = STACK_SEGMENT;
+    process_list[first_free_pos].state = READY;
+    process_list[first_free_pos].assigned_ticks = CALCULATE_TICKS(priority);
+    process_list[first_free_pos].remaining_ticks = process_list[first_free_pos].assigned_ticks;
+    process_list[first_free_pos].immortal = immortal;
+    process_list[first_free_pos].input = input;
+    process_list[first_free_pos].output = output;
 
     dim++;
-    return process_list[pos].pid;
+    return process_list[first_free_pos].pid;
 }
 
 void end_process() {
