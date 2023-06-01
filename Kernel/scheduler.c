@@ -27,7 +27,7 @@ typedef struct process {
 
 process process_list[MAX_PROCESSES];    // Lista de procesos
 
-static uint8_t pid_value = 1;         // ID de los procesos (va incrementando)
+static uint8_t pid_value = 0;         // ID de los procesos (va incrementando)
 //static uint8_t iter = 0;
 static uint8_t dim = 0;
 static uint8_t current_process_idx = 0;
@@ -45,7 +45,7 @@ void scheduler_init() {
 }
 
 void change_process_state(uint8_t pid, uint8_t new_state){
-	int pos = get_process_idx(pid);
+	uint8_t pos = get_process_idx(pid);
 	if (pos == NO_PROCESS_FOUND) {
         return;
     }
@@ -126,7 +126,7 @@ uint64_t build_stack(uint64_t entry_point, uint64_t stack_end, char **params) {
     
 }
 
-uint8_t create_process(char **params, uint8_t priority, uint8_t input, uint8_t output, uint8_t immortal, uint64_t entry_point) {
+uint8_t create_process(char ** params, uint8_t priority, uint8_t input, uint8_t output, uint8_t immortal, uint64_t entry_point) {
     // check if there is space for a new process
     if(dim == MAX_PROCESSES) {
         return PROCESSES_LIMIT_REACHED;

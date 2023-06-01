@@ -24,6 +24,8 @@ static const uint64_t page_size = 0x1000;
 static void * const sample_code_module_address = (void*)0x400000;
 static void * const sample_data_module_address = (void*)0x500000;
 
+static char * shell_args[] = {"shell", NULL};
+
 typedef int (*entry_point)();
 
 void clear_BSS(void * bss_address, uint64_t bss_size)
@@ -59,9 +61,14 @@ int main()
 {	
 	//carga
 	load_idt();
+
 	memory_init();
+	
+	create_process(shell_args, 1, STDIN, STDOUT, TRUE, (uint64_t) sample_code_module_address);
+	
 	scheduler_init();
-	create_process(NULL, 1, STDIN, STDOUT, TRUE, (uint64_t) sample_code_module_address);
+	
+	
 	//((entry_point)sample_code_module_address)();
 	while(1);
 	return 0;

@@ -208,7 +208,7 @@ _irq00_handler:
 	jne enable_scheduler
 
 	call has_ticks_left
-	cmp rax, 1
+	cmp eax, 1
 	je handle_timer_tick
 
 	mov rdi, rsp
@@ -217,7 +217,11 @@ _irq00_handler:
 	mov rsp, rax
 
 	handle_timer_tick:
-	irq_handler_master 0
+	mov rdi, 0				
+	call irq_dispatcher
+
+	mov al, 20h	
+	out 20h, al 	
 	pop_state
 	iretq
 
