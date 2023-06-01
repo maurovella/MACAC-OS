@@ -311,6 +311,10 @@ halt_cpu:
 	hlt
 	ret
 
+handle_timer_tick:
+	irq_handler_master 0
+	pop_state
+	iretq
 
 force_timer_tick:
 	int 20h
