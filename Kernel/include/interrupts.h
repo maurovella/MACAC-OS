@@ -37,6 +37,6 @@ extern void halt_cpu(void);
 
 extern void force_timer_tick(void);
 extern void force_current_process(void);
-extern uint8_t has_ticks_left(void);
+extern uint8_t consume_tick(void);
 
 #endif /* INTERRUPS_H_ */
