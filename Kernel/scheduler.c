@@ -14,11 +14,12 @@ typedef struct process {
     
     void *stack_start;              // start of the stack of the process
     void *stack_end;                // end of the stack of the process
-    uint64_t stack_pointer;            // pointer to the stack of the process
-    uint64_t stack_segment;            // segment of the stack of the process
+    uint64_t stack_pointer;         // pointer to the stack of the process
+    uint64_t stack_segment;         // segment of the stack of the process
     
     uint8_t state;                  // state of the process 
-    uint32_t ticks;                 // asigned ticks to the process
+    uint32_t assigned_ticks;        // asigned ticks to the process
+    uint32_t remaining_ticks;       // remaining ticks to the process    
     uint8_t immortal;               // indicates if the process is immortal (1) or not (0)
     
     uint8_t input;                 // direction of the input
@@ -27,7 +28,7 @@ typedef struct process {
 
 process process_list[MAX_PROCESSES];    // Lista de procesos
 
-static uint8_t pid_value = 1;         // ID de los procesos (va incrementando)
+static uint8_t pid_value = 1;           // ID de los procesos (va incrementando)
 //static uint8_t iter = 0;
 static uint8_t dim = 0;
 static uint8_t current_process_idx = 0;
@@ -153,7 +154,8 @@ uint8_t create_process(char **params, uint8_t priority, uint8_t input, uint8_t o
     process_list[pos].stack_pointer = (uint64_t)stack_start;
     process_list[pos].stack_segment = STACK_SEGMENT;
     process_list[pos].state = READY;
-    process_list[pos].ticks = CALCULATE_TICKS(priority);
+    process_list[pos].assigned_ticks = CALCULATE_TICKS(priority);
+    process_list[pos].remaining_ticks = process_list[pos].assigned_ticks;
     process_list[pos].immortal = immortal;
     process_list[pos].input = input;
     process_list[pos].output = output;
@@ -224,13 +226,12 @@ uint64_t next_process(uint64_t stack_pointer, uint64_t stack_segment) {
     } else if (process_list[current_process_idx].pid != idle_pid) {
         change_process_state(idle_pid, PAUSED);
     }
-    current_remaining_ticks = 0;
     return process_list[current_process_idx].stack_pointer;
 }
 
-uint8_t has_ticks_left() {
-    if (current_remaining_ticks < process_list[current_process_idx].ticks) {
-        current_remaining_ticks++;
+uint8_t consume_tick() {
+    if (process_list[current_process_idx].remaining_ticks > 0) {
+        process_list[current_process_idx].remaining_ticks--;
         return TRUE;
     } 
     return FALSE;

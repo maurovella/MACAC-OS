@@ -26,7 +26,7 @@ EXTERN exception_dispatcher
 EXTERN syscall_dispatcher
 EXTERN keyboard_handler
 EXTERN get_RSP
-EXTERN has_ticks_left
+EXTERN consume_tick
 EXTERN next_process
 
 GLOBAL info
@@ -207,7 +207,7 @@ _irq00_handler:
 	cmp BYTE [scheduler_enabled], 1
 	jne enable_scheduler
 
-	call has_ticks_left
+	call consume_tick
 	cmp rax, 1
 	je handle_timer_tick
 
