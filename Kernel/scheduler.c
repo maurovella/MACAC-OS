@@ -52,6 +52,7 @@ void change_process_state(uint8_t pid, uint8_t new_state){
     }
 	
 	process_list[pos].state = new_state;
+    return;
 }
 
 void idle_process() {
@@ -138,13 +139,13 @@ uint8_t create_process(char ** params, uint8_t priority, uint8_t input, uint8_t 
 	for(pos = 0; process_list[pos].state != DEAD; pos++);	// find a free space
 
     // Build the stack process
-    uint8_t *stack_end = memory_alloc(STACK_SIZE);
+    uint64_t * stack_end = (uint64_t *) memory_alloc(STACK_SIZE);
     
     if (stack_end == NULL) {
         return NO_SPACE_FOR_PROCESS;
     }
     
-    uint8_t *stack_start = (uint8_t *) build_stack(entry_point, (uint64_t)stack_end, params);
+    uint64_t * stack_start = (uint64_t *) build_stack(entry_point, (uint64_t)stack_end, params);
 
     process_list[pos].pid = pid_value++;
     process_list[pos].priority = priority;
@@ -169,6 +170,7 @@ void end_process() {
     // seteamos el proceso como DEAD y liberamos la memoria del stack y los parametros (free_params) y cambiamos al siguiente proceso
     destroy_process();
     force_timer_tick();
+    return;
 }
 
 void destroy_process() {
@@ -176,6 +178,7 @@ void destroy_process() {
     free_params(process_list[current_process_idx].params);
     memory_free(process_list[current_process_idx].stack_end);
     dim--;
+    return;
 }
 
 void free_params(char **params) {
@@ -183,6 +186,7 @@ void free_params(char **params) {
         memory_free(params[i]);
     }
     memory_free(params);
+    return;
 }
 
 uint8_t kill_process(uint8_t pid) {

@@ -31,6 +31,7 @@ typedef int (*entry_point)();
 void clear_BSS(void * bss_address, uint64_t bss_size)
 {
 	mem_set(bss_address, 0, bss_size);
+	return;
 }
 
 void * get_stack_base()
@@ -40,6 +41,8 @@ void * get_stack_base()
 		+ page_size * 8				//The size of the stack itself, 32KiB
 		- sizeof(uint64_t)			//Begin at the top of the stack
 	);
+
+	return;
 }
 
 void * initialize_kernel_binary()
@@ -64,8 +67,10 @@ int main()
 
 	memory_init();
 	
+	// Create shell before idle
 	create_process(shell_args, 1, STDIN, STDOUT, TRUE, (uint64_t) sample_code_module_address);
 	
+	// Create idle process and force to run shell
 	scheduler_init();
 	
 	
