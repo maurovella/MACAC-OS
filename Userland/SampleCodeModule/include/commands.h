@@ -4,7 +4,7 @@
 #define MAX_PARAMETERS 5
 #define LENGTH_PARAMETERS 256
 #define BUFFER_LENGTH 256
-#define COMMANDS_LENGTH 9
+#define COMMANDS_LENGTH 18
 #define REGISTERS 17
 
 void help(int argc, char params[MAX_PARAMETERS][LENGTH_PARAMETERS]);
@@ -24,5 +24,23 @@ void changeFontSize(int argc, char params[][LENGTH_PARAMETERS]);
 void tron(int argc, char params[][LENGTH_PARAMETERS]);
 
 void clearScreen(int argc, char params[][LENGTH_PARAMETERS]);
+
+void ps(int argc, char params[][LENGTH_PARAMETERS]);
+
+void kill(int argc, char params[][LENGTH_PARAMETERS]);
+
+void block(int argc, char params[][LENGTH_PARAMETERS]);
+
+void loop(int argc, char params[][LENGTH_PARAMETERS]);
+
+void nice(int argc, char params[][LENGTH_PARAMETERS]);
+
+void cat(int argc, char params[][LENGTH_PARAMETERS]);
+
+void wc(int argc, char params[][LENGTH_PARAMETERS]);
+
+void filter(int argc, char params[][LENGTH_PARAMETERS]);
+
+void phylo(int argc, char params[][LENGTH_PARAMETERS]);
 
 #endif

@@ -6,7 +6,7 @@
 #include <syscalls.h>
 #include <colors.h>
 //le sacamos const por el momento por el warning
-static char* commands[] = {"help", "invalidopcode", "dividebyzero", "inforeg", "printmem", "time", "changefontsize", "tron", "clear"};
+static char* commands[] = {"help", "invalidopcode", "dividebyzero", "inforeg", "printmem", "time", "changefontsize", "tron", "clear","ps","loop","kill","nice","block","cat","wc","filter","phylo"};
 
 
 
@@ -21,7 +21,16 @@ static void (*commands_functions[])(int argc, char parameters[MAX_PARAMETERS][LE
 	time, 
 	changeFontSize, 
 	tron, 
-	clearScreen
+	clearScreen,
+	ps,
+	loop,
+	kill,
+	nice,
+	block,
+	cat,
+	wc,
+	filter,
+	phylo
 };
 
 static int findIdxCommand(char *buff);
