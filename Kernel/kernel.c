@@ -41,8 +41,6 @@ void * get_stack_base()
 		+ page_size * 8				//The size of the stack itself, 32KiB
 		- sizeof(uint64_t)			//Begin at the top of the stack
 	);
-
-	return;
 }
 
 void * initialize_kernel_binary()
@@ -62,7 +60,7 @@ void * initialize_kernel_binary()
 
 int main()
 {	
-	//carga
+	// load 
 	load_idt();
 
 	memory_init();

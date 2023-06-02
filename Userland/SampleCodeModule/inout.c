@@ -30,28 +30,27 @@ void buffer_action(char * buffer, uint64_t length){
 	while(!found_enter){
 		
 		c = do_get_char();
-		//if (c != 0xFF){
-			// si se ingresa un enter se termina el string y salimos del loop
-			if (c == '\n'){
-				buffer[i] = '\0';
-				do_put_char(c);
-				found_enter = 1; 
-			}
-			// agregamos el char ingresado al buffer
-			else if (c >= 0) {
-				do_put_char(c);
-				if (c == 0x7F && i >= 0) {
-					if (i > 0){
-						i--;
-					}
+
+		if (c == '\n'){
+			buffer[i] = '\0';
+			do_put_char(c);
+			found_enter = 1; 
+		}
+
+		// add written char to buffer
+		else if (c >= 0) {
+			do_put_char(c);
+			if (c == 0x7F && i >= 0) {
+				if (i > 0){
+					i--;
 				}
-				// validacion del maximo de scan
-				else if (i < length-1) {
-					buffer[i] = c;
-					i++;
-				}    
 			}
-		//}
+			// validate max for scan
+			else if (i < length-1) {
+				buffer[i] = c;
+				i++;
+			}    
+		}
 	}
 }
 
