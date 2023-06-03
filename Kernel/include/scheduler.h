@@ -6,7 +6,7 @@
 #define FLAGS                      	0x202				
 #define STACK_SEGMENT              	0x0				
 #define CODE_SEGMENT               	0x8
-#define MAX_PROCESSES              	20
+#define MAX_PROCESSES              	100
 #define NO_PROCESS_FOUND           -1
 #define TRUE                       	1
 #define FALSE                      	0

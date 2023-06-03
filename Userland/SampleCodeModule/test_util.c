@@ -14,7 +14,7 @@
 
 #define MAX_BLOCKS 128
 #define MAX_MEMORY 1000
-#define MAX_PROCESSES 20-2 // shell and idle are occupying 2 positions
+#define MAX_PROCESSES 20 // shell and idle are occupying 2 positions
 
 typedef struct MM_rq{
   void *address;

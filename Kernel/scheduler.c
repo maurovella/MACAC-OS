@@ -175,6 +175,7 @@ void end_process() {
 
 void destroy_process(uint8_t idx) {
     process_list[idx].state = DEAD;
+    process_list[idx].remaining_ticks = 0;
     free_params(process_list[idx].params);
     memory_free(process_list[idx].stack_end);
     dim--;
