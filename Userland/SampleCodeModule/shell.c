@@ -1,5 +1,8 @@
 #include <shell.h>
 
+#define NO_PARMAS_ERROR_MSG "Try without parameters\n"
+#define ONE_PARAM_ERROR_MSG "Try with one parameter\n"
+
 typedef struct program_info_CDT {
     char * name;
     uint64_t function_ptr; 		// function direction
@@ -15,18 +18,18 @@ static int find_idx_command(char *buff);
 static char* commands[] = {"help", "invalidopcode", "dividebyzero", "inforeg", "printmem", "time", "changefontsize", "tron", "clear", "testmm","testprio","testsc"};
 
 static program_info_CDT programs[] = {
-    {.name = "help", 			.function_ptr = &help, 				    .min_args = 0, 	.max_args = 0,  .pipeable = 0 },
-    {.name = "invalidopcode",   .function_ptr = &invalid_op_code,       .min_args = 0,  .max_args = 0, 	.pipeable = 0 },
-    {.name = "dividebyzero",    .function_ptr = &divide_by_zero,        .min_args = 0,  .max_args = 0, 	.pipeable = 0 },
-    {.name = "inforeg", 		.function_ptr = &inforeg, 			    .min_args = 0, 	.max_args = 0, 	.pipeable = 0 },
-    {.name = "printmem", 		.function_ptr = &print_mem, 		    .min_args = 2, 	.max_args = 2, 	.pipeable = 0 },
-    {.name = "time", 			.function_ptr = &time, 				    .min_args = 0, 	.max_args = 0, 	.pipeable = 0 },
-    {.name = "changefontsize",  .function_ptr = &change_font_size,  	.min_args = 1, 	.max_args = 1, 	.pipeable = 0 },
-    {.name = "tron", 			.function_ptr = &tron, 					.min_args = 0, 	.max_args = 0, 	.pipeable = 0 },
-    {.name = "clear", 			.function_ptr = &clear_screen, 			.min_args = 0, 	.max_args = 0, 	.pipeable = 0 },
-    {.name = "testmm", 			.function_ptr = &test_memory_manager,   .min_args = 0, 	.max_args = 0, 	.pipeable = 0 },
-    {.name = "testprio", 		.function_ptr = &test_priority, 		.min_args = 0, 	.max_args = 0, 	.pipeable = 0 },
-    {.name = "testsc", 			.function_ptr = &test_scheduler, 		.min_args = 0, 	.max_args = 0, 	.pipeable = 0 },
+    {.name = "help", 			.function_ptr = &help, 				    .min_args = 0, 	.max_args = 0,  .pipeable = 0 , .params_error_msg = NO_PARMAS_ERROR_MSG},
+    {.name = "invalidopcode",   .function_ptr = &invalid_op_code,       .min_args = 0,  .max_args = 0, 	.pipeable = 0 , .params_error_msg = NO_PARMAS_ERROR_MSG},
+    {.name = "dividebyzero",    .function_ptr = &divide_by_zero,        .min_args = 0,  .max_args = 0, 	.pipeable = 0 , .params_error_msg = NO_PARMAS_ERROR_MSG},
+    {.name = "inforeg", 		.function_ptr = &inforeg, 			    .min_args = 0, 	.max_args = 0, 	.pipeable = 0 , .params_error_msg = NO_PARMAS_ERROR_MSG},
+    {.name = "printmem", 		.function_ptr = &print_mem, 		    .min_args = 2, 	.max_args = 2, 	.pipeable = 0 , .params_error_msg = ONE_PARAM_ERROR_MSG},
+    {.name = "time", 			.function_ptr = &time, 				    .min_args = 0, 	.max_args = 0, 	.pipeable = 0 , .params_error_msg = NO_PARMAS_ERROR_MSG},
+    {.name = "changefontsize",  .function_ptr = &change_font_size,  	.min_args = 1, 	.max_args = 1, 	.pipeable = 0 , .params_error_msg = ONE_PARAM_ERROR_MSG},
+    {.name = "tron", 			.function_ptr = &tron, 					.min_args = 0, 	.max_args = 0, 	.pipeable = 0 , .params_error_msg = NO_PARMAS_ERROR_MSG},
+    {.name = "clear", 			.function_ptr = &clear_screen, 			.min_args = 0, 	.max_args = 0, 	.pipeable = 0 , .params_error_msg = NO_PARMAS_ERROR_MSG},
+    {.name = "testmm", 			.function_ptr = &test_memory_manager,   .min_args = 0, 	.max_args = 0, 	.pipeable = 0 , .params_error_msg = NO_PARMAS_ERROR_MSG},
+    {.name = "testprio", 		.function_ptr = &test_priority, 		.min_args = 0, 	.max_args = 0, 	.pipeable = 0 , .params_error_msg = NO_PARMAS_ERROR_MSG},
+    {.name = "testsc", 			.function_ptr = &test_scheduler, 		.min_args = 0, 	.max_args = 0, 	.pipeable = 0 , .params_error_msg = NO_PARMAS_ERROR_MSG},
 };
 
 static uint8_t validate_size(uint64_t size, program_info_ADT program){
@@ -50,9 +53,8 @@ void shell() {
 		int command_idx = find_idx_command(command);
 		if(command_idx >= 0 ){
             if(validate_size(size, &(programs[command_idx]))) {
-				sys_create_process(parameters, 3, STDIN, STDOUT, (uint64_t) commands[command_idx]);
+				sys_create_process(parameters, 3, STDIN, STDOUT, (uint64_t) programs[command_idx].function_ptr);
 			}
-			//commands_functions[idx](size, parameters);
 		}
 		else if (command_idx == -1){
 			do_print_color("Command not found: try again\n", RED);

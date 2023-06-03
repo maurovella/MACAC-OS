@@ -9,11 +9,11 @@
 #define is_hexa(a) ( (((a) >= '0' && (a) <= '9') || ((a) >= 'a' && (a) <= 'f') || ((a) >= 'A' && (a) <= 'F')) ? 1 : 0 )
 
 // no params
-void help(int argc, char params[MAX_PARAMETERS][LENGTH_PARAMETERS]){
-	if(argc!=0){
+void help(){
+	/*if(argc!=0){
 		do_print_color("\tayayay be more careful... ", RED);
 		printf("help does not take any parameters\n");
-	}
+	}*/
 	// se corre el comando de todas formas
 	
 	const char* help_string = 

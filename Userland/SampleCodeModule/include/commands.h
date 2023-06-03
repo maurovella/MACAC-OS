@@ -7,7 +7,7 @@
 #define COMMANDS_LENGTH 12
 #define REGISTERS 17
 
-void help(int argc, char params[MAX_PARAMETERS][LENGTH_PARAMETERS]);
+void help();
 
 void invalid_op_code(int argc, char  params[][LENGTH_PARAMETERS]);
 

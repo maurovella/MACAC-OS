@@ -10,7 +10,7 @@
 static char* commands[] = {"help", "invalidopcode", "dividebyzero", "inforeg", "printmem", "time", "changefontsize", "tron", "clear", "testmm","testprio","testsc"};
 
 /* COMMANDS */
-static void (*commands_functions[])(int argc, char parameters[MAX_PARAMETERS][LENGTH_PARAMETERS]) = {
+/*static void (*commands_functions[])(int argc, char parameters[MAX_PARAMETERS][LENGTH_PARAMETERS]) = {
 	help, 
 	invalid_op_code, 
 	divide_by_zero, 
@@ -23,7 +23,7 @@ static void (*commands_functions[])(int argc, char parameters[MAX_PARAMETERS][LE
 	test_memory_manager,
 	test_priority,
 	test_scheduler
-};
+};*/
 
 static int find_idx_command(char *buff);
 
