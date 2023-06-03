@@ -94,16 +94,16 @@ static void sys_mm_init() {
     memory_init();
 }
 
-static uint8_t sys_create_process(char ** params, uint8_t priority, uint8_t input, uint8_t output, uint64_t entry_point) {
+static int32_t sys_create_process(char ** params, uint8_t priority, uint8_t input, uint8_t output, uint64_t entry_point) {
     return create_process(params, priority, input, output, FALSE, entry_point);
 }
 
 
-static uint8_t sys_kill_process(uint8_t pid) {
+static int32_t sys_kill_process(uint32_t pid) {
     return kill_process(pid);
 }
 
-static uint8_t sys_block_or_unblock_process(uint8_t pid) {
+static int32_t sys_block_or_unblock_process(uint32_t pid) {
     return block_or_unblock(pid);
 }
 

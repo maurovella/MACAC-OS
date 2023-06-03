@@ -7,7 +7,7 @@
 #define BACKGROUND 4
 
 typedef struct process {
-    uint8_t pid;                    // process ID
+    uint32_t pid;                    // process ID
     uint8_t priority;               // priority of the process (1-5)
 
     char **params;                  // parameters of the process
@@ -28,11 +28,11 @@ typedef struct process {
 
 process process_list[MAX_PROCESSES];    // Lista de procesos
 
-static uint8_t pid_value = 0;         // ID de los procesos (va incrementando)
+static uint32_t pid_value = 0;         // ID de los procesos (va incrementando)
 //static uint8_t iter = 0;
 static uint8_t dim = 0;
 static uint8_t current_process_idx = 0;
-static uint8_t idle_pid = 1;
+static uint32_t idle_pid = 1;
 //static uint8_t current_remaining_ticks = 0;
 
 static char * idleArg[] = {"idle", NULL};
@@ -45,7 +45,7 @@ void scheduler_init() {
     force_current_process(); //TODO ver si es necesario
 }
 
-void change_process_state(uint8_t pid, uint8_t new_state){
+void change_process_state(uint32_t pid, uint8_t new_state){
 	uint8_t first_free_pos = get_process_idx(pid);
 	if (first_free_pos == NO_PROCESS_FOUND) {
         return;
@@ -61,20 +61,20 @@ void idle_process() {
     }
 }
 
-uint8_t get_pid() {
+uint32_t get_pid() {
     return process_list[current_process_idx].pid;
 }
 
-uint8_t get_process_idx(uint8_t pid) {
-    for (int i = 0; i < dim; i++) {
-        if (process_list[i].pid == pid) {
+uint8_t get_process_idx(uint32_t pid) {
+    for (int i = 0; i < MAX_PROCESSES; i++) {
+        if (process_list[i].pid == pid && process_list[i].state != DEAD) {
             return i;
         }
     }
     return NO_PROCESS_FOUND;
 }
 
-uint8_t change_priority(uint8_t pid, uint8_t priority) {
+uint8_t change_priority(uint32_t pid, uint8_t priority) {
     uint8_t idx = get_process_idx(pid);
     if (idx == NO_PROCESS_FOUND) {
         return NO_PROCESS_FOUND;
@@ -89,7 +89,7 @@ uint8_t change_priority(uint8_t pid, uint8_t priority) {
     return TRUE;
 }
 
-uint8_t get_state(uint8_t pid) {
+uint8_t get_state(uint32_t pid) {
     uint8_t idx = get_process_idx(pid);
     if (idx == NO_PROCESS_FOUND) {
         return NO_PROCESS_FOUND;
@@ -97,7 +97,7 @@ uint8_t get_state(uint8_t pid) {
     return process_list[idx].state;
 }
 
-uint8_t block_or_unblock(uint8_t pid) {
+int32_t block_or_unblock(uint32_t pid) {
     uint8_t idx = get_process_idx(pid);
     if (idx == NO_PROCESS_FOUND) {
         return NO_PROCESS_FOUND;
@@ -128,7 +128,7 @@ uint64_t build_stack(uint64_t entry_point, uint64_t stack_end, char **params) {
     
 }
 
-uint8_t create_process(char ** params, uint8_t priority, uint8_t input, uint8_t output, uint8_t immortal, uint64_t entry_point) {
+int32_t create_process(char ** params, uint8_t priority, uint8_t input, uint8_t output, uint8_t immortal, uint64_t entry_point) {
     // check if there is space for a new process
     if(dim == MAX_PROCESSES) {
         return PROCESSES_LIMIT_REACHED;
@@ -189,13 +189,14 @@ void free_params(char **params) {
     return;
 }
 
-uint8_t kill_process(uint8_t pid) {
-    uint8_t idx = get_process_idx(pid);
+int32_t kill_process(uint32_t pid) {
+    
+    int8_t idx = get_process_idx(pid);
     if (idx == NO_PROCESS_FOUND) {
         return NO_PROCESS_FOUND;
     }
     if (process_list[idx].immortal) {
-        return -1/*CANT_KILL_IMMORTAL_PROCESS*/;
+        return CANT_KILL_IMMORTAL_PROCESS;
     }
     destroy_process(idx);
     if (current_process_idx == idx) {

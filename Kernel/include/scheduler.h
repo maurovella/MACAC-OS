@@ -37,21 +37,21 @@
 
 void scheduler_init();
 
-void change_process_state(uint8_t pid, uint8_t new_state);
+void change_process_state(uint32_t pid, uint8_t new_state);
 
-uint8_t create_process(char **params, uint8_t priority, uint8_t input, uint8_t output, uint8_t immortal, uint64_t entry_point);
+int32_t create_process(char **params, uint8_t priority, uint8_t input, uint8_t output, uint8_t immortal, uint64_t entry_point);
 
 void idle_process();
 
-uint8_t get_pid();
+uint32_t get_pid();
 
-uint8_t get_process_idx(uint8_t pid);
+uint8_t get_process_idx(uint32_t pid);
 
-uint8_t change_priority(uint8_t pid, uint8_t priority);
+uint8_t change_priority(uint32_t pid, uint8_t priority);
 
-uint8_t get_state(uint8_t pid);
+uint8_t get_state(uint32_t pid);
 
-uint8_t block_or_unblock(uint8_t pid);
+int32_t block_or_unblock(uint32_t pid);
 
 void end_process();
 
@@ -59,6 +59,6 @@ void destroy_process(uint8_t idx);
 
 void free_params(char **params);
 
-uint8_t kill_process(uint8_t pid);
+int32_t kill_process(uint32_t pid);
 
 #endif // SCHEDULER_H
