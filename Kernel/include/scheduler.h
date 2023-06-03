@@ -7,6 +7,7 @@
 #define STACK_SEGMENT              	0x0				
 #define CODE_SEGMENT               	0x8
 #define MAX_PROCESSES              	100
+#define MAX_CHILDREN_PROCESSES 50
 #define NO_PROCESS_FOUND           -1
 #define TRUE                       	1
 #define FALSE                      	0
@@ -19,6 +20,7 @@
 #define PROCESSES_LIMIT_REACHED    -3
 #define CANT_KILL_IMMORTAL_PROCESS -4
 #define STACK_SIZE                 4096 // 4KB
+#define PAUSED_BY_CHILD				5	
 
 // Stack structure 
 #define STACK_POINT_OF_ENTRY (21*8)   	/*  	|	RAX, RBX  |		*/
@@ -60,5 +62,11 @@ void destroy_process(uint8_t idx);
 void free_params(char **params);
 
 int32_t kill_process(uint32_t pid);
+
+int32_t create_child_process(char **params, uint8_t priority, uint8_t input, uint8_t output, uint64_t entry_point);
+
+void set_dead_process(uint32_t pid);
+
+void wait_for_children();
 
 #endif // SCHEDULER_H

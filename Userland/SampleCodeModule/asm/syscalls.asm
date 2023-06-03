@@ -16,6 +16,8 @@ GLOBAL sys_mm_init
 GLOBAL sys_create_process
 GLOBAL sys_kill_process
 GLOBAL sys_block_or_unblock_process
+GLOBAL sys_create_child_process
+GLOBAL sys_wait_for_children
 
 section .text
 sys_read:
@@ -102,5 +104,15 @@ sys_kill_process:
 
 sys_block_or_unblock_process:
     mov rax, 0x10
+    int 80h
+    ret
+
+sys_create_child_process:
+    mov rax, 0x11
+    int 80h
+    ret
+
+sys_wait_for_children
+    mov rax, 0x12
     int 80h
     ret
