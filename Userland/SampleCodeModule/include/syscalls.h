@@ -35,10 +35,10 @@ void sys_free(void * ptr);
 
 void sys_mm_init();
 
-uint8_t sys_create_process(char ** params, uint8_t priority, uint8_t input, uint8_t output, uint64_t entry_point);
+int32_t sys_create_process(char ** params, uint8_t priority, uint8_t input, uint8_t output, uint64_t entry_point);
 
-uint8_t sys_kill_process(uint8_t pid);
+int32_t sys_kill_process(uint32_t pid);
 
-uint8_t sys_block_or_unblock_process(uint8_t pid);
+int32_t sys_block_or_unblock_process(uint32_t pid);
 
 #endif

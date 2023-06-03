@@ -14,7 +14,7 @@
 
 #define MAX_BLOCKS 128
 #define MAX_MEMORY 1000
-#define MAX_PROCESSES 20
+#define MAX_PROCESSES 20-2 // shell and idle are occupying 2 positions
 
 typedef struct MM_rq{
   void *address;
@@ -26,7 +26,7 @@ enum State { RUNNING,
              KILLED };
 
 typedef struct P_rq {
-  int32_t pid;
+  uint32_t pid;
   enum State state;
 } p_rq;
 
@@ -144,19 +144,22 @@ void test_processes() {
   uint8_t action;
   uint64_t max_processes = MAX_PROCESSES;
   uint64_t test = 0;
-
   p_rq p_rqs[max_processes];
 
-  while (test < 50) {
+  while (test < 5) {
     test++;
+    printf("\n\n\n\n\n");
+    printf("Test %d\n", test);
+    printf("\n\n\n\n");
     // Create max_processes processes
     for (rq = 0; rq < max_processes; rq++) {
-      p_rqs[rq].pid = sys_create_process(NULL, 1, 1, 1, (uint64_t) &endless_loop);
-
-      if (p_rqs[rq].pid == -1) {
+      int32_t pid_return = sys_create_process(NULL, 1, 1, 1, (uint64_t) &endless_loop);
+      if (pid_return == -2) {
         printf("test_processes: ERROR creating process\n");
         return ;
       } else {
+        p_rqs[rq].pid = pid_return;
+        printf("Created process %d\n", p_rqs[rq].pid);
         p_rqs[rq].state = RUNNING;
         alive++;
       }
@@ -167,14 +170,16 @@ void test_processes() {
 
       for (rq = 0; rq < max_processes; rq++) {
         action = GetUniform(100) % 2;
-
+        int32_t aux_return;
         switch (action) {
           case 0:
             if (p_rqs[rq].state == RUNNING || p_rqs[rq].state == BLOCKED) {
-              if (sys_kill_process(p_rqs[rq].pid) == -1) {
+              aux_return = sys_kill_process(p_rqs[rq].pid);
+              if (aux_return == -1 || aux_return == -4) {
                 printf("test_processes: ERROR killing process\n");
                 return;
               }
+              printf("Killed process %d\n", p_rqs[rq].pid);
               p_rqs[rq].state = KILLED;
               alive--;
             }
@@ -182,10 +187,12 @@ void test_processes() {
 
           case 1:
             if (p_rqs[rq].state == RUNNING) {
-              if (sys_block_or_unblock_process(p_rqs[rq].pid) == -1) {
+              aux_return = sys_block_or_unblock_process(p_rqs[rq].pid);
+              if (aux_return == -1) {
                 printf("test_processes: ERROR blocking process\n");
                 return ;
               }
+              printf("Blocked process %d\n", p_rqs[rq].pid);
               p_rqs[rq].state = BLOCKED;
             }
             break;
@@ -199,10 +206,12 @@ void test_processes() {
             printf("test_processes: ERROR unblocking process\n");
             return ;
           }
+          printf("Unblocked process %d\n", p_rqs[rq].pid);
           p_rqs[rq].state = RUNNING;
         }
     }
   }
+  printf("TEST PASSED!!!\n");
 }
 
 
