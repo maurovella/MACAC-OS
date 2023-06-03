@@ -41,4 +41,8 @@ int32_t sys_kill_process(uint32_t pid);
 
 int32_t sys_block_or_unblock_process(uint32_t pid);
 
+int32_t sys_create_child_process(char ** params, uint8_t priority, uint8_t input, uint8_t output, uint64_t entry_point);
+
+void sys_wait_for_children();
+
 #endif

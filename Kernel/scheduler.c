@@ -102,7 +102,12 @@ int32_t block_or_unblock(uint32_t pid) {
     if (idx == NO_PROCESS_FOUND) {
         return NO_PROCESS_FOUND;
     }
-    process_list[idx].state = (process_list[idx].state == BLOCK) ? READY : BLOCK;
+    if (process_list[idx].state == BLOCK) {
+        process_list[idx].state = READY;
+    } else {
+        process_list[idx].state = BLOCK;
+        force_timer_tick();
+    }
     return TRUE;
 }
 
@@ -176,6 +181,7 @@ void end_process() {
 void destroy_process(uint8_t idx) {
     process_list[idx].state = DEAD;
     process_list[idx].remaining_ticks = 0;
+    set_dead_process(process_list[idx].pid);
     free_params(process_list[idx].params);
     memory_free(process_list[idx].stack_end);
     dim--;
@@ -237,9 +243,10 @@ uint64_t next_process(uint64_t stack_pointer, uint64_t stack_segment) {
 }
 
 uint8_t consume_tick() {
-    if (process_list[current_process_idx].remaining_ticks > 0) {
+    if (process_list[current_process_idx].remaining_ticks > 0 && process_list[current_process_idx].state == READY) {
         process_list[current_process_idx].remaining_ticks--;
         return TRUE;
     } 
     return FALSE;
 }
+

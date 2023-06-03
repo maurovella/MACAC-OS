@@ -107,6 +107,14 @@ static int32_t sys_block_or_unblock_process(uint32_t pid) {
     return block_or_unblock(pid);
 }
 
+static int32_t sys_create_child_process(char ** params, uint8_t priority, uint8_t input, uint8_t output, uint64_t entry_point) {
+    return create_child_process(params, priority, input, output, entry_point);
+}
+
+static void sys_wait_for_children() {
+    wait_for_children();
+}
+
 
 static syscall_type syscalls[]  = {
     (syscall_type) sys_read_handler, 
@@ -126,6 +134,8 @@ static syscall_type syscalls[]  = {
     (syscall_type) sys_create_process,
     (syscall_type) sys_kill_process,
     (syscall_type) sys_block_or_unblock_process,
+    (syscall_type) sys_create_child_process,
+    (syscall_type) sys_wait_for_children
 };
 
 //  paso syscall_id por rax, se come r10 por rcx, y r9 por rax
