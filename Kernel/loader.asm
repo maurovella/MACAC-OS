@@ -8,7 +8,8 @@ section .text
 
 loader:
 	call initialize_kernel_binary	; Set up the kernel binary, and get thet stack address
-	jmp rt
+	mov rsp, rax
+	call main
 
 hang:
 	cli

@@ -20,7 +20,11 @@ static void sys_write_handler(uint64_t fd, uint64_t buffer, uint64_t bytes){
         for (uint64_t i = 0; i < bytes; i++){
             ngc_print_char(((char*)buffer)[i]);
         }
-    }
+    } /*else if(fd == BACKGROUND) {
+        return;
+    } else {
+        write_pipe(fd, buffer, bytes);
+    }*/
 }
 
 static int64_t sys_read_handler(uint64_t fd, char * buffer, uint64_t bytes){

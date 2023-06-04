@@ -121,8 +121,11 @@ void shell() {
 		int size = parse_buffer(command, parameters, buff_command);
 		int command_idx = find_idx_command(command);
 		if(command_idx >= 0 ){
+			char ** params = prepare_parameters(parameters, size, command);
+			/*if( params[0][0] == '|' && params[0][1] == '\0' ) {
+				do_print_color("Pipeing\n", RED);
+			}*/
             if(validate_size(size, &(programs[command_idx]))) {
-				char ** params = prepare_parameters(parameters, size, command);
 				sys_create_child_process(params, programs[command_idx].base_priority, STDIN, STDOUT, (uint64_t) programs[command_idx].function_ptr);
 				sys_wait_for_children();
 			}
