@@ -74,7 +74,7 @@ uint8_t get_process_idx(uint32_t pid) {
     return NO_PROCESS_FOUND;
 }
 
-uint8_t change_priority(uint32_t pid, uint8_t priority) {
+int8_t change_priority(uint32_t pid, uint8_t priority) {
     uint8_t idx = get_process_idx(pid);
     if (idx == NO_PROCESS_FOUND) {
         return NO_PROCESS_FOUND;
@@ -160,7 +160,7 @@ int32_t create_process(char ** params, uint8_t priority, uint8_t input, uint8_t 
     process_list[first_free_pos].stack_pointer = (uint64_t) stack_start - 21*8;
     process_list[first_free_pos].stack_segment = STACK_SEGMENT;
     process_list[first_free_pos].state = READY;
-    process_list[first_free_pos].assigned_ticks = CALCULATE_TICKS(priority);
+    process_list[first_free_pos].assigned_ticks = calculate_ticks(priority);
     process_list[first_free_pos].remaining_ticks = process_list[first_free_pos].assigned_ticks;
     process_list[first_free_pos].immortal = immortal;
     process_list[first_free_pos].input = input;
@@ -250,3 +250,11 @@ uint8_t consume_tick() {
     return FALSE;
 }
 
+uint32_t calculate_ticks(uint8_t priority) {
+    uint32_t ticks = 1;
+    for (int i = 0; i < priority; i++)
+    {
+        ticks *= 4;
+    }
+    return ticks;
+}

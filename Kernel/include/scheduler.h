@@ -35,7 +35,8 @@
 #define ALINGMENT 8		 				/*   	 -------------		*/
 
 #define STACK_POSITION(stack_start, pos) (uint64_t *) ((stack_start) - (pos))
-#define CALCULATE_TICKS(priority) (priority) * 2
+
+uint32_t calculate_ticks(uint8_t priority);
 
 void scheduler_init();
 
@@ -49,7 +50,7 @@ uint32_t get_pid();
 
 uint8_t get_process_idx(uint32_t pid);
 
-uint8_t change_priority(uint32_t pid, uint8_t priority);
+int8_t change_priority(uint32_t pid, uint8_t priority);
 
 uint8_t get_state(uint32_t pid);
 
@@ -68,5 +69,7 @@ int32_t create_child_process(char **params, uint8_t priority, uint8_t input, uin
 void set_dead_process(uint32_t pid);
 
 void wait_for_children();
+
+extern void force_timer_tick();
 
 #endif // SCHEDULER_H

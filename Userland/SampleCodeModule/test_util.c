@@ -1,16 +1,15 @@
 #include <test_util.h>
 #include <inout.h>
 #include <stdint.h>
-#include <syscalls.h>
 #include <stddef.h>
 
 #define MINOR_WAIT 1000000 // TODO: Change this value to prevent a process from flooding the screen
-#define WAIT 10000000      // TODO: Change this value to make the wait long enough to see theese processes beeing run at least twice
+#define WAIT       10000000      // TODO: Change this value to make the wait long enough to see theese processes beeing run at least twice
 
 #define TOTAL_PROCESSES 3
-#define LOWEST 0  // TODO: Change as required
-#define MEDIUM 1  // TODO: Change as required
-#define HIGHEST 2 // TODO: Change as required
+#define LOWEST 1  // TODO: Change as required
+#define MEDIUM 3  // TODO: Change as required
+#define HIGHEST 5 // TODO: Change as required
 
 #define MAX_BLOCKS 128
 #define MAX_MEMORY 1000
@@ -99,44 +98,57 @@ void test_mm(){
     printf("TEST PASSED!!!\n");
 }
 
-
-/*
 void test_prio() {
   int64_t pids[TOTAL_PROCESSES];
   char *argv[] = {0};
   uint64_t i;
 
   for (i = 0; i < TOTAL_PROCESSES; i++)
-    pids[i] = my_create_process("endless_loop_print", 0, argv);
+    pids[i] = sys_create_process(argv, 1, STDIN, STDOUT, (uint64_t) &endless_loop_print);
 
   bussy_wait(WAIT);
   printf("\nCHANGING PRIORITIES...\n");
-
-  for (i = 0; i < TOTAL_PROCESSES; i++)
-    my_nice(pids[i], prio[i]);
+  int8_t changed = 0;
+  for (i = 0; i < TOTAL_PROCESSES; i++) {
+    changed = sys_change_priority(pids[i], prio[i]);
+    if (changed == -1) {
+      printf("test_prio: ERROR changing priority\n");
+      return;
+    }
+  }
+    
 
   bussy_wait(WAIT);
   printf("\nBLOCKING...\n");
 
   for (i = 0; i < TOTAL_PROCESSES; i++)
-    my_block(pids[i]);
+    sys_block_or_unblock_process(pids[i]);
 
   printf("CHANGING PRIORITIES WHILE BLOCKED...\n");
 
-  for (i = 0; i < TOTAL_PROCESSES; i++)
-    my_nice(pids[i], MEDIUM);
+  for (i = 0; i < TOTAL_PROCESSES; i++) {
+    changed = sys_change_priority(pids[i], prio[i+1 % TOTAL_PROCESSES]);
+    if (changed == -1) {
+      printf("test_prio: ERROR changing priority\n");
+      return;
+    }
+  }
+    
 
   printf("UNBLOCKING...\n");
 
   for (i = 0; i < TOTAL_PROCESSES; i++)
-    my_unblock(pids[i]);
+    sys_block_or_unblock_process(pids[i]);
 
-  bussy_wait(WAIT);
   printf("\nKILLING...\n");
+  bussy_wait(WAIT);
+  
 
   for (i = 0; i < TOTAL_PROCESSES; i++)
-    my_kill(pids[i]);
-}*/
+    sys_kill_process(pids[i]);
+
+  printf("TEST PASSED!!!\n");
+}
 
 void test_processes() {
   uint8_t rq;
@@ -296,11 +308,10 @@ void endless_loop() {
     ;
 }
 
-void endless_loop_print(uint64_t wait) {
-  //int64_t pid = my_getpid();
-  uint64_t pid = 1;
+void endless_loop_print() {
+  int32_t pid = sys_get_pid();
   while (1) {
     printf("%d ", pid);
-    bussy_wait(wait);
+    bussy_wait(MINOR_WAIT);
   }
 }

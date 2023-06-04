@@ -47,4 +47,8 @@ void sys_wait_for_children();
 
 void sys_wait(uint64_t interval);
 
+int8_t sys_change_priority(uint32_t pid, uint8_t priority);
+
+int32_t sys_get_pid();
+
 #endif

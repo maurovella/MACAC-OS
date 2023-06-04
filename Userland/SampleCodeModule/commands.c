@@ -204,7 +204,6 @@ void test_scheduler() {
 
 void test_priority() {
 	printf("Testeando priority..\n");
-	printf("TEST SUCCESFUL\n");
-	//test_priority_processes();
+	test_prio();
 	return;
 }
