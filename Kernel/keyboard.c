@@ -7,9 +7,9 @@
 
 
 static const uint8_t char_hex_map[256] = {       
-        0,    0,  '1',  '2',  '3',  '4',  '5',  '6',   '7',  '8',  '9',   '0',   '-',  '=',    0x7F,
+        0,    '|',  '1',  '2',  '3',  '4',  '5',  '6',   '7',  '8',  '9',   '0',   '-',  '=',    0x7F,
     '\t', 'q',  'w',  'e',  'r',  't',  'y',  'u',  'i',   'o',  'p',  '[',   ']', '\n',   
-        0,     'a',  's', 'd',  'f',  'g',  'h',  'j',  'k',  'l',  ';',  '\"',
+        0,     'a',  's', 'd',  'f',  'g',  'h',  'j',  'k',  'l',  ';',  '&',
     0,    0,  '\\',   'z',  'x',     'c', 'v', 'b',  'n',  'm',  ',',  '.',  '/',    0,  
     '*',     0,  ' ',    0,     0,     0/*60*/,    0,       0,         0, 
     0,     0,     0,    0,      0,      0,      0,      0,         'U'/*up*/,
@@ -23,6 +23,7 @@ static uint64_t write_index = 0;         // iter last element
 
 
 void keyboard_handler(uint64_t tecla_hex){
+    
     if (tecla_hex < 0x53){
         if(q_elements >= BUFFER_SIZE) return;  // buffer is full
         
