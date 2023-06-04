@@ -3,6 +3,14 @@
 
 #include <stdint.h>
 
+#define EMPTY_QUEUE_ERROR -1
+#define NO_MORE_ELEMS -2
+
+
+#define TRUE 1
+#define FALSE 0
+
+
 
 typedef struct queue_CDT * queue_ADT;
 
@@ -17,7 +25,7 @@ unsigned int get_queue_current_size(queue_ADT queue);
 void destroy_queue(queue_ADT queue);
 
 void create_queue_iterator(queue_ADT queue, unsigned int * iter_pos);
-uint8_t has_next(queue_ADT queue, unsigned int iter_pos);
+uint8_t has_next(queue_ADT queue, unsigned int * iter_pos);
 uint64_t next(queue_ADT queue, unsigned int * iter_pos);
 
 #endif

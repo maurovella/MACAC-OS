@@ -1,4 +1,4 @@
-#include "lock.h"
+#include <lock.h>
 
 void lock(uint64_t * lock){
 	while(_xchg(lock, 1) != 0);

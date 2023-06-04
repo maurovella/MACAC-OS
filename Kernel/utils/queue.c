@@ -1,4 +1,4 @@
-#include <queue.h>S
+#include <queue.h>
 
 typedef struct queue_CDT{
     uint64_t  * elements;
@@ -65,7 +65,7 @@ void create_queue_iterator(queue_ADT queue, unsigned int * iter_pos) {
     *iter_pos = queue->read_pos;
 }
 
-uint8_t has_next(queue_ADT queue, unsigned int iter_pos) {
+uint8_t has_next(queue_ADT queue, unsigned int * iter_pos) {
     if(queue->read_pos > queue->write_pos) {
         return (*iter_pos >= queue->read_pos && queue->size > *iter_pos) || (*iter_pos < queue->write_pos);
     }

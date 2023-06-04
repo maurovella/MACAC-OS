@@ -1,6 +1,6 @@
-#include "semaphore.h"
+#include <semaphore.h>
 
-#define MAX_SEM 30
+
 
 typedef struct sem_info{
     uint64_t sem_id;
@@ -18,7 +18,7 @@ static uint8_t current_sem_amount = 0;
 static sem_info semaphores[MAX_SEM] = {{0}};
 
 static uint8_t find_free_sem() {
-    if(current_sem_amount == MAX_SEMAPHORES) return MAX_SEM_REACHED;
+    if(current_sem_amount == MAX_SEM) return ERR_MAX_SEM;
 
     for (int i = 0; i < MAX_SEM; ++i) {
         if (semaphores[i].sem_id == EMPTY_SEM) return i;
@@ -81,7 +81,7 @@ uint8_t destroy_sem(uint64_t sem_id) {
     semaphores[pos_found].sem_val = 0;
     current_sem_amount--;
 
-    delete_queue(&(semaphores[pos_found].waiters));
+    destroy_queue(&(semaphores[pos_found].waiters));
     // TODO: destroy queue of waiters
     unlock(&(semaphores[pos_found].is_locked));
 
@@ -97,11 +97,11 @@ uint8_t wait_sem(uint64_t sem_id) {
 
     lock(&(semaphores[pos_found].is_locked));
     if (semaphores[pos_found].sem_val == 0) {
-        uint64_t current_pid = get_current_pid();
-        update_process_state(current_pid, WAITING);
+        uint64_t current_pid = get_pid();
+        change_process_state(current_pid, PAUSED_BY_SEM);
         enqueue(&(semaphores[pos_found].waiters), current_pid);
         unlock(&(semaphores[pos_found].is_locked));
-        force_change_task();
+        force_timer_tick();
     }
     else {
         semaphores[pos_found].sem_val--;
@@ -123,7 +123,7 @@ uint8_t post_sem(uint64_t sem_id) {
     
     if (get_queue_length(semaphores[pos_found].waiters) > 0) {
         uint64_t pid = dequeue(semaphores[pos_found].waiters);
-        update_process_state(pid, READY);
+        change_process_state(pid, READY);
     }
     else {
         semaphores[pos_found].sem_val++;
@@ -152,7 +152,7 @@ unsigned int get_blocked_process(unsigned int i, unsigned int * blocked_pids) {
 unsigned int get_blocked_by_sem_id(unsigned int sem_id, unsigned int * blocked_pids){
 	int free_pos = find_sem(sem_id);
 	if(free_pos == -1)
-		return INVALID_SEM_ID;
+		return ERR_INVALID_SEM_ID;
 
-	return get_sem_blocked_process((unsigned int) free_pos, blocked_pids);
+	return get_blocked_process((unsigned int) free_pos, blocked_pids);
 }

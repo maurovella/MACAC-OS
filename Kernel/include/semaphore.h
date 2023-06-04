@@ -3,14 +3,19 @@
 
 #include <stdint.h>
 #include <queue.h>
+#include <scheduler.h>
 
 #define EMPTY_SEM 0
+#define MAX_SEM 30
+#define MAX_PROCESS_WAITING 10
 
 #define SUCCESS 0
 
-#define ERR_MAX_SEM 1
-#define ERR_SEM_EXISTS 2
-#define ERR_INVALID_SEM_ID 3
+
+#define ERR_MAX_SEM -1
+#define ERR_SEM_EXISTS -2
+#define ERR_INVALID_SEM_ID -3
+
 
 
 /*
