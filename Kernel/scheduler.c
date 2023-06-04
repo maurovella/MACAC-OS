@@ -189,6 +189,10 @@ void destroy_process(uint8_t idx) {
 }
 
 void free_params(char **params) {
+    if (params == NULL) {
+        return;
+    }
+    
     for (int i = 0; params[i] != NULL; i++) {
         memory_free(params[i]);
     }

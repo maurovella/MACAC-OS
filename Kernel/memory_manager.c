@@ -138,6 +138,6 @@ void * memory_realloc(void * ptr, uint64_t _size) {
     }
 }*/
 
-memory_info * get_mem_status() {
+memory_info * get_mem_info() {
     return &mem_info;
 }

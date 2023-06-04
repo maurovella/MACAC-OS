@@ -39,6 +39,6 @@ void add_block(header_info * ptr, uint64_t _size);
 
 void add_end_block(header_info * ptr);
 
-memory_info * get_mem_status(); 
+memory_info * get_mem_info();
 
 #endif
