@@ -6,11 +6,12 @@
 
 #define HEAP_SIZE 0x100000 // 1MB
 #define HEAP_START ((void *)0xA00000) // arbitrary
-#define HEAP_END ((void*)(HEAP_START + HEAP_SIZE)) // check if legal
+#define HEAP_END ((void *)((uint64_t) HEAP_START + (uint64_t) HEAP_SIZE)) // check if legal
 #define TRUE 1
 #define FALSE 0
 #define SIZE(size) ((size) & ~0x1) // masks the last bit of size, gets just the size
-#define MIN_SIZE (sizeof(header_info) + 2) // TODO: check if 2 is correct or 1
+#define HEADER_SIZE (sizeof(header_info))
+#define MIN_SIZE (HEADER_SIZE + 2) // TODO: check if 2 is correct or 1
 #define MAX_SIZE (HEAP_SIZE - sizeof(header_info))
 #define IS_LAST_BLOCK(size) (!(SIZE(size) > 0))
 
@@ -22,7 +23,7 @@ typedef struct memory_info {
 
 typedef struct header_info {
     uint64_t size;
-    uint8_t allocated; // 1 if allocated 0 if free
+    uint8_t allocated: 1; // 1 if allocated 0 if free
 } header_info;
 
 void memory_init();

@@ -11,7 +11,7 @@ void memory_free(void * ptr) {
     if (ptr == NULL || ptr < HEAP_START || ptr >= HEAP_END) {
         return;
     }
-    header_info *block = ((header_info *) (ptr - sizeof(header_info)));
+    header_info *block = ((header_info *) ((uint64_t) ptr - sizeof(header_info)));
     uint64_t size = SIZE(block->size);
     mem_info.allocated_bytes -= size;
     mem_info.free_bytes += size;
