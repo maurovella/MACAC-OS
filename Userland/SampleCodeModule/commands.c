@@ -6,6 +6,7 @@
 #include <string_util.h>
 #include <test_util.h>
 #include <stddef.h>
+#include <commands_utils.h>
 
 #define is_hexa(a) ( (((a) >= '0' && (a) <= '9') || ((a) >= 'a' && (a) <= 'f') || ((a) >= 'A' && (a) <= 'F')) ? 1 : 0 )
 
@@ -30,7 +31,16 @@ void help(){
 	"CLEAR                Clear screen\n"
 	"TESTMM               Test memory manager\n"
 	"TESTPRIO             Test prioritys\n"
-	"TESTSC          	  Test scheduler\n";
+	"TESTSC          	  Test scheduler\n"
+	"PS                   Prints all the processes\n"
+	"LOOP                 Prints \"in loop\" every five seconds\n"
+	"KILL 			   	  Receives an especific pid and kills it\n"
+	"NICE 				  Receives an especific pid and a priority and changes the priority of the process\n"
+	"BLOCK 				  Receives an especific pid and change it states to block or ready depending on the current state\n"
+	"CAT 				  Prints stdin content\n"
+	"WC 				  Prints the number of words in stdin\n"
+	"FILTER 			  Prints stdin content without vocals\n"
+	"PHYLO 				  Prints the phylosophers problem\n";
 	printf(help_string);
 }
 
@@ -196,6 +206,99 @@ void test_memory_manager() {
 	return;
 }
 
+void ps(int argc, char params[][LENGTH_PARAMETERS]) {
+	if(argc!=0){
+		printf("\tTry ps without parameters\n");
+		return;
+	}
+	printf("ps");
+	return;
+}
+
+
+
+void loop(int argc, char params[][LENGTH_PARAMETERS]) {
+	if(argc!=0){
+		printf("\tTry loop without parameters\n");
+		return;
+	}
+	//imprimo el pid del proceso que ejecuta el loop y luego "in loop"
+	printf("I'm the process with pid: ");
+	printf("\n");
+	while(1) {
+		printf("in loop\n");
+		wait(50000);
+	}
+
+	return;
+}
+
+void kill(int argc, char params[][LENGTH_PARAMETERS]) {
+	if(argc!=1){
+		printf("\tTry kill with 1 parameter (pid)\n");
+		return;
+	}
+	//do_kill(params[0]);
+	return;
+}
+
+void nice(int argc, char params[][LENGTH_PARAMETERS]) {
+	if(argc!=2){
+		printf("\tTry nice with 2 parameters (pid, priority)\n");
+		return;
+	}
+	//do_nice(params[0], params[1]);
+	return;
+}
+
+void block(int argc, char params[][LENGTH_PARAMETERS]) {
+	if(argc!=1){
+		printf("\tTry block with 1 parameter (pid)\n");
+		return;
+	}
+	//do_block(params[0]);
+	return;
+}
+
+void cat(int argc, char params[][LENGTH_PARAMETERS]) {
+	if(argc==0){
+		printf("try writing something!\n");
+		return;
+	}
+	printf("%d", argc);
+	for(int i=0; i<argc; i++){
+		printf("%s ", params[i]);
+	}
+	printf("\n");
+	return;
+}
+
+void wc(int argc, char params[][LENGTH_PARAMETERS]) {
+	if(argc!=1){
+		printf("\tTry wc with 1 parameter (file)\n");
+		return;
+	}
+	//do_wc(params[0]);
+	return;
+}
+
+void filter(int argc, char params[][LENGTH_PARAMETERS]) {
+	if(argc!=1){
+		printf("\tTry filter with 1 parameter (file)\n");
+		return;
+	}
+	//do_filter(params[0]);
+	return;
+}
+
+void phylo(int argc, char params[][LENGTH_PARAMETERS]) {
+	if(argc!=0){
+		printf("\tTry phylo without parameters\n");
+		return;
+	}
+	//do_phylo();
+	return;
+}
 void test_scheduler() {
 	printf("Testeando scheduler..\n");
 	test_processes();
