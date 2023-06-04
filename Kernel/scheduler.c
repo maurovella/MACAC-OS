@@ -258,3 +258,24 @@ uint32_t calculate_ticks(uint8_t priority) {
     }
     return ticks;
 }
+
+uint8_t get_all_processes(process_info * info) {
+    uint8_t j = 0;
+    for (int i = 0; i < MAX_PROCESSES; i++) {
+        if (process_list[i].state != DEAD) {
+            if (process_list[i].params != NULL) {
+                info[j].name = process_list[i].params[0];
+            }
+            info[j].pid = process_list[i].pid;
+            info[j].priority = process_list[i].priority;
+            info[j].state = process_list[i].state;
+            info[j].stack_start = process_list[i].stack_start;
+            info[j].stack_end = process_list[i].stack_end;
+            info[j].stack_pointer = process_list[i].stack_pointer;
+            info[j].output = process_list[i].output;
+            info[j].assigned_ticks = process_list[i].assigned_ticks;
+            j++;
+        }
+    }
+    return j;
+}

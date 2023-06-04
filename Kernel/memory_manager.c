@@ -98,3 +98,46 @@ void add_end_block(header_info * ptr) {
     ptr->size = 0;
     ptr->allocated = TRUE;
 }
+
+// EXTRA TO-DO
+/*
+void * memory_realloc(void * ptr, uint64_t _size) {
+    if (ptr == NULL) {
+        return memory_alloc(_size);
+    }
+    if (_size == 0) {
+        memory_free(ptr);
+        return NULL;
+    }
+
+    header_info * block = ((header_info *) (ptr - sizeof(header_info)));
+    uint64_t old_size = SIZE(block->size);
+    uint64_t true_size = SIZE(_size + sizeof(header_info) + 1);
+
+    if (true_size == old_size) {
+        return ptr;
+    }
+    else if (true_size < old_size) {
+        if (old_size - true_size < MIN_SIZE) {
+            return ptr;
+        }
+        else {
+            memory_free((void *) ((uint64_t) ptr + true_size));
+            block->size = true_size;
+            return ptr;
+        }
+    }
+    else {
+        void * new_ptr = memory_alloc(_size);
+        if (new_ptr == NULL) {
+            return NULL;
+        }
+        memcpy(new_ptr, ptr, old_size - sizeof(header_info));
+        memory_free(ptr);
+        return new_ptr;
+    }
+}*/
+
+memory_info * get_mem_status() {
+    return &mem_info;
+}

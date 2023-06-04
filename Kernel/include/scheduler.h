@@ -20,7 +20,8 @@
 #define PROCESSES_LIMIT_REACHED    -3
 #define CANT_KILL_IMMORTAL_PROCESS -4
 #define STACK_SIZE                 4096 // 4KB
-#define PAUSED_BY_CHILD				5	
+#define PAUSED_BY_CHILD				5
+#define PAUSED_BY_SEM 			    6	
 
 // Stack structure 
 #define STACK_POINT_OF_ENTRY (21*8)   	/*  	|	RAX, RBX  |		*/
@@ -35,6 +36,19 @@
 #define ALINGMENT 8		 				/*   	 -------------		*/
 
 #define STACK_POSITION(stack_start, pos) (uint64_t *) ((stack_start) - (pos))
+
+
+typedef struct process_info {
+	char * name;
+	uint32_t pid;
+	uint8_t priority;
+	uint8_t state;
+	void * stack_start;
+	void * stack_end;
+	uint64_t stack_pointer;
+	uint8_t output;
+	uint32_t assigned_ticks;
+} process_info;
 
 uint32_t calculate_ticks(uint8_t priority);
 
@@ -71,5 +85,7 @@ void set_dead_process(uint32_t pid);
 void wait_for_children();
 
 extern void force_timer_tick();
+
+uint8_t get_all_processes(process_info * processes);
 
 #endif // SCHEDULER_H
