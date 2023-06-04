@@ -45,4 +45,6 @@ int32_t sys_create_child_process(char ** params, uint8_t priority, uint8_t input
 
 void sys_wait_for_children();
 
+void sys_wait(uint64_t interval);
+
 #endif

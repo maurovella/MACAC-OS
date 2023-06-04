@@ -5,6 +5,7 @@
 #include <inout.h>
 #include <string_util.h>
 #include <test_util.h>
+#include <stddef.h>
 
 #define is_hexa(a) ( (((a) >= '0' && (a) <= '9') || ((a) >= 'a' && (a) <= 'f') || ((a) >= 'A' && (a) <= 'F')) ? 1 : 0 )
 
@@ -34,31 +35,31 @@ void help(){
 }
 
 //no params
-void divide_by_zero(int argc, char  params[][LENGTH_PARAMETERS]){
-	if(argc!=0){
+void divide_by_zero(){
+	/*if(argc!=0){
 		do_print_color("\tIf you are already going to divide by zero then try to not commit another error... ", RED);
 		printf("'divide_by_zero' does not take any parameters\n");
 		return;
-	}
+	}*/
 	do_division_by_zero();
 }
 
 //no params
-void invalid_op_code(int argc, char  params[][LENGTH_PARAMETERS]){
-	if(argc!=0){
+void invalid_op_code(){
+	/*if(argc!=0){
 		printf("\t'invalidopcode' does not take any parameters\n");
 		return;
-	}
+	}*/
 	do_invalid_op_code();
 }
 
 
 //no params
-void inforeg(int argc, char params[][LENGTH_PARAMETERS]){
-	if(argc!=0){
+void inforeg(){
+	/*if(argc!=0){
 		printf("\try inforeg without parameters\n");
 		return;
-	}
+	}*/
 	do_print_inforeg();
 	return;
 }
@@ -83,19 +84,13 @@ static uint64_t check_mem(char mem[], uint64_t * len){
 }
 
 //1 param: memDirec
-void print_mem(int argc, char params[][LENGTH_PARAMETERS]){
-	
-	if(argc != 1){
-		printf("\tTry print_mem with one parameter (mem_dir)\n");
-		return;
-	}
-
+void print_mem(char** params){
 	uint64_t len;
 
 	if (!check_mem(params[0], &len)){
-		printf("\tRemember that memory addresses go with a ");
+		do_print_color("\tRemember that memory addresses go with a ",RED);
 		do_print_color("0x ", CYAN);
-		printf("in front.\n");
+		do_print_color("in front.\n",RED);
 		return;
 	}
 
@@ -108,7 +103,7 @@ void print_mem(int argc, char params[][LENGTH_PARAMETERS]){
 	// we store in mem the pointer to the first memory we want to print
 	uint8_t * mem;
 	if(!hex_str_to_int(params[0],&mem)){
-		printf("Parameter is not a valid memory address. Try a smaller number\n");
+		do_print_color("Parameter is not a valid memory address. Try a smaller number\n",RED);
 		return;
 	}
 	// we print the 32 bytes that follow *mem
@@ -127,21 +122,21 @@ void print_mem(int argc, char params[][LENGTH_PARAMETERS]){
 }
 
 //1 param: setting
-void change_font_size(int argc, char params[][LENGTH_PARAMETERS]){
+void change_font_size(char ** params){
 	int everything_ok = 1;
-	if(argc != 1){
+	/*if(argc != 1){
 		printf("Try change font size with 1 parameter (setting)\n");
 		return;
-	}
+	}*/
 	if (_str_len(params[0]) > 1){
-		printf("Try with 1, 2 or 3\n");
+		do_print_color("Try with 1, 2 or 3\n",RED);
 		return;
 	}
 	if (params[0][0] == '1' || params[0][0] == '2' || params[0][0] == '3' ){
 		if (params[0][0] == '3'){
 			everything_ok = 0;
-			printf("\tWarning, font size 3 is way too big!\n");
-			printf("\tIf you still want to change the font size type 'y', otherwise type 'n'\n");
+			do_print_color("\tWarning, font size 3 is way too big!\n",RED);
+			do_print_color("\tIf you still want to change the font size type 'y', otherwise type 'n'\n",WHITE);
 			char ans ;
 			while(ans != 'y' && ans != 'n')
 				ans = do_get_char();
@@ -152,20 +147,20 @@ void change_font_size(int argc, char params[][LENGTH_PARAMETERS]){
 		
 	}
 	else{
-		printf("\tInvalid parameter, try with 1, 2 or 3\n");
+		do_print_color("\tInvalid parameter, try with 1, 2 or 3\n",RED);
 	}
 	return;
 }
 
 //no params
-void time(int argc, char params[][LENGTH_PARAMETERS]){
-	if(argc!=0){
+void time(){
+	/*if(argc!=0){
 		printf("\tTry time without parameters\n");
 		return;
-	}
-	printf("\tThis is the current ");
+	}*/
+	do_print_color("\tThis is the current ",WHITE);
 	do_print_color("time ", TURQUOISE);
-	printf("in the beautiful city of ");
+	do_print_color("in the beautiful city of ",WHITE);
 	do_print_color("GREENWICH: ", HAPPY_MATRIX);
 	do_print_color("(UTC+00)\n", CYBER_GRAPE);
 	char timeBuffer[9];
@@ -179,7 +174,7 @@ void time(int argc, char params[][LENGTH_PARAMETERS]){
 }
 
 //no params
-void tron(int argc, char params[][LENGTH_PARAMETERS]){
+void tron(){
 	// tron will run even though it has parameters (not a bug, a feature)
 	/*if(argc!=0){
 		printf("Try tron without parameters\n");
@@ -190,24 +185,24 @@ void tron(int argc, char params[][LENGTH_PARAMETERS]){
 }
 
 
-void clear_screen(int argc, char params[][LENGTH_PARAMETERS]) {
+void clear_screen() {
 	do_clear_screen(BLACK);
 	return;
 }
 
-void test_memory_manager(int argc, char params[][LENGTH_PARAMETERS]) {
+void test_memory_manager() {
 	printf("Testeando memory manager..\n");
 	test_mm();
 	return;
 }
 
-void test_scheduler(int argc, char params[][LENGTH_PARAMETERS]) {
+void test_scheduler() {
 	printf("Testeando scheduler..\n");
 	test_processes();
 	return;
 }
 
-void test_priority(int argc, char params[][LENGTH_PARAMETERS]) {
+void test_priority() {
 	printf("Testeando priority..\n");
 	printf("TEST SUCCESFUL\n");
 	//test_priority_processes();

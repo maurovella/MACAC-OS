@@ -18,6 +18,7 @@ GLOBAL sys_kill_process
 GLOBAL sys_block_or_unblock_process
 GLOBAL sys_create_child_process
 GLOBAL sys_wait_for_children
+GLOBAL sys_wait
 
 section .text
 sys_read:
@@ -114,5 +115,10 @@ sys_create_child_process:
 
 sys_wait_for_children
     mov rax, 0x12
+    int 80h
+    ret
+
+sys_wait
+    mov rax, 0x13
     int 80h
     ret

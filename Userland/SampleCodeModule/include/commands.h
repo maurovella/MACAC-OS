@@ -9,26 +9,26 @@
 
 void help();
 
-void invalid_op_code(int argc, char  params[][LENGTH_PARAMETERS]);
+void invalid_op_code();
 
-void divide_by_zero(int argc, char  params[][LENGTH_PARAMETERS]);
+void divide_by_zero();
 
-void inforeg(int argc, char params[][LENGTH_PARAMETERS]);
+void inforeg();
 
-void print_mem(int argc, char params[][LENGTH_PARAMETERS]);
+void print_mem(char** params);
 
-void time(int argc, char params[][LENGTH_PARAMETERS]);
+void time();
 
-void change_font_size(int argc, char params[][LENGTH_PARAMETERS]);
+void change_font_size(char ** params);
 
-void tron(int argc, char params[][LENGTH_PARAMETERS]);
+void tron();
 
-void clear_screen(int argc, char params[][LENGTH_PARAMETERS]);
+void clear_screen();
 
-void test_memory_manager(int argc, char params[][LENGTH_PARAMETERS]);
+void test_memory_manager();
 
-void test_scheduler(int argc, char params[][LENGTH_PARAMETERS]);
+void test_scheduler();
 
-void test_priority(int argc, char params[][LENGTH_PARAMETERS]);
+void test_priority();
 
 #endif

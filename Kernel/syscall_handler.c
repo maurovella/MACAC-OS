@@ -115,6 +115,10 @@ static void sys_wait_for_children() {
     wait_for_children();
 }
 
+static void sys_wait(uint64_t interval) {
+    wait(interval);
+}
+
 
 static syscall_type syscalls[]  = {
     (syscall_type) sys_read_handler, 
@@ -135,7 +139,8 @@ static syscall_type syscalls[]  = {
     (syscall_type) sys_kill_process,
     (syscall_type) sys_block_or_unblock_process,
     (syscall_type) sys_create_child_process,
-    (syscall_type) sys_wait_for_children
+    (syscall_type) sys_wait_for_children,
+    (syscall_type) sys_wait
 };
 
 //  paso syscall_id por rax, se come r10 por rcx, y r9 por rax
