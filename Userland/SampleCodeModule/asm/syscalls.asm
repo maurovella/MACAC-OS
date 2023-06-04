@@ -21,6 +21,10 @@ GLOBAL sys_wait_for_children
 GLOBAL sys_wait
 GLOBAL sys_change_priority
 GLOBAL sys_get_pid
+GLOBAL sys_get_all_processes
+GLOBAL sys_get_mem_info
+GLOBAL sys_delete_last_char
+GLOBAL sys_nice
 
 section .text
 sys_read:
@@ -132,5 +136,25 @@ sys_change_priority:
 
 sys_get_pid:
     mov rax, 0x15
+    int 80h
+    ret
+
+sys_get_all_processes:
+    mov rax, 0x16
+    int 80h
+    ret
+
+sys_get_mem_info:
+    mov rax, 0x17
+    int 80h
+    ret
+
+sys_delete_last_char:
+    mov rax, 0x18
+    int 80h
+    ret
+
+sys_nice:
+    mov rax, 0x19
     int 80h
     ret

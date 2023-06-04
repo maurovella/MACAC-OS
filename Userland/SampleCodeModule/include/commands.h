@@ -4,8 +4,11 @@
 #define MAX_PARAMETERS 5
 #define LENGTH_PARAMETERS 256
 #define BUFFER_LENGTH 256
-#define COMMANDS_LENGTH 18
+#define COMMANDS_LENGTH 22
 #define REGISTERS 17
+
+#define IS_ALLOWED_CHAR(c) ((c >= 'a' && c <= 'z') || (c == '|') || (c == ' ') || (c == '\0') || (c == '\n') || (c == '\t'))
+#define IS_NOT_VOWEL(c) (c != 'a' && c != 'e' && c != 'i' && c != 'o' && c != 'u') 
 
 void help();
 
@@ -49,5 +52,7 @@ void wc();
 void filter();
 
 void phylo();
+
+void mem();
 
 #endif

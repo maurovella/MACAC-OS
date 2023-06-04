@@ -4,6 +4,7 @@
 
 #define NO_PARMAS_ERROR_MSG "Try without parameters\n"
 #define ONE_PARAM_ERROR_MSG "Try with one parameter\n"
+#define TWO_PARAM_ERROR_MSG "Try with two parameters\n"
 
 typedef struct program_info_CDT {
     char * name;
@@ -18,7 +19,7 @@ typedef struct program_info_CDT {
 static int parse_buffer(char command[BUFFER_LENGTH], char parameters[MAX_PARAMETERS][LENGTH_PARAMETERS], char read_buffer[BUFFER_LENGTH]);
 static int find_idx_command(char *buff);
 
-static char* commands[] = {"help", "invalidopcode", "dividebyzero", "inforeg", "printmem", "time", "changefontsize", "tron", "clear", "testmm","testprio","testsc"};
+static char* commands[] = {"help", "invalidopcode", "dividebyzero", "inforeg", "printmem", "time", "changefontsize", "tron", "clear", "testmm","testprio","testsc","ps","loop","cat","wc","filter","kill","nice","block","phylo","mem"};
 
 static program_info_CDT programs[] = {
     {.name = "help", 			.function_ptr = &help, 				    .min_args = 0, 	.max_args = 0,  .pipeable = 0 , .params_error_msg = NO_PARMAS_ERROR_MSG , .base_priority = 5},
@@ -28,13 +29,22 @@ static program_info_CDT programs[] = {
     {.name = "printmem", 		.function_ptr = &print_mem, 		    .min_args = 1, 	.max_args = 1, 	.pipeable = 0 , .params_error_msg = ONE_PARAM_ERROR_MSG , .base_priority = 5},
     {.name = "time", 			.function_ptr = &time, 				    .min_args = 0, 	.max_args = 0, 	.pipeable = 0 , .params_error_msg = NO_PARMAS_ERROR_MSG , .base_priority = 5},
     {.name = "changefontsize",  .function_ptr = &change_font_size,  	.min_args = 1, 	.max_args = 1, 	.pipeable = 0 , .params_error_msg = ONE_PARAM_ERROR_MSG , .base_priority = 5},
-    {.name = "tron", 			.function_ptr = &tron, 					.min_args = 0, 	.max_args = 0, 	.pipeable = 0 , .params_error_msg = NO_PARMAS_ERROR_MSG , .base_priority = 0},
+    {.name = "tron", 			.function_ptr = &tron, 					.min_args = 0, 	.max_args = 0, 	.pipeable = 0 , .params_error_msg = NO_PARMAS_ERROR_MSG , .base_priority = 5},
     {.name = "clear", 			.function_ptr = &clear_screen, 			.min_args = 0, 	.max_args = 0, 	.pipeable = 0 , .params_error_msg = NO_PARMAS_ERROR_MSG , .base_priority = 5},
     {.name = "testmm", 			.function_ptr = &test_memory_manager,   .min_args = 0, 	.max_args = 0, 	.pipeable = 0 , .params_error_msg = NO_PARMAS_ERROR_MSG , .base_priority = 5},
     {.name = "testprio", 		.function_ptr = &test_priority, 		.min_args = 0, 	.max_args = 0, 	.pipeable = 0 , .params_error_msg = NO_PARMAS_ERROR_MSG , .base_priority = 2},
     {.name = "testsc", 			.function_ptr = &test_scheduler, 		.min_args = 0, 	.max_args = 0, 	.pipeable = 0 , .params_error_msg = NO_PARMAS_ERROR_MSG , .base_priority = 5},
+	{.name = "ps",				.function_ptr = &ps,					.min_args = 0,  .max_args = 0,  .pipeable = 1 , .params_error_msg = NO_PARMAS_ERROR_MSG , .base_priority = 5},
+	{.name = "loop", 			.function_ptr = &loop,					.min_args = 0,  .max_args = 0,  .pipeable = 0 , .params_error_msg = NO_PARMAS_ERROR_MSG , .base_priority = 5},
+	{.name = "cat", 			.function_ptr = &cat,					.min_args = 0,  .max_args = 0,  .pipeable = 1 , .params_error_msg = NO_PARMAS_ERROR_MSG , .base_priority = 5},
+	{.name = "wc", 				.function_ptr = &wc,					.min_args = 0,  .max_args = 0,  .pipeable = 1 , .params_error_msg = NO_PARMAS_ERROR_MSG , .base_priority = 5},
+	{.name = "filter", 			.function_ptr = &filter,				.min_args = 0,  .max_args = 0,  .pipeable = 1 , .params_error_msg = NO_PARMAS_ERROR_MSG , .base_priority = 5},
+	{.name = "kill",			.function_ptr = &kill,					.min_args = 1,  .max_args = 1,  .pipeable = 0 , .params_error_msg = ONE_PARAM_ERROR_MSG , .base_priority = 5},
+	{.name = "nice",			.function_ptr = &nice,					.min_args = 2,  .max_args = 2,  .pipeable = 1 , .params_error_msg = TWO_PARAM_ERROR_MSG , .base_priority = 5},
+	{.name = "block",			.function_ptr = &block,					.min_args = 1,  .max_args = 1,  .pipeable = 0 , .params_error_msg = ONE_PARAM_ERROR_MSG , .base_priority = 5},
+	{.name = "phylo",			.function_ptr = &phylo,					.min_args = 0,  .max_args = 0,  .pipeable = 0 , .params_error_msg = NO_PARMAS_ERROR_MSG , .base_priority = 5},
+	{.name = "mem",				.function_ptr = &mem,					.min_args = 0,  .max_args = 0,  .pipeable = 1 , .params_error_msg = NO_PARMAS_ERROR_MSG , .base_priority = 5}
 };
-
 static uint8_t validate_size(uint64_t size, program_info_ADT program){
 	if(size < program->min_args || size > program->max_args ){
 		do_print_color(program->params_error_msg, RED);

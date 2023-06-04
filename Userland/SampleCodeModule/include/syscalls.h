@@ -1,6 +1,10 @@
 #ifndef SYSCALLS_H
 #define SYSCALLS_H
+
 #include <stdint.h>
+#include <data_types.h>
+
+
 #define STDIN 0
 #define STDOUT 1
 #define STDERR 2
@@ -50,5 +54,13 @@ void sys_wait(uint64_t interval);
 int8_t sys_change_priority(uint32_t pid, uint8_t priority);
 
 int32_t sys_get_pid();
+
+uint8_t sys_get_all_processes(process_info * processes);
+
+void sys_get_mem_info(uint64_t buffer[4]);
+
+void sys_delete_last_char();
+
+void sys_nice(uint32_t pid, uint8_t priority);
 
 #endif

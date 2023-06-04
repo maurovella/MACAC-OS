@@ -131,6 +131,27 @@ static int32_t sys_get_pid() {
     return get_pid();
 }
 
+static uint8_t sys_get_all_processes(process_info * processes) {
+    return get_all_processes(processes);
+}
+
+static void sys_get_mem_info(uint64_t buffer[4]) {
+    memory_info * mem_info = get_mem_info();
+    buffer[0] = mem_info->allocated_bytes + mem_info->free_bytes;
+    buffer[1] = mem_info->allocated_bytes;
+    buffer[2] = mem_info->free_bytes;
+    buffer[3] = mem_info->allocated_blocks;
+}
+
+static void sys_delete_last_char() {
+    delete_last_char();
+}
+
+
+static void sys_nice(uint32_t pid, uint8_t priority) {
+    change_process_state(pid, priority);
+}
+
 static syscall_type syscalls[]  = {
     (syscall_type) sys_read_handler, 
     (syscall_type) sys_write_handler, 
@@ -153,7 +174,11 @@ static syscall_type syscalls[]  = {
     (syscall_type) sys_wait_for_children,
     (syscall_type) sys_wait,
     (syscall_type) sys_change_priority,
-    (syscall_type) sys_get_pid
+    (syscall_type) sys_get_pid,
+    (syscall_type) sys_get_all_processes,
+    (syscall_type) sys_get_mem_info,
+    (syscall_type) sys_delete_last_char,
+    (syscall_type) sys_nice
 };
 
 //  paso syscall_id por rax, se come r10 por rcx, y r9 por rax

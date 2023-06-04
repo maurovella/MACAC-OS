@@ -14,14 +14,15 @@
 #define DEAD                       	0
 #define BLOCK                      	1
 #define READY                      	2
-#define PAUSED                     	3
-#define RUNNING					   	4	
+#define RUNNING                    	3
+#define PAUSED						4	
+#define PAUSED_BY_CHILD				5
+#define PAUSED_BY_SEM 			    6
 #define NO_SPACE_FOR_PROCESS       -2
 #define PROCESSES_LIMIT_REACHED    -3
 #define CANT_KILL_IMMORTAL_PROCESS -4
 #define STACK_SIZE                 4096 // 4KB
-#define PAUSED_BY_CHILD				5
-#define PAUSED_BY_SEM 			    6	
+	
 
 // Stack structure 
 #define STACK_POINT_OF_ENTRY (21*8)   	/*  	|	RAX, RBX  |		*/

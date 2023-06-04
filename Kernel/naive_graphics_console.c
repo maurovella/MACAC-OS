@@ -55,8 +55,6 @@ static void* get_ptr_to_pixel(uint16_t x, uint16_t y) {
     return (void*)(screen_data->frame_buffer + 3 * (x + (y * (uint64_t)screen_data->width)));
 }
 
-static void delete_last_char();
-
 uint16_t pen_x = 0, pen_y = 0;
 uint16_t last_pen_x = 0;
 Color pen_color = {0x7F, 0x7F, 0x7F};
@@ -255,7 +253,7 @@ void ngc_paint_screen(uint64_t bg_colorInt) {
 
 // ==============================================================================
 
-static void delete_last_char() {
+void delete_last_char() {
     if (pen_x == CHAR_WIDTH*2*level) //Para que no se pueda borrar el prompt
     {
         return;

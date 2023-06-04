@@ -7,6 +7,7 @@
 #include <test_util.h>
 #include <stddef.h>
 #include <commands_utils.h>
+#include <data_types.h>
 
 #define is_hexa(a) ( (((a) >= '0' && (a) <= '9') || ((a) >= 'a' && (a) <= 'f') || ((a) >= 'A' && (a) <= 'F')) ? 1 : 0 )
 
@@ -205,23 +206,98 @@ void test_memory_manager() {
 	test_mm();
 	return;
 }
+/*
+typedef struct process_info {
+	char * name;
+	uint32_t pid;
+	uint8_t priority;
+	uint8_t state;
+	void * stack_start;
+	void * stack_end;
+	uint64_t stack_pointer;
+	uint8_t output;
+	uint32_t assigned_ticks;
+} process_info;*/
 
-void ps(int argc, char params[][LENGTH_PARAMETERS]) {
-	if(argc!=0){
-		printf("\tTry ps without parameters\n");
-		return;
+int calculate_max_len(process_info * processes, uint8_t size) {
+	int max_len = 0;
+	for (int i = 0; i < size; i++) {
+		int len = _str_len(processes[i].name);
+		if (len > max_len) {
+			max_len = len;
+		}
 	}
-	printf("ps");
+	return max_len;
+}
+
+void ps() {
+	process_info * processes = sys_malloc(sizeof(process_info *));
+	uint8_t size = sys_get_all_processes(processes);
+	int max_len = calculate_max_len(processes, size);
+	
+
+
+
+	printf("NAME\t|\tPID\t|\tPRIORITY\t|\tSTATE\t|\tSTACK START\t|\tSTACK END\t|\tSTACK POINTER\t|\tOUTPUT\t|\tASSIGNED_TICKS\n");
+	printf("--------------------------------------------------------------------------------------------------\n");
+
+
+	for (int i = 0; i < size; i++) {
+		int len = _str_len(processes[i].name);
+		for (int j = 0; j < max_len - len; j++) {
+			processes[i].name[len + j] = ' ';
+		}
+		processes[i].name[max_len] = '\0';
+		char * state_name;
+		switch (processes[i].state)
+		{
+		case 0:
+			state_name = "DEAD";
+			break;
+		case 1:
+			state_name = "BLOCK";
+			break;
+		case 2:
+			state_name = "READY";
+			break;
+		case 3:
+			state_name = "RUNNING";
+			break;
+		case 4:
+			state_name = "PAUSED";
+			break;
+		case 5:
+			state_name = "PAUSED_BY_CHILD";
+			break;
+		case 6:
+			state_name = "PAUSED_BY_SEM";
+			break;
+		default:
+			break;
+		}
+
+		char * output_name;
+		switch (processes[i].output)
+		{
+		case 1:
+			output_name = "SCREEN";
+			break;
+		case 4:
+			output_name = "BACKGROUND";
+			break;	
+		default:
+			break;
+		}
+		printf("%s\t|\t%d\t|\t%d\t\t|\t%s\t|\t%x\t|\t%x\t|\t%x\t|\t%s\t|\t%d\n", processes[i].name, processes[i].pid, processes[i].priority, state_name, processes[i].stack_start, processes[i].stack_end, processes[i].stack_pointer, output_name, processes[i].assigned_ticks);
+	}
+
+	sys_free(processes);
 	return;
 }
 
 
 
-void loop(int argc, char params[][LENGTH_PARAMETERS]) {
-	if(argc!=0){
-		printf("\tTry loop without parameters\n");
-		return;
-	}
+void loop() {
 	//imprimo el pid del proceso que ejecuta el loop y luego "in loop"
 	printf("I'm the process with pid: ");
 	printf("\n");
@@ -233,72 +309,146 @@ void loop(int argc, char params[][LENGTH_PARAMETERS]) {
 	return;
 }
 
-void kill(int argc, char params[][LENGTH_PARAMETERS]) {
-	if(argc!=1){
-		printf("\tTry kill with 1 parameter (pid)\n");
-		return;
-	}
-	//do_kill(params[0]);
+void kill(char ** params) {
+	uint32_t deleted_pid = sys_kill_process(params[0]);
+	printf("Process with pid %d was deleted\n", deleted_pid);
 	return;
 }
 
-void nice(int argc, char params[][LENGTH_PARAMETERS]) {
-	if(argc!=2){
-		printf("\tTry nice with 2 parameters (pid, priority)\n");
-		return;
-	}
-	//do_nice(params[0], params[1]);
+void nice(char ** params) {
+	sys_nice(params[0], params[1]);
 	return;
 }
 
-void block(int argc, char params[][LENGTH_PARAMETERS]) {
-	if(argc!=1){
-		printf("\tTry block with 1 parameter (pid)\n");
-		return;
-	}
-	//do_block(params[0]);
+void block(char ** params) {
+	uint32_t changed_process = sys_block_or_unblock_process(params[0]);
+	printf("Process with pid %d was changed\n, the new priority is %d\n", changed_process, params[1]);
 	return;
 }
 
-void cat(int argc, char params[][LENGTH_PARAMETERS]) {
-	if(argc==0){
-		printf("try writing something!\n");
-		return;
+void cat() {
+	char c;
+	char buffer[100];
+	int letter = 0;
+	while(c != '\n') {
+		c = do_get_char();
+		if (IS_ALLOWED_CHAR(c)) { 
+			printf("%c", c);
+			buffer[letter++] = c;
+		}
+		if (c == 0x7F) {
+			letter--;
+			buffer[letter] = '\0';
+			sys_delete_last_char();
+		}
 	}
-	printf("%d", argc);
-	for(int i=0; i<argc; i++){
-		printf("%s ", params[i]);
+
+	buffer[letter] = '\0';
+
+	// imprimo contenido de buffer con do_print_color en un formato amigable
+
+	do_print_color(buffer, CYAN);
+
+	return;
+}
+
+void wc() {
+	char c;
+	char buffer[100];
+	int letter = 0;
+	int words = 0;
+	int lines = 0;
+	int in_word = 0; // Nuevo indicador para determinar si estamos dentro de una palabra o no
+	
+	while (c != 'U') {
+		c = do_get_char();
+		if (IS_ALLOWED_CHAR(c)) {
+			printf("%c", c);
+			buffer[letter++] = c;
+
+			// Contar palabras
+			if (c != ' ' && c != '\n') {
+				if (!in_word) {
+					in_word = 1;
+					words++;
+				}
+			} else {
+				in_word = 0;
+			}
+
+			// Contar líneas
+			if (c == '\n') {
+				lines++;
+			}
+		}
+
+		if (c == 0x7F) {
+			letter--;
+			buffer[letter] = '\0';
+			sys_delete_last_char();
+		}
 	}
+
+	buffer[letter] = '\0';
+
+	// Imprimir contenido de buffer con do_print_color en un formato amigable
 	printf("\n");
+	do_print_color("Words: ", CYAN);
+	printf("%d\n", words);
+	do_print_color("Lines: ", CYAN);
+	printf("%d\n", lines);
+	do_print_color("Characters: ", CYAN);
+	printf("%d\n", letter);
+	
 	return;
 }
 
-void wc(int argc, char params[][LENGTH_PARAMETERS]) {
-	if(argc!=1){
-		printf("\tTry wc with 1 parameter (file)\n");
-		return;
+void filter() {
+	char c;
+	char buffer[100];
+	int letter = 0;
+
+	while(c != 'U') {
+		c = do_get_char();
+		if(IS_ALLOWED_CHAR(c)) {
+			printf("%c", c);
+			if (IS_NOT_VOWEL(c)) { 
+				buffer[letter++] = c;
+			}
+		}
+		
+		if (c == 0x7F) {
+			sys_delete_last_char();
+			letter--;
+			buffer[letter] = '\0';
+		}
 	}
-	//do_wc(params[0]);
+
+	buffer[letter] = '\0';
+
+	// imprimo contenido de buffer con do_print_color en un formato amigable
+	printf("\n");
+	do_print_color(buffer, CYAN);
+
 	return;
 }
 
-void filter(int argc, char params[][LENGTH_PARAMETERS]) {
-	if(argc!=1){
-		printf("\tTry filter with 1 parameter (file)\n");
-		return;
-	}
-	//do_filter(params[0]);
-	return;
-}
-
-void phylo(int argc, char params[][LENGTH_PARAMETERS]) {
-	if(argc!=0){
-		printf("\tTry phylo without parameters\n");
-		return;
-	}
+void phylo() {
+	
 	//do_phylo();
 	return;
 }
+
+void mem() {
+	uint64_t mem_info[4]; // 0: total_bytes 1: allocated_bytes 2: free_bytes 3: allocated_blocks
+	sys_get_mem_info(mem_info);
+	printf("Total bytes:      %d\n", mem_info[0]);
+	printf("Allocated bytes:  %d\n", mem_info[1]);
+	printf("Free bytes:       %d\n", mem_info[2]);
+	printf("Allocated blocks: %d\n", mem_info[3]);
+	return;
+}
+
 void test_scheduler() {
 	printf("Testeando scheduler..\n");
 	test_processes();
