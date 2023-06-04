@@ -29,7 +29,7 @@ static program_info_CDT programs[] = {
     {.name = "tron", 			.function_ptr = &tron, 					.min_args = 0, 	.max_args = 0, 	.pipeable = 0 , .params_error_msg = NO_PARMAS_ERROR_MSG , .base_priority = 0},
     {.name = "clear", 			.function_ptr = &clear_screen, 			.min_args = 0, 	.max_args = 0, 	.pipeable = 0 , .params_error_msg = NO_PARMAS_ERROR_MSG , .base_priority = 5},
     {.name = "testmm", 			.function_ptr = &test_memory_manager,   .min_args = 0, 	.max_args = 0, 	.pipeable = 0 , .params_error_msg = NO_PARMAS_ERROR_MSG , .base_priority = 5},
-    {.name = "testprio", 		.function_ptr = &test_priority, 		.min_args = 0, 	.max_args = 0, 	.pipeable = 0 , .params_error_msg = NO_PARMAS_ERROR_MSG , .base_priority = 5},
+    {.name = "testprio", 		.function_ptr = &test_priority, 		.min_args = 0, 	.max_args = 0, 	.pipeable = 0 , .params_error_msg = NO_PARMAS_ERROR_MSG , .base_priority = 2},
     {.name = "testsc", 			.function_ptr = &test_scheduler, 		.min_args = 0, 	.max_args = 0, 	.pipeable = 0 , .params_error_msg = NO_PARMAS_ERROR_MSG , .base_priority = 5},
 };
 

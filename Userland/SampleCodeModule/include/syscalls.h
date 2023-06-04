@@ -45,4 +45,8 @@ int32_t sys_create_child_process(char ** params, uint8_t priority, uint8_t input
 
 void sys_wait_for_children();
 
+int8_t sys_change_priority(uint32_t pid, uint8_t priority);
+
+int32_t sys_get_pid();
+
 #endif

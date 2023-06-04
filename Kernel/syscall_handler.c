@@ -115,6 +115,13 @@ static void sys_wait_for_children() {
     wait_for_children();
 }
 
+static int8_t sys_change_priority(uint32_t pid, uint8_t priority) {
+    return change_priority(pid, priority);
+}
+
+static int32_t sys_get_pid() {
+    return get_pid();
+}
 
 static syscall_type syscalls[]  = {
     (syscall_type) sys_read_handler, 
@@ -135,7 +142,9 @@ static syscall_type syscalls[]  = {
     (syscall_type) sys_kill_process,
     (syscall_type) sys_block_or_unblock_process,
     (syscall_type) sys_create_child_process,
-    (syscall_type) sys_wait_for_children
+    (syscall_type) sys_wait_for_children,
+    (syscall_type) sys_change_priority,
+    (syscall_type) sys_get_pid
 };
 
 //  paso syscall_id por rax, se come r10 por rcx, y r9 por rax

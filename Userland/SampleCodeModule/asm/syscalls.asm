@@ -18,6 +18,8 @@ GLOBAL sys_kill_process
 GLOBAL sys_block_or_unblock_process
 GLOBAL sys_create_child_process
 GLOBAL sys_wait_for_children
+GLOBAL sys_change_priority
+GLOBAL sys_get_pid
 
 section .text
 sys_read:
@@ -112,7 +114,17 @@ sys_create_child_process:
     int 80h
     ret
 
-sys_wait_for_children
+sys_wait_for_children:
     mov rax, 0x12
+    int 80h
+    ret
+
+sys_change_priority:
+    mov rax, 0x13
+    int 80h
+    ret
+
+sys_get_pid:
+    mov rax, 0x14
     int 80h
     ret

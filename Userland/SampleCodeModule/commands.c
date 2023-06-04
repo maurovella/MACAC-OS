@@ -209,7 +209,6 @@ void test_scheduler(int argc, char params[][LENGTH_PARAMETERS]) {
 
 void test_priority(int argc, char params[][LENGTH_PARAMETERS]) {
 	printf("Testeando priority..\n");
-	printf("TEST SUCCESFUL\n");
-	//test_priority_processes();
+	test_prio();
 	return;
 }
