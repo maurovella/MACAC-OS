@@ -30,7 +30,7 @@ char * draw = "\n\n\n\n\n\n\n\n                                                 
 
 int main() {
 	do_print_color(draw, RED);
-	sys_wait(1000000000);
+	sys_wait(100000000);
 	sys_clear_screen(BLACK);
 	do_print_color("WELCOME! Type \"HELP\" for command list\n", WHITE);
 	shell();
