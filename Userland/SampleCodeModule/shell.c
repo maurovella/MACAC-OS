@@ -18,6 +18,7 @@ typedef struct program_info_CDT {
 
 static int parse_buffer(char command[BUFFER_LENGTH], char parameters[MAX_PARAMETERS][LENGTH_PARAMETERS], char read_buffer[BUFFER_LENGTH]);
 static int find_idx_command(char *buff);
+void * mem_cpy(void * destination, const void * source, uint64_t length);
 
 static char* commands[] = {"help", "invalidopcode", "dividebyzero", "inforeg", "printmem", "time", "changefontsize", "tron", "clear", "testmm","testprio","testsc","ps","loop","cat","wc","filter","kill","nice","block","phylo","mem"};
 
@@ -53,8 +54,8 @@ static uint8_t validate_size(uint64_t size, program_info_ADT program){
 	return 1;
 }
 
-void * mem_cpy(void * destination, const void * source, uint64_t length)
-{
+
+void * mem_cpy(void * destination, const void * source, uint64_t length)	{
 	/*
 	* mem_cpy does not support overlapping buffers, so always do it
 	* forwards. (Don't change this without adjusting memmove.)
@@ -114,7 +115,14 @@ static char ** prepare_parameters(char parameters[MAX_PARAMETERS][LENGTH_PARAMET
 		mem_cpy(param, parameters[i], param_size);
 		params[i] = param;
 	}
-	params[size++] = name;
+	void * name_alloc = sys_malloc(_str_len(name) + 1);
+	if(name_alloc == NULL){
+		do_print_color("Error allocating memory for parameters\n", RED);
+		return;
+	}
+	char * name_param = (char *) name_alloc;
+	mem_cpy(name_param, name, _str_len(name) + 1);
+	params[size++] = name_param;
 	params[size] = NULL;
 	return params;
 }
@@ -131,11 +139,11 @@ void shell() {
 		int size = parse_buffer(command, parameters, buff_command);
 		int command_idx = find_idx_command(command);
 		if(command_idx >= 0 ){
-			char ** params = prepare_parameters(parameters, size, command);
 			/*if( params[0][0] == '|' && params[0][1] == '\0' ) {
 				do_print_color("Pipeing\n", RED);
 			}*/
             if(validate_size(size, &(programs[command_idx]))) {
+				char ** params = prepare_parameters(parameters, size, command);
 				sys_create_child_process(params, programs[command_idx].base_priority, STDIN, STDOUT, (uint64_t) programs[command_idx].function_ptr);
 				sys_wait_for_children();
 			}
