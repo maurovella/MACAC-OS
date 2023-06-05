@@ -4,7 +4,7 @@
 #define MAX_PARAMETERS 5
 #define LENGTH_PARAMETERS 256
 #define BUFFER_LENGTH 256
-#define COMMANDS_LENGTH 22
+#define COMMANDS_LENGTH 24
 #define REGISTERS 17
 #define MAX_BUFFER 256
 
@@ -56,4 +56,7 @@ void phylo();
 
 void mem();
 
+void pipe_commands();
+
+void thanks();
 #endif

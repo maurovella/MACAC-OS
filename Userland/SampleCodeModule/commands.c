@@ -446,3 +446,19 @@ void test_priority() {
 	test_prio();
 	return;
 }
+
+void pipe_commands() {
+	printf("List of pipeable commands:\n");
+	printf("  cat\n");
+	printf("  wc\n");
+	printf("  filter\n");
+	printf("  phylo\n");
+	printf("  mem\n");
+	printf("  test_scheduler\n");
+	printf("  test_priority\n");
+	return;
+}
+
+void thanks() {
+	do_print_color("You are welcome!\n", CYAN);
+}

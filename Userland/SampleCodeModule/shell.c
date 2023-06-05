@@ -5,12 +5,12 @@
 #define NO_PARMAS_ERROR_MSG "Try without parameters\n"
 #define ONE_PARAM_ERROR_MSG "Try with one parameter\n"
 #define TWO_PARAM_ERROR_MSG "Try with two parameters\n"
+#define BACKGROUND 4
 
 typedef struct program_info_CDT {
     char * name;
     uint64_t function_ptr; 		// function direction
-    uint8_t min_args; 			// min args
-    uint8_t max_args; 			// max args
+    uint8_t args_qty; 				// number of args
     uint8_t pipeable; 			// 1 if can be piped, 0 if not
     char * params_error_msg ; 	// error msg if params are wrong
 	uint8_t base_priority; 			// initial process priority
@@ -20,34 +20,39 @@ static int parse_buffer(char command[BUFFER_LENGTH], char parameters[MAX_PARAMET
 static int find_idx_command(char *buff);
 void * mem_cpy(void * destination, const void * source, uint64_t length);
 
-static char* commands[] = {"help", "invalidopcode", "dividebyzero", "inforeg", "printmem", "time", "changefontsize", "tron", "clear", "testmm","testprio","testsc","ps","loop","cat","wc","filter","kill","nice","block","phylo","mem"};
+static char* commands[] = {"help", "invalidopcode", "dividebyzero", "inforeg", "printmem", "time", "changefontsize", "tron", "clear", "testmm","testprio","testsc","ps","loop","cat","wc","filter","kill","nice","block","phylo","mem","pipecommands","thanks"};
 
 static program_info_CDT programs[] = {
-    {.name = "help", 			.function_ptr = &help, 				    .min_args = 0, 	.max_args = 0,  .pipeable = 0 , .params_error_msg = NO_PARMAS_ERROR_MSG , .base_priority = 5},
-    {.name = "invalidopcode",   .function_ptr = &invalid_op_code,       .min_args = 0,  .max_args = 0, 	.pipeable = 0 , .params_error_msg = NO_PARMAS_ERROR_MSG , .base_priority = 5},
-    {.name = "dividebyzero",    .function_ptr = &divide_by_zero,        .min_args = 0,  .max_args = 0, 	.pipeable = 0 , .params_error_msg = NO_PARMAS_ERROR_MSG , .base_priority = 5},
-    {.name = "inforeg", 		.function_ptr = &inforeg, 			    .min_args = 0, 	.max_args = 0, 	.pipeable = 0 , .params_error_msg = NO_PARMAS_ERROR_MSG , .base_priority = 5},
-    {.name = "printmem", 		.function_ptr = &print_mem, 		    .min_args = 1, 	.max_args = 1, 	.pipeable = 0 , .params_error_msg = ONE_PARAM_ERROR_MSG , .base_priority = 5},
-    {.name = "time", 			.function_ptr = &time, 				    .min_args = 0, 	.max_args = 0, 	.pipeable = 0 , .params_error_msg = NO_PARMAS_ERROR_MSG , .base_priority = 5},
-    {.name = "changefontsize",  .function_ptr = &change_font_size,  	.min_args = 1, 	.max_args = 1, 	.pipeable = 0 , .params_error_msg = ONE_PARAM_ERROR_MSG , .base_priority = 5},
-    {.name = "tron", 			.function_ptr = &tron, 					.min_args = 0, 	.max_args = 0, 	.pipeable = 0 , .params_error_msg = NO_PARMAS_ERROR_MSG , .base_priority = 5},
-    {.name = "clear", 			.function_ptr = &clear_screen, 			.min_args = 0, 	.max_args = 0, 	.pipeable = 0 , .params_error_msg = NO_PARMAS_ERROR_MSG , .base_priority = 5},
-    {.name = "testmm", 			.function_ptr = &test_memory_manager,   .min_args = 0, 	.max_args = 0, 	.pipeable = 0 , .params_error_msg = NO_PARMAS_ERROR_MSG , .base_priority = 5},
-    {.name = "testprio", 		.function_ptr = &test_priority, 		.min_args = 0, 	.max_args = 0, 	.pipeable = 0 , .params_error_msg = NO_PARMAS_ERROR_MSG , .base_priority = 2},
-    {.name = "testsc", 			.function_ptr = &test_scheduler, 		.min_args = 0, 	.max_args = 0, 	.pipeable = 0 , .params_error_msg = NO_PARMAS_ERROR_MSG , .base_priority = 5},
-	{.name = "ps",				.function_ptr = &ps,					.min_args = 0,  .max_args = 0,  .pipeable = 1 , .params_error_msg = NO_PARMAS_ERROR_MSG , .base_priority = 5},
-	{.name = "loop", 			.function_ptr = &loop,					.min_args = 0,  .max_args = 0,  .pipeable = 0 , .params_error_msg = NO_PARMAS_ERROR_MSG , .base_priority = 5},
-	{.name = "cat", 			.function_ptr = &cat,					.min_args = 0,  .max_args = 0,  .pipeable = 1 , .params_error_msg = NO_PARMAS_ERROR_MSG , .base_priority = 5},
-	{.name = "wc", 				.function_ptr = &wc,					.min_args = 0,  .max_args = 0,  .pipeable = 1 , .params_error_msg = NO_PARMAS_ERROR_MSG , .base_priority = 5},
-	{.name = "filter", 			.function_ptr = &filter,				.min_args = 0,  .max_args = 0,  .pipeable = 1 , .params_error_msg = NO_PARMAS_ERROR_MSG , .base_priority = 5},
-	{.name = "kill",			.function_ptr = &kill,					.min_args = 1,  .max_args = 1,  .pipeable = 0 , .params_error_msg = ONE_PARAM_ERROR_MSG , .base_priority = 5},
-	{.name = "nice",			.function_ptr = &nice,					.min_args = 2,  .max_args = 2,  .pipeable = 1 , .params_error_msg = TWO_PARAM_ERROR_MSG , .base_priority = 5},
-	{.name = "block",			.function_ptr = &block,					.min_args = 1,  .max_args = 1,  .pipeable = 0 , .params_error_msg = ONE_PARAM_ERROR_MSG , .base_priority = 5},
-	{.name = "phylo",			.function_ptr = &phylo,					.min_args = 0,  .max_args = 0,  .pipeable = 0 , .params_error_msg = NO_PARMAS_ERROR_MSG , .base_priority = 5},
-	{.name = "mem",				.function_ptr = &mem,					.min_args = 0,  .max_args = 0,  .pipeable = 1 , .params_error_msg = NO_PARMAS_ERROR_MSG , .base_priority = 5}
+    {.name = "help", 			.function_ptr = &help, 				    .args_qty = 0,	.pipeable = 0 , .params_error_msg = NO_PARMAS_ERROR_MSG , .base_priority = 5},
+    {.name = "invalidopcode",   .function_ptr = &invalid_op_code,       .args_qty = 0, 	.pipeable = 0 , .params_error_msg = NO_PARMAS_ERROR_MSG , .base_priority = 5},
+    {.name = "dividebyzero",    .function_ptr = &divide_by_zero,        .args_qty = 0, 	.pipeable = 0 , .params_error_msg = NO_PARMAS_ERROR_MSG , .base_priority = 5},
+    {.name = "inforeg", 		.function_ptr = &inforeg, 			    .args_qty = 0, 	.pipeable = 0 , .params_error_msg = NO_PARMAS_ERROR_MSG , .base_priority = 5},
+    {.name = "printmem", 		.function_ptr = &print_mem, 		    .args_qty = 1, 	.pipeable = 0 , .params_error_msg = ONE_PARAM_ERROR_MSG , .base_priority = 5},
+    {.name = "time", 			.function_ptr = &time, 				    .args_qty = 0, 	.pipeable = 0 , .params_error_msg = NO_PARMAS_ERROR_MSG , .base_priority = 5},
+    {.name = "changefontsize",  .function_ptr = &change_font_size,  	.args_qty = 1, 	.pipeable = 0 , .params_error_msg = ONE_PARAM_ERROR_MSG , .base_priority = 5},
+    {.name = "tron", 			.function_ptr = &tron, 					.args_qty = 0, 	.pipeable = 0 , .params_error_msg = NO_PARMAS_ERROR_MSG , .base_priority = 5},
+    {.name = "clear", 			.function_ptr = &clear_screen, 			.args_qty = 0, 	.pipeable = 0 , .params_error_msg = NO_PARMAS_ERROR_MSG , .base_priority = 5},
+    {.name = "testmm", 			.function_ptr = &test_memory_manager,   .args_qty = 0, 	.pipeable = 0 , .params_error_msg = NO_PARMAS_ERROR_MSG , .base_priority = 5},
+    {.name = "testprio", 		.function_ptr = &test_priority, 		.args_qty = 0, 	.pipeable = 0 , .params_error_msg = NO_PARMAS_ERROR_MSG , .base_priority = 2},
+    {.name = "testsc", 			.function_ptr = &test_scheduler, 		.args_qty = 0, 	.pipeable = 1 , .params_error_msg = NO_PARMAS_ERROR_MSG , .base_priority = 5},
+	{.name = "ps",				.function_ptr = &ps,					.args_qty = 0,  .pipeable = 1 , .params_error_msg = NO_PARMAS_ERROR_MSG , .base_priority = 5},
+	{.name = "loop", 			.function_ptr = &loop,					.args_qty = 0,  .pipeable = 0 , .params_error_msg = NO_PARMAS_ERROR_MSG , .base_priority = 5},
+	{.name = "cat", 			.function_ptr = &cat,					.args_qty = 0,  .pipeable = 1 , .params_error_msg = NO_PARMAS_ERROR_MSG , .base_priority = 5},
+	{.name = "wc", 				.function_ptr = &wc,					.args_qty = 0,  .pipeable = 1 , .params_error_msg = NO_PARMAS_ERROR_MSG , .base_priority = 5},
+	{.name = "filter", 			.function_ptr = &filter,				.args_qty = 0,  .pipeable = 1 , .params_error_msg = NO_PARMAS_ERROR_MSG , .base_priority = 5},
+	{.name = "kill",			.function_ptr = &kill,					.args_qty = 1,  .pipeable = 0 , .params_error_msg = ONE_PARAM_ERROR_MSG , .base_priority = 5},
+	{.name = "nice",			.function_ptr = &nice,					.args_qty = 2,  .pipeable = 1 , .params_error_msg = TWO_PARAM_ERROR_MSG , .base_priority = 5},
+	{.name = "block",			.function_ptr = &block,					.args_qty = 1,  .pipeable = 0 , .params_error_msg = ONE_PARAM_ERROR_MSG , .base_priority = 5},
+	{.name = "phylo",			.function_ptr = &phylo,					.args_qty = 0,  .pipeable = 0 , .params_error_msg = NO_PARMAS_ERROR_MSG , .base_priority = 5},
+	{.name = "mem",				.function_ptr = &mem,					.args_qty = 0,  .pipeable = 1 , .params_error_msg = NO_PARMAS_ERROR_MSG , .base_priority = 5},
+	{.name = "pipecommands",	.function_ptr = &pipe_commands,			.args_qty = 0,  .pipeable = 0 , .params_error_msg = NO_PARMAS_ERROR_MSG , .base_priority = 5},
+	{.name = "thanks",			.function_ptr = &thanks,				.args_qty = 0,  .pipeable = 0 , .params_error_msg = NO_PARMAS_ERROR_MSG , .base_priority = 5}
 };
-static uint8_t validate_size(uint64_t size, program_info_ADT program){
-	if(size < program->min_args || size > program->max_args ){
+static uint8_t validate_num_of_params(uint64_t params_size, program_info_ADT program, char ** params){
+	if(params_size == program->args_qty+1 && params[params_size -1][0] == '&' && params[params_size -1][1] == '\0'){
+		return BACKGROUND;
+	}
+	if(params_size != program->args_qty) {
 		do_print_color(program->params_error_msg, RED);
 		return 0;
 	}
@@ -127,6 +132,67 @@ static char ** prepare_parameters(char parameters[MAX_PARAMETERS][LENGTH_PARAMET
 	return params;
 }
 
+
+int piped_process_handle(char ** params, unsigned int params_size) {
+	if(params_size != 2 || params[0][0] != '|' || params[0][1] != '\0') {
+		return 0;
+	}
+	int program_1 = find_idx_command(params[1]);
+	int program_2 = find_idx_command(params[2]);
+
+	if(program_1 < 0 || program_2 < 0) {
+		do_print_color("Command not found, write \"help\" for more information\n", RED);
+		return -1;
+	}
+	if(!programs[program_1].pipeable) {
+		do_print_color("Command not pipeable, write \"pipcommands\" for more information\n", RED);
+		return -1;
+	}
+
+	int pipe_id = sys_create_pipe_available();
+
+	do_print_color("Pipe created\n", GREEN);
+
+	if(pipe_id <= 0) {
+		do_print_color("Error creating pipe\n", RED);
+		return -1;
+	}
+
+	sys_create_child_process(params[1], programs[program_1].base_priority, STDIN, pipe_id, programs[program_1].function_ptr);
+	do_print_color("First process created\n", GREEN);
+	sys_create_child_process(params[2], programs[program_2].base_priority, pipe_id, STDOUT, programs[program_2].function_ptr);
+	do_print_color("Second process created\n", GREEN);
+
+
+	do_print_color("Waiting for children\n", GREEN);
+	sys_wait_for_children();
+	do_print_color("Children finished\n", GREEN);
+
+	sys_delete_pipe(pipe_id);
+	do_print_color("Pipe deleted\n", GREEN);
+
+	return 1;
+}
+
+void normal_process_handle(char ** params, unsigned int params_size, int command_idx) {
+	int is_valid;
+	if( (is_valid = validate_num_of_params(params_size, &programs[command_idx],params)) == 0) {
+		return;
+	}
+
+	if(is_valid == BACKGROUND) {
+		params[params_size - 1] = NULL;
+		sys_create_process(params, programs[command_idx].base_priority, STDIN, BACKGROUND, programs[command_idx].function_ptr);
+		return;
+	}
+	int pid = sys_create_child_process(params, programs[command_idx].base_priority, STDIN, STDOUT, programs[command_idx].function_ptr);
+	if(pid < 0) {
+		do_print_color("Error creating process\n", RED);
+		return;
+	}
+	sys_wait_for_children();
+}
+
 void shell() {
     while(1){
 		printf("$>");
@@ -142,14 +208,17 @@ void shell() {
 			/*if( params[0][0] == '|' && params[0][1] == '\0' ) {
 				do_print_color("Pipeing\n", RED);
 			}*/
-            if(validate_size(size, &(programs[command_idx]))) {
+            //if(validate_size(size, &(programs[command_idx]))) {
 				char ** params = prepare_parameters(parameters, size, command);
-				sys_create_child_process(params, programs[command_idx].base_priority, STDIN, STDOUT, (uint64_t) programs[command_idx].function_ptr);
-				sys_wait_for_children();
-			}
+				if(piped_process_handle(params,size) == 0){
+					normal_process_handle(params, size ,command_idx);
+				}
+				//sys_create_child_process(params, programs[command_idx].base_priority, STDIN, STDOUT, (uint64_t) programs[command_idx].function_ptr);
+				//sys_wait_for_children();
+			//}
 		}
 		else if (command_idx == -1){
-			do_print_color("Command not found: try again\n", RED);
+			do_print_color("Command not found, write \"help\" for more information\n", RED);
 		}
 	}
 }
