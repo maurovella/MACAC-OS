@@ -2,6 +2,7 @@
 #define INOUT_H
 
 #include <stdint.h>
+
 void buffer_action(char * buffer, uint64_t length);
 
 void printf(const char *format, ...);
@@ -25,6 +26,5 @@ void do_change_font_size(uint64_t level);
 char do_get_char();
 
 void do_put_char(char c);
-
 
 #endif

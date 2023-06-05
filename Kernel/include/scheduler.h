@@ -22,6 +22,10 @@
 #define PROCESSES_LIMIT_REACHED    -3
 #define CANT_KILL_IMMORTAL_PROCESS -4
 #define STACK_SIZE                 4096 // 4KB
+
+#define STDIN 0
+#define STDOUT 1
+#define BACKGROUND 4
 	
 
 // Stack structure 

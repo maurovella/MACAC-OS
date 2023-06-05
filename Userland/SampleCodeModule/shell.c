@@ -184,14 +184,14 @@ void normal_process_handle(char ** params, unsigned int params_size, int command
 	if(is_valid == BACKGROUND) {
 		params[params_size - 1] = NULL;
 		sys_create_process(params, programs[command_idx].base_priority, STDIN, BACKGROUND, programs[command_idx].function_ptr);
-		return;
+	} else {
+		int pid = sys_create_child_process(params, programs[command_idx].base_priority, STDIN, STDOUT, programs[command_idx].function_ptr);
+		if(pid < 0) {
+			do_print_color("Error creating process\n", RED);
+			return;
+		}
+		sys_wait_for_children();
 	}
-	int pid = sys_create_child_process(params, programs[command_idx].base_priority, STDIN, STDOUT, programs[command_idx].function_ptr);
-	if(pid < 0) {
-		do_print_color("Error creating process\n", RED);
-		return;
-	}
-	sys_wait_for_children();
 }
 
 void shell() {

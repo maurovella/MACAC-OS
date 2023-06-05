@@ -67,4 +67,8 @@ int sys_create_pipe_available();
 
 void sys_delete_pipe(uint32_t pipe_id);
 
+uint8_t sys_get_current_output();
+
+uint8_t sys_get_current_input();
+
 #endif

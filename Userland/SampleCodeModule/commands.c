@@ -300,11 +300,13 @@ void ps() {
 
 
 void loop() {
+	int pid = sys_get_pid();
+	uint8_t write_fd = sys_get_current_output();
 	//imprimo el pid del proceso que ejecuta el loop y luego "in loop"
-	printf("I'm the process with pid: ");
-	printf("\n");
+	print_to_fd(write_fd,"I'm the process with pid: %d",pid);
+	print_to_fd(write_fd,"\n");
 	while(1) {
-		printf("in loop\n");
+		print_to_fd(write_fd,"in loop\n");
 		wait(50000);
 	}
 

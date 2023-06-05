@@ -10,6 +10,7 @@
 #include "memory_manager.h"
 #include "scheduler.h"
 #include "pipes.h"
+#
 
 extern uint64_t info[17];
 extern uint8_t screenshot;
@@ -21,11 +22,11 @@ static void sys_write_handler(uint64_t fd, uint64_t buffer, uint64_t bytes){
         for (uint64_t i = 0; i < bytes; i++){
             ngc_print_char(((char*)buffer)[i]);
         }
-    } /*else if(fd == BACKGROUND) {
+    } else if(fd == BACKGROUND) {
         return;
     } else {
         write_pipe(fd, buffer, bytes);
-    }*/
+    }
 }
 
 static int64_t sys_read_handler(uint64_t fd, char * buffer, uint64_t bytes){
@@ -161,6 +162,14 @@ static void sys_delete_pipe(uint32_t pipe_id) {
     delete_pipe(pipe_id);
 }
 
+static uint8_t sys_get_current_output() {
+    return get_current_output();
+}
+
+static uint8_t sys_get_current_input(uint8_t output) {
+    return get_current_output();
+}
+
 static syscall_type syscalls[]  = {
     (syscall_type) sys_read_handler, 
     (syscall_type) sys_write_handler, 
@@ -189,7 +198,9 @@ static syscall_type syscalls[]  = {
     (syscall_type) sys_delete_last_char,
     (syscall_type) sys_nice,
     (syscall_type) sys_create_pipe_available,
-    (syscall_type) sys_delete_pipe
+    (syscall_type) sys_delete_pipe,
+    (syscall_type) sys_get_current_output,
+    (syscall_type) sys_get_current_input
 };
 
 //  paso syscall_id por rax, se come r10 por rcx, y r9 por rax

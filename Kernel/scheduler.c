@@ -6,9 +6,7 @@
 #include <naive_graphics_console.h>
 #include <defs.h>
 
-#define STDIN 0
-#define STDOUT 1
-#define BACKGROUND 4
+
 
 typedef struct process {
     uint32_t pid;                    // process ID
@@ -68,6 +66,14 @@ void idle_process() {
 
 uint32_t get_pid() {
     return process_list[current_process_idx].pid;
+}
+
+uint8_t get_current_output() {
+    return process_list[current_process_idx].output;
+}
+
+uint8_t get_current_input() {
+    return process_list[current_process_idx].input;
 }
 
 uint8_t get_process_idx(uint32_t pid) {
