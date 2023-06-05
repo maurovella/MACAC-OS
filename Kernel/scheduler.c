@@ -5,6 +5,7 @@
 #include <string.h>
 #include <naive_graphics_console.h>
 #include <defs.h>
+
 #define STDIN 1
 #define STDOUT 0
 #define BACKGROUND 4
@@ -109,8 +110,8 @@ int32_t block_or_unblock(uint32_t pid) {
         process_list[idx].state = READY;
     } else {
         process_list[idx].state = BLOCK;
-        force_timer_tick();
     }
+    if (idx == current_process_idx) force_timer_tick();
     return TRUE;
 }
 
@@ -204,7 +205,6 @@ void free_params(char **params) {
 }
 
 int32_t kill_process(uint32_t pid) {
-    
     int8_t idx = get_process_idx(pid);
     if (idx == NO_PROCESS_FOUND) {
         return NO_PROCESS_FOUND;
@@ -213,9 +213,9 @@ int32_t kill_process(uint32_t pid) {
         return CANT_KILL_IMMORTAL_PROCESS;
     }
     destroy_process(idx);
-    if (_str_cmp(process_list[idx].params[0], "tron") == 0) {
-        ngc_paint_screen(BLACK);
-    }
+    //if (_str_cmp(process_list[idx].params[0], "tron") == 0) {
+    //    ngc_paint_screen(BLACK);
+    //}
     if (current_process_idx == idx) {
         force_timer_tick();
     }

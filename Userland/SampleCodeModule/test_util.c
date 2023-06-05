@@ -102,54 +102,63 @@ void test_mm(){
     printf("TEST PASSED!!!\n");
 }
 
-void test_prio() {
-  int64_t pids[TOTAL_PROCESSES];
-  char *argv[] = {0};
-  uint64_t i;
+static void test_prio_create_processes(int64_t * pids) {
+  pids[0] = sys_create_process(NULL, LOWEST, 1, 1, (uint64_t) &endless_loop);
+  pids[1] = sys_create_process(NULL, MEDIUM, 1, 1, (uint64_t) &endless_loop);
+  pids[2] = sys_create_process(NULL, HIGHEST, 1, 1, (uint64_t) &endless_loop);
+}
 
-  for (i = 0; i < TOTAL_PROCESSES; i++)
-    pids[i] = sys_create_process(argv, 1, STDIN, STDOUT, (uint64_t) &endless_loop_print);
+static void test_prio_change_priorities(int64_t * pids) {
+  sys_nice(pids[0], MEDIUM);
+  sys_nice(pids[1], HIGHEST);
+  sys_nice(pids[2], LOWEST);
+}
+
+static void test_prio_change_priorities_when_blocked(int64_t * pids) {
+  sys_nice(pids[0], HIGHEST);
+  sys_nice(pids[1], LOWEST);
+  sys_nice(pids[2], MEDIUM);
+}
+
+static void test_prio_block_unblock_processes(int64_t * pids) {
+  sys_block_or_unblock_process(pids[0]);
+  sys_block_or_unblock_process(pids[1]);
+  sys_block_or_unblock_process(pids[2]);
+}
+
+static void test_prio_kill_processes(int64_t * pids) {
+  sys_kill_process(pids[0]);
+  sys_kill_process(pids[1]);
+  sys_kill_process(pids[2]);
+}
+
+void test_prio() {
+  int64_t pids[3];
+  
+  test_prio_create_processes(pids);
 
   bussy_wait(WAIT);
   printf("\nCHANGING PRIORITIES...\n");
-  int8_t changed = 0;
-  for (i = 0; i < TOTAL_PROCESSES; i++) {
-    changed = sys_change_priority(pids[i], prio[i]);
-    if (changed == -1) {
-      printf("test_prio: ERROR changing priority\n");
-      return;
-    }
-  }
-    
-
+  
+  test_prio_change_priorities(pids);
+  
   bussy_wait(WAIT);
   printf("\nBLOCKING...\n");
 
-  for (i = 0; i < TOTAL_PROCESSES; i++)
-    sys_block_or_unblock_process(pids[i]);
+  test_prio_block_unblock_processes(pids);
 
   printf("CHANGING PRIORITIES WHILE BLOCKED...\n");
-
-  for (i = 0; i < TOTAL_PROCESSES; i++) {
-    changed = sys_change_priority(pids[i], prio[i+1 % TOTAL_PROCESSES]);
-    if (changed == -1) {
-      printf("test_prio: ERROR changing priority\n");
-      return;
-    }
-  }
     
+  test_prio_change_priorities_when_blocked(pids);
 
   printf("UNBLOCKING...\n");
 
-  for (i = 0; i < TOTAL_PROCESSES; i++)
-    sys_block_or_unblock_process(pids[i]);
+  test_prio_block_unblock_processes(pids);
 
-  printf("\nKILLING...\n");
   bussy_wait(WAIT);
+  printf("\nKILLING...\n");
   
-
-  for (i = 0; i < TOTAL_PROCESSES; i++)
-    sys_kill_process(pids[i]);
+  test_prio_kill_processes(pids);
 
   printf("TEST PASSED!!!\n");
 }
