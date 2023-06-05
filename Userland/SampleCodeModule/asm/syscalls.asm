@@ -25,6 +25,8 @@ GLOBAL sys_get_all_processes
 GLOBAL sys_get_mem_info
 GLOBAL sys_delete_last_char
 GLOBAL sys_nice
+GLOBAL sys_create_pipe_available
+GLOBAL sys_delete_pipe
 
 section .text
 sys_read:
@@ -156,5 +158,15 @@ sys_delete_last_char:
 
 sys_nice:
     mov rax, 0x19
+    int 80h
+    ret
+
+sys_create_pipe_available:
+    mov rax, 0x1A
+    int 80h
+    ret
+
+sys_delete_pipe:
+    mov rax, 0x1B
     int 80h
     ret

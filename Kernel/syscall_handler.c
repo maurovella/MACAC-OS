@@ -9,6 +9,7 @@
 #include "interrupts.h"
 #include "memory_manager.h"
 #include "scheduler.h"
+#include "pipes.h"
 
 extern uint64_t info[17];
 extern uint8_t screenshot;
@@ -152,6 +153,14 @@ static void sys_nice(uint32_t pid, uint8_t priority) {
     change_process_state(pid, priority);
 }
 
+static int sys_create_pipe_available() {
+    return create_pipe_available();
+}
+
+static void sys_delete_pipe(uint32_t pipe_id) {
+    delete_pipe(pipe_id);
+}
+
 static syscall_type syscalls[]  = {
     (syscall_type) sys_read_handler, 
     (syscall_type) sys_write_handler, 
@@ -178,7 +187,9 @@ static syscall_type syscalls[]  = {
     (syscall_type) sys_get_all_processes,
     (syscall_type) sys_get_mem_info,
     (syscall_type) sys_delete_last_char,
-    (syscall_type) sys_nice
+    (syscall_type) sys_nice,
+    (syscall_type) sys_create_pipe_available,
+    (syscall_type) sys_delete_pipe
 };
 
 //  paso syscall_id por rax, se come r10 por rcx, y r9 por rax

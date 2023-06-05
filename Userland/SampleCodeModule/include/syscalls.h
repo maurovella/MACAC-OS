@@ -63,4 +63,8 @@ void sys_delete_last_char();
 
 void sys_nice(uint32_t pid, uint8_t priority);
 
+int sys_create_pipe_available();
+
+void sys_delete_pipe(uint32_t pipe_id);
+
 #endif
