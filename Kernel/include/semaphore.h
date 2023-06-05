@@ -51,4 +51,69 @@ uint8_t create_sem(uint64_t init_val);
 */
 uint8_t create_sem_by_id(uint64_t sem_id, uint64_t init_val);
 
+/*
+    open_sem
+    -------------------------------------
+    Description: Opens a semaphore
+        if it doesn't exist, it creates it
+        with initial value = 0
+    ** reuturns ERROR **
+    -------------------------------------
+    Parameters:
+        sem_id: id of the semaphore
+    -------------------------------------
+    Returns:
+        sem_id if success
+        -1 if error
+*/
+uint8_t open_sem(uint64_t sem_id, uint64_t init_val);
+
+/*
+    wait_sem
+    -------------------------------------
+    Description: Decrements the semaphore
+        if it's 0, it blocks the process
+    ** reuturns ERROR **
+    -------------------------------------
+    Parameters:
+        sem_id: id of the semaphore
+    -------------------------------------
+    Returns:
+        0 if success
+        errorcode if error
+*/
+uint8_t wait_sem(uint64_t sem_id);
+
+/*
+    signal_sem
+    -------------------------------------
+    Description: Increments the semaphore
+        if there are processes waiting, it
+        unblocks one
+    ** reuturns ERROR **
+    -------------------------------------
+    Parameters:
+        sem_id: id of the semaphore
+    -------------------------------------
+    Returns:
+        0 if success
+        errorcode if error
+*/
+uint8_t post_sem(uint64_t sem_id);
+
+/*
+    close_sem
+    -------------------------------------
+    Description: Destroys a semaphore
+    ** reuturns ERROR **
+    -------------------------------------
+    Parameters:
+        sem_id: id of the semaphore
+    -------------------------------------
+    Returns:
+        0 if success
+        errorcode if error
+*/
+uint8_t close_sem(uint64_t sem_id);
+
 #endif

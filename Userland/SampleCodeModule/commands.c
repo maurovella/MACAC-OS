@@ -32,6 +32,7 @@ void help(){
 	"TESTMM               Test memory manager\n"
 	"TESTPRIO             Test prioritys\n"
 	"TESTSC          	  Test scheduler\n"
+	"TESTSYNC			  Test synchronization\n"
 	"PS                   Prints all the processes\n"
 	"LOOP                 Prints \"in loop\" every five seconds\n"
 	"KILL 			   	  Receives an especific pid and kills it\n"
@@ -206,22 +207,20 @@ void test_memory_manager() {
 	return;
 }
 
-void ps(int argc, char params[][LENGTH_PARAMETERS]) {
-	if(argc!=0){
-		printf("\tTry ps without parameters\n");
-		return;
-	}
+void test_synchronization() {
+	printf("Testeando sincronizacion..\n");
+	test_sync();
+	return;
+}
+
+void ps() {
 	printf("ps");
 	return;
 }
 
 
 
-void loop(int argc, char params[][LENGTH_PARAMETERS]) {
-	if(argc!=0){
-		printf("\tTry loop without parameters\n");
-		return;
-	}
+void loop() {
 	//imprimo el pid del proceso que ejecuta el loop y luego "in loop"
 	printf("I'm the process with pid: ");
 	printf("\n");
@@ -233,69 +232,37 @@ void loop(int argc, char params[][LENGTH_PARAMETERS]) {
 	return;
 }
 
-void kill(int argc, char params[][LENGTH_PARAMETERS]) {
-	if(argc!=1){
-		printf("\tTry kill with 1 parameter (pid)\n");
-		return;
-	}
+void kill(char ** params) {
 	//do_kill(params[0]);
 	return;
 }
 
-void nice(int argc, char params[][LENGTH_PARAMETERS]) {
-	if(argc!=2){
-		printf("\tTry nice with 2 parameters (pid, priority)\n");
-		return;
-	}
+void nice(char ** params) {
 	//do_nice(params[0], params[1]);
 	return;
 }
 
-void block(int argc, char params[][LENGTH_PARAMETERS]) {
-	if(argc!=1){
-		printf("\tTry block with 1 parameter (pid)\n");
-		return;
-	}
+void block(char ** params) {
 	//do_block(params[0]);
 	return;
 }
 
-void cat(int argc, char params[][LENGTH_PARAMETERS]) {
-	if(argc==0){
-		printf("try writing something!\n");
-		return;
-	}
-	printf("%d", argc);
-	for(int i=0; i<argc; i++){
-		printf("%s ", params[i]);
-	}
+void cat() {
 	printf("\n");
 	return;
 }
 
-void wc(int argc, char params[][LENGTH_PARAMETERS]) {
-	if(argc!=1){
-		printf("\tTry wc with 1 parameter (file)\n");
-		return;
-	}
+void wc() {
 	//do_wc(params[0]);
 	return;
 }
 
-void filter(int argc, char params[][LENGTH_PARAMETERS]) {
-	if(argc!=1){
-		printf("\tTry filter with 1 parameter (file)\n");
-		return;
-	}
+void filter() {
 	//do_filter(params[0]);
 	return;
 }
 
-void phylo(int argc, char params[][LENGTH_PARAMETERS]) {
-	if(argc!=0){
-		printf("\tTry phylo without parameters\n");
-		return;
-	}
+void phylo() {
 	//do_phylo();
 	return;
 }

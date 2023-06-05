@@ -21,6 +21,12 @@ GLOBAL sys_wait_for_children
 GLOBAL sys_wait
 GLOBAL sys_change_priority
 GLOBAL sys_get_pid
+GLOBAL sys_create_sem
+GLOBAL sys_create_sem_by_id
+GLOBAL sys_wait_sem
+GLOBAL sys_post_sem
+GLOBAL sys_close_sem
+GLOBAL sys_open_sem
 
 section .text
 sys_read:
@@ -132,5 +138,35 @@ sys_change_priority:
 
 sys_get_pid:
     mov rax, 0x15
+    int 80h
+    ret
+
+sys_create_sem:
+    mov rax, 0x16
+    int 80h
+    ret
+
+sys_create_sem_by_id:
+    mov rax, 0x17
+    int 80h
+    ret
+
+sys_open_sem:
+    mov rax, 0x18
+    int 80h
+    ret
+
+sys_wait_sem:
+    mov rax, 0x19
+    int 80h
+    ret
+
+sys_post_sem:
+    mov rax, 0x1A
+    int 80h
+    ret
+
+sys_close_sem:
+    mov rax, 0x1B
     int 80h
     ret

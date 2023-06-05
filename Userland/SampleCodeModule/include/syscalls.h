@@ -51,4 +51,16 @@ int8_t sys_change_priority(uint32_t pid, uint8_t priority);
 
 int32_t sys_get_pid();
 
+uint8_t sys_create_sem(uint64_t init_val);
+
+uint8_t sys_create_sem_by_id(uint64_t sem_id, uint64_t init_val);
+
+uint8_t sys_open_sem(uint64_t sem_id, uint64_t init_val);
+
+uint8_t sys_wait_sem(uint64_t sem_id);
+
+uint8_t sys_post_sem(uint64_t sem_id);
+
+uint8_t sys_close_sem(uint64_t sem_id);
+
 #endif

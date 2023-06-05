@@ -4,7 +4,7 @@
 #define MAX_PARAMETERS 5
 #define LENGTH_PARAMETERS 256
 #define BUFFER_LENGTH 256
-#define COMMANDS_LENGTH 18
+#define COMMANDS_LENGTH 22
 #define REGISTERS 17
 
 void help();
@@ -30,6 +30,8 @@ void test_memory_manager();
 void test_scheduler();
 
 void test_priority();
+
+void test_synchronization();
 
 void ps();
 
