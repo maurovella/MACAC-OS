@@ -6,6 +6,7 @@
 #define BUFFER_LENGTH 256
 #define COMMANDS_LENGTH 22
 #define REGISTERS 17
+#define MAX_BUFFER 256
 
 #define IS_ALLOWED_CHAR(c) ((c >= 'a' && c <= 'z') || (c == '|') || (c == ' ') || (c == '\0') || (c == '\n') || (c == '\t'))
 #define IS_NOT_VOWEL(c) (c != 'a' && c != 'e' && c != 'i' && c != 'o' && c != 'u') 

@@ -326,111 +326,97 @@ void block(char ** params) {
 	return;
 }
 
-void cat() {
+void get_buffer(char *buffer, char delim) {
 	char c;
-	char buffer[100];
 	int letter = 0;
-	while(c != '\n') {
+	printf("  ");
+	while (c != delim) {
 		c = do_get_char();
 		if (IS_ALLOWED_CHAR(c)) { 
 			printf("%c", c);
 			buffer[letter++] = c;
 		}
-		if (c == 0x7F) {
+		if (c == 0x7F && letter > 0) {
 			letter--;
 			buffer[letter] = '\0';
 			sys_delete_last_char();
 		}
+		if (delim != '\n' && c == '\n') {
+		printf("  ");
+	}
 	}
 
+	
+
 	buffer[letter] = '\0';
+}
+
+void cat() {
+	char buffer[MAX_BUFFER];
+	get_buffer(buffer,'\n');
 
 	// imprimo contenido de buffer con do_print_color en un formato amigable
-
+	printf("  ");
 	do_print_color(buffer, CYAN);
-
-	return;
 }
 
 void wc() {
-	char c;
-	char buffer[100];
+	char buffer[MAX_BUFFER];
+	get_buffer(buffer, 'U');
 	int letter = 0;
 	int words = 0;
 	int lines = 0;
-	int in_word = 0; // Nuevo indicador para determinar si estamos dentro de una palabra o no
-	
-	while (c != 'U') {
-		c = do_get_char();
-		if (IS_ALLOWED_CHAR(c)) {
-			printf("%c", c);
-			buffer[letter++] = c;
+	int in_word = 0;
 
-			// Contar palabras
-			if (c != ' ' && c != '\n') {
-				if (!in_word) {
-					in_word = 1;
-					words++;
-				}
-			} else {
-				in_word = 0;
+	for (int i = 0; buffer[i] != '\0'; i++) {
+		// Contar palabras
+		if (buffer[i] != ' ' && buffer[i] != '\n') {
+			if (!in_word) {
+				in_word = 1;
+				words++;
 			}
-
-			// Contar líneas
-			if (c == '\n') {
-				lines++;
-			}
+		} else {
+			in_word = 0;
 		}
 
-		if (c == 0x7F) {
-			letter--;
-			buffer[letter] = '\0';
-			sys_delete_last_char();
+		// Contar líneas
+		if (buffer[i] == '\n') {
+			lines++;
 		}
+
+		// Contar caracteres
+		letter++;
 	}
 
-	buffer[letter] = '\0';
-
-	// Imprimir contenido de buffer con do_print_color en un formato amigable
+	// Imprimir resultados en formato amigable con do_print_color en color cian
 	printf("\n");
+	printf("  ");
 	do_print_color("Words: ", CYAN);
 	printf("%d\n", words);
+	printf("  ");
 	do_print_color("Lines: ", CYAN);
 	printf("%d\n", lines);
+	printf("  ");
 	do_print_color("Characters: ", CYAN);
 	printf("%d\n", letter);
-	
-	return;
 }
 
 void filter() {
-	char c;
-	char buffer[100];
+	char buffer[MAX_BUFFER];
+	get_buffer(buffer, '\n');
+	char no_vowels[MAX_BUFFER];
 	int letter = 0;
-
-	while(c != 'U') {
-		c = do_get_char();
-		if(IS_ALLOWED_CHAR(c)) {
-			printf("%c", c);
-			if (IS_NOT_VOWEL(c)) { 
-				buffer[letter++] = c;
-			}
-		}
-		
-		if (c == 0x7F) {
-			sys_delete_last_char();
-			letter--;
-			buffer[letter] = '\0';
+	printf("  ");
+	for (int i = 0; buffer[i] != '\0'; i++) {
+		if (IS_NOT_VOWEL(buffer[i])) {
+			no_vowels[letter++] = buffer[i];
 		}
 	}
+	no_vowels[letter] = '\0';
 
-	buffer[letter] = '\0';
-
-	// imprimo contenido de buffer con do_print_color en un formato amigable
-	printf("\n");
-	do_print_color(buffer, CYAN);
-
-	return;
+	// Imprimir contenido de no_vowels con do_print_color en un formato amigable
+	printf("  ");
+	do_print_color(no_vowels, CYAN);
 }
 
 void phylo() {
