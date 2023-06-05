@@ -168,7 +168,7 @@ void do_print_inforeg(){
 		printf("r14 = %x\n", reg[15]);
 		printf("r15 = %x\n", reg[16]);
 	} else {
-		printf("No se ha hecho un screenshot, presione la tecla CTRL e intente de nuevo.\n");
+		printf("No se ha hecho un screenshot, presione la tecla L SHIFT e intente de nuevo.\n");
 	}
 }
 

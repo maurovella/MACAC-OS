@@ -2,6 +2,7 @@
 #include <naive_graphics_console.h>
 #include <stdint.h>
 #include <string.h>
+#include <scheduler.h>
 
 #define BUFFER_SIZE 1024
 
@@ -20,9 +21,25 @@ static uint8_t buffer[BUFFER_SIZE] = {0};
 static uint64_t q_elements = 0;
 static uint64_t read_index = 0;          // iter first element
 static uint64_t write_index = 0;         // iter last element
+static uint8_t ctrl_pressed = 0;
 
 
 void keyboard_handler(uint64_t tecla_hex){
+
+    if (tecla_hex == 0x1D) {
+        ctrl_pressed = 1;
+        return;
+    } else if (ctrl_pressed && tecla_hex == 0x2E) {
+        ctrl_c_handler();
+        ctrl_pressed = 0;
+        return;
+    } else if (ctrl_pressed && tecla_hex == 0x20) {
+        ctrl_d_handler();
+        ctrl_pressed = 0;
+        return;
+    } else {
+        ctrl_pressed = 0;
+    }
     
     if (tecla_hex < 0x53){
         if(q_elements >= BUFFER_SIZE) return;  // buffer is full
@@ -53,4 +70,13 @@ char get_first_char(){
     if (read_index == BUFFER_SIZE) read_index = 0;
     
     return to_return;
+}
+
+void ctrl_c_handler() {
+    kill_process(get_pid());
+    ngc_print("Ctrl+C pressed\n");
+}
+
+void ctrl_d_handler() {
+    ngc_print("Ctrl+D pressed\n");
 }

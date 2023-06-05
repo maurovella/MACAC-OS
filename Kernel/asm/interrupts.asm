@@ -227,7 +227,7 @@ _irq01_handler:
 	push_state
  	mov 	rax, 0
     in 		al, 0x60
-	cmp 	al, 0x1D ;me fijo si la tecla es un ctrl
+	cmp 	al, 0x2A ;me fijo si la tecla es un l shift
 	jne 	.continue
 	pop_state
 	push_state
@@ -254,7 +254,7 @@ _irq01_handler:
 	mov 	byte[screenshot], 1
 	jmp 	.end
 .continue:
-	cmp 	al, 0x9D	;me fijo si la tecla es un ctrl release
+	cmp 	al, 0xAA	;me fijo si la tecla es un l shift release
 	je 		.end
 
 	mov 	rdi, rax
