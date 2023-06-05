@@ -2,6 +2,9 @@
 #include <scheduler.h>
 #include <interrupts.h>
 #include <memory_manager.h>
+#include <string.h>
+#include <naive_graphics_console.h>
+#include <defs.h>
 #define STDIN 1
 #define STDOUT 0
 #define BACKGROUND 4
@@ -210,6 +213,9 @@ int32_t kill_process(uint32_t pid) {
         return CANT_KILL_IMMORTAL_PROCESS;
     }
     destroy_process(idx);
+    if (_str_cmp(process_list[idx].params[0], "tron") == 0) {
+        ngc_paint_screen(BLACK);
+    }
     if (current_process_idx == idx) {
         force_timer_tick();
     }
