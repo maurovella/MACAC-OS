@@ -37,7 +37,7 @@ uint8_t create_sem(uint64_t init_val) {
     uint8_t pos_found = find_free_sem();
     if (pos_found == -1) return -1;
 
-    create_queue(&(semaphores[pos_found].waiters), MAX_PROCESS_WAITING);
+    create_queue((queue_ADT) &(semaphores[pos_found].waiters), MAX_PROCESS_WAITING);
 
     semaphores[pos_found].sem_id = pos_found;
     semaphores[pos_found].sem_val = init_val;

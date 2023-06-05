@@ -15,4 +15,6 @@ int8_t create_pipe (unsigned int pipe_id);
 
 int8_t delete_pipe (unsigned int pipe_id);
 
+int create_pipe_available();
+
 #endif
