@@ -6,8 +6,8 @@
 #include <naive_graphics_console.h>
 #include <defs.h>
 
-#define STDIN 1
-#define STDOUT 0
+#define STDIN 0
+#define STDOUT 1
 #define BACKGROUND 4
 
 typedef struct process {
@@ -28,6 +28,7 @@ typedef struct process {
     
     uint8_t input;                 // direction of the input
     uint8_t output;                // direction of the output
+    //process * children;
 } process;
 
 process process_list[MAX_PROCESSES];    // Lista de procesos

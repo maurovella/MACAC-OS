@@ -25,6 +25,7 @@ void help(){
 	"INVALIDOPCODE        Command to verify the operation of the exception routine \"Invalid Opcode\"\n"
 	"INFOREG              Prints on screen the value of all registers.\n"
 	"PRINTMEM             Receives as argument a pointer and performs a memory dump of 32 bytes from the\n"
+	"MEM	              Prints HEAP memory status.\n"
 	"                     Address received as an argument.\n"
 	"TIME                 Command to display the system day and time.\n"
 	"CHANGEFONTSIZE       Changes font size: insert 1 2 3 for the desired level.\n"
@@ -285,7 +286,8 @@ void ps() {
 		case 4:
 			output_name = "BACKGROUND";
 			break;	
-		default:
+		default: 
+			output_name = "ELSE";
 			break;
 		}
 		printf("%s\t|\t%d\t|\t%d\t\t|\t%s\t|\t%x\t|\t%x\t|\t%x\t|\t%s\t|\t%d\n", processes[i].name, processes[i].pid, processes[i].priority, state_name, processes[i].stack_start, processes[i].stack_end, processes[i].stack_pointer, output_name, processes[i].assigned_ticks);
@@ -310,19 +312,23 @@ void loop() {
 }
 
 void kill(char ** params) {
-	uint32_t deleted_pid = sys_kill_process(params[0]);
+	uint32_t pid = atoi(params[0]);
+	uint32_t deleted_pid = sys_kill_process(pid);
 	printf("Process with pid %d was deleted\n", deleted_pid);
 	return;
 }
 
 void nice(char ** params) {
-	sys_nice(params[0], params[1]);
+	uint32_t pid = atoi(params[0]);
+	uint32_t new_priority = atoi(params[1]);
+	sys_nice(pid, new_priority);
 	return;
 }
 
 void block(char ** params) {
-	uint32_t changed_process = sys_block_or_unblock_process(params[0]);
-	printf("Process with pid %d was changed\n, the new priority is %d\n", changed_process, params[1]);
+	uint32_t pid = atoi(params[0]);
+	uint32_t changed_process = sys_block_or_unblock_process(pid);
+	printf("Process with pid %d was blocked\n", changed_process);
 	return;
 }
 

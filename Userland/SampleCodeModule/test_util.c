@@ -103,9 +103,9 @@ void test_mm(){
 }
 
 static void test_prio_create_processes(int64_t * pids) {
-  pids[0] = sys_create_process(NULL, LOWEST, 1, 1, (uint64_t) &endless_loop);
-  pids[1] = sys_create_process(NULL, MEDIUM, 1, 1, (uint64_t) &endless_loop);
-  pids[2] = sys_create_process(NULL, HIGHEST, 1, 1, (uint64_t) &endless_loop);
+  pids[0] = sys_create_process(NULL, LOWEST, 0, 1, (uint64_t) &endless_loop);
+  pids[1] = sys_create_process(NULL, MEDIUM, 0, 1, (uint64_t) &endless_loop);
+  pids[2] = sys_create_process(NULL, HIGHEST, 0, 1, (uint64_t) &endless_loop);
 }
 
 static void test_prio_change_priorities(int64_t * pids) {
@@ -178,8 +178,8 @@ void test_processes() {
     printf("\n\n\n\n");
     // Create max_processes processes
     for (rq = 0; rq < max_processes; rq++) {
-      int32_t pid_return = sys_create_process(NULL, 1, 1, 1, (uint64_t) &endless_loop);
-      if (pid_return == -2) {
+      int32_t pid_return = sys_create_child_process(NULL, 3, STDIN, STDOUT, (uint64_t) &endless_loop_print);
+      if (pid_return == -2 || pid_return == -3) {
         printf("test_processes: ERROR creating process\n");
         return ;
       } else {
