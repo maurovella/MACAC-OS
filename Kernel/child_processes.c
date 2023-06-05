@@ -6,7 +6,7 @@ typedef struct child_info {
     uint8_t state;
 } child_info;
 
-static child_info children_processes[MAX_CHILDREN_PROCESSES] = {{0}};
+child_info children_processes[MAX_CHILDREN_PROCESSES] = {{0}};
 
 uint8_t all_children_finished(uint32_t parent_pid) {
     for (int i = 0; i < MAX_CHILDREN_PROCESSES; i++) {

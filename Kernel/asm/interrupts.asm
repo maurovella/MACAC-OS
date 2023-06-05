@@ -285,7 +285,7 @@ _irq80_handler:
 	;Syscall params: 	rdi rsi rdx r10 r8 r9
 	;C params: 			rdi rsi rdx rcx r8 r9
 
-	mov 	rcx, r10
+	;mov 	rcx, r10
 	mov 	r9, rax
 	call 	syscall_dispatcher
 	

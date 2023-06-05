@@ -120,16 +120,17 @@ static char ** prepare_parameters(char parameters[MAX_PARAMETERS][LENGTH_PARAMET
 		mem_cpy(param, parameters[i], param_size);
 		params[i] = param;
 	}
-	void * name_alloc = sys_malloc(_str_len(name) + 1);
-	if(name_alloc == NULL){
-		do_print_color("Error allocating memory for parameters\n", RED);
-		return;
+	void * name_alloc = (void *) sys_malloc(_str_len(name) + 1);
+
+	if(name_alloc != NULL){
+		char * name_param = (char *) name_alloc;
+		mem_cpy(name_param, name, _str_len(name) + 1);
+		params[size++] = name_param;
+		params[size] = NULL;
+		return params;
 	}
-	char * name_param = (char *) name_alloc;
-	mem_cpy(name_param, name, _str_len(name) + 1);
-	params[size++] = name_param;
-	params[size] = NULL;
-	return params;
+
+	do_print_color("Error allocating memory for parameters\n", RED);
 }
 
 
