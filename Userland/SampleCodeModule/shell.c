@@ -102,7 +102,7 @@ static char ** prepare_parameters(char parameters[MAX_PARAMETERS][LENGTH_PARAMET
 	void * params_alloc = (void *) sys_malloc((size + 2 ) * sizeof(char *));
 	if(params_alloc == NULL){
 		do_print_color("Error allocating memory for parameters\n", RED);
-		return;
+		return NULL;
 	}
 	char ** params = (char **) params_alloc;
 
@@ -159,9 +159,9 @@ int piped_process_handle(char ** params, unsigned int params_size) {
 		return -1;
 	}
 
-	sys_create_child_process(params[1], programs[program_1].base_priority, STDIN, pipe_id, programs[program_1].function_ptr);
+	sys_create_child_process((char **) params[1], programs[program_1].base_priority, STDIN, pipe_id, programs[program_1].function_ptr);
 	do_print_color("First process created\n", GREEN);
-	sys_create_child_process(params[2], programs[program_2].base_priority, pipe_id, STDOUT, programs[program_2].function_ptr);
+	sys_create_child_process((char **) params[2], programs[program_2].base_priority, pipe_id, STDOUT, programs[program_2].function_ptr);
 	do_print_color("Second process created\n", GREEN);
 
 

@@ -7,6 +7,8 @@ void buffer_action(char * buffer, uint64_t length);
 
 void printf(const char *format, ...);
 
+void print_to_fd(uint8_t fd, const char *format, ...);
+
 void scanf(char* format, ...);
 
 void do_print_color(const char * buffer, uint64_t color);

@@ -35,7 +35,6 @@ void help(){
 	"TESTMM               Test memory manager\n"
 	"TESTPRIO             Test prioritys\n"
 	"TESTSC          	  Test scheduler\n"
-	"TESTSYNC			  Test synchronization\n"
 	"PS                   Prints all the processes\n"
 	"LOOP                 Prints \"in loop\" every five seconds\n"
 	"KILL 			   	  Receives an especific pid and kills it\n"
@@ -234,7 +233,7 @@ int calculate_max_len(process_info * processes, uint8_t size) {
 }
 
 void ps() {
-	process_info * processes = sys_malloc(sizeof(process_info *));
+	process_info *processes = (process_info *)sys_malloc(sizeof(process_info));
 	uint8_t size = sys_get_all_processes(processes);
 	int max_len = calculate_max_len(processes, size);
 	
@@ -457,6 +456,12 @@ void test_priority() {
 	printf("Testeando priority..\n");
 	test_prio();
 	return;
+}
+
+void test_synchronization() {
+    printf("Testeando sync..\n");
+    test_sync();
+    return;
 }
 
 void pipe_commands() {
