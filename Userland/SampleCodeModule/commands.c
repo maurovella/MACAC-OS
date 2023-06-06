@@ -27,7 +27,6 @@ void help(){
 	"TESTMM               Test memory manager\n"
 	"TESTPRIO             Test prioritys\n"
 	"TESTSC          	  Test scheduler\n"
-	"TESTSYNC			  Test synchronization\n"
 	"PS                   Prints all the processes\n"
 	"LOOP                 Prints \"in loop\" every five seconds\n"
 	"KILL 			   	  Receives an especific pid and kills it\n"
