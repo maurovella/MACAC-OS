@@ -32,4 +32,6 @@ void ngc_paint_screen(uint64_t bg_color);
 
 void ngc_print_pixels(uint64_t from_x, uint64_t from_y, uint16_t width, uint16_t height, uint64_t color);
 
+void delete_last_char();
+
 #endif

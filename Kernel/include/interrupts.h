@@ -35,4 +35,8 @@ extern void pic_slave_mask(uint8_t mask);
 //Termina la ejecución de la cpu.
 extern void halt_cpu(void);
 
+extern void force_timer_tick(void);
+extern void force_current_process(void);
+extern uint8_t consume_tick(void);
+
 #endif /* INTERRUPS_H_ */

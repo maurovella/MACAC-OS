@@ -1,6 +1,7 @@
 #include <naive_graphics_console.h>
 #include <time.h>
 #include <stdint.h>
+#include <scheduler.h>
 
 #define ZERO_EXCEPTION_ID 0
 #define INV_OP_EXC 6
@@ -47,5 +48,5 @@ void exception_dispatcher(uint64_t exception, uint64_t regdata[18]) {
 	ngc_print_color(error_msg, RED);
 	ngc_print_color(error_names[exception], RED);
 	print_registers(regdata);
-	restart();
+	end_process();
 }

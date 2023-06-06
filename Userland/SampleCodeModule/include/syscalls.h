@@ -1,6 +1,10 @@
 #ifndef SYSCALLS_H
 #define SYSCALLS_H
+
 #include <stdint.h>
+#include <data_types.h>
+
+
 #define STDIN 0
 #define STDOUT 1
 #define STDERR 2
@@ -28,5 +32,57 @@ uint64_t sys_get_ticks();
 void sys_clear_screen(uint64_t color);
 
 void sys_beeper(uint64_t frequency, uint64_t seconds);
+
+uint64_t sys_malloc(uint64_t len);
+
+void sys_free(void * ptr);
+
+void sys_mm_init();
+
+int32_t sys_create_process(char ** params, uint8_t priority, uint8_t input, uint8_t output, uint64_t entry_point);
+
+int32_t sys_kill_process(uint32_t pid);
+
+int32_t sys_block_or_unblock_process(uint32_t pid);
+
+int32_t sys_create_child_process(char ** params, uint8_t priority, uint8_t input, uint8_t output, uint64_t entry_point);
+
+void sys_wait_for_children();
+
+void sys_wait(uint64_t interval);
+
+int8_t sys_change_priority(uint32_t pid, uint8_t priority);
+
+int32_t sys_get_pid();
+
+uint8_t sys_get_all_processes(process_info * processes);
+
+void sys_get_mem_info(uint64_t buffer[4]);
+
+void sys_delete_last_char();
+
+int8_t sys_nice(uint32_t pid, uint8_t priority);
+
+int sys_create_pipe_available();
+
+void sys_delete_pipe(uint32_t pipe_id);
+
+uint8_t sys_get_current_output();
+
+uint8_t sys_get_current_input();
+
+uint8_t sys_create_sem(uint64_t init_val);
+
+uint8_t sys_create_sem_by_id(uint64_t sem_id, uint64_t init_val);
+
+uint8_t sys_open_sem(uint64_t sem_id, uint64_t init_val);
+
+uint8_t sys_wait_sem(uint64_t sem_id);
+
+uint8_t sys_post_sem(uint64_t sem_id);
+
+uint8_t sys_close_sem(uint64_t sem_id);
+
+void sys_yield();
 
 #endif

@@ -1,28 +1,74 @@
 #ifndef COMMANDS_H
 #define COMMANDS_H
 
+#include <stdint.h>
+#include <tron.h>
+#include <colors.h>
+#include <inout.h>
+#include <string_util.h>
+#include <test_util.h>
+#include <stddef.h>
+#include <commands_utils.h>
+#include <data_types.h>
+#include <philo.h>
+
 #define MAX_PARAMETERS 5
 #define LENGTH_PARAMETERS 256
 #define BUFFER_LENGTH 256
-#define COMMANDS_LENGTH 9
+#define COMMANDS_LENGTH 25
 #define REGISTERS 17
+#define MAX_BUFFER 256
 
-void help(int argc, char params[MAX_PARAMETERS][LENGTH_PARAMETERS]);
+#define IS_ALLOWED_CHAR(c) ((c >= 'a' && c <= 'z') || (c == '|') || (c == ' ') || (c == '\0') || (c == '\n') || (c == '\t'))
+#define IS_NOT_VOWEL(c) (c != 'a' && c != 'e' && c != 'i' && c != 'o' && c != 'u') 
 
-void invalid_op_code(int argc, char  params[][LENGTH_PARAMETERS]);
+void help();
 
-void divide_by_zero(int argc, char  params[][LENGTH_PARAMETERS]);
+void invalid_op_code();
 
-void inforeg(int argc, char params[][LENGTH_PARAMETERS]);
+void divide_by_zero();
 
-void print_mem(int argc, char params[][LENGTH_PARAMETERS]);
+void inforeg();
 
-void time(int argc, char params[][LENGTH_PARAMETERS]);
+void print_mem(char** params);
 
-void change_font_size(int argc, char params[][LENGTH_PARAMETERS]);
+void time();
 
-void tron(int argc, char params[][LENGTH_PARAMETERS]);
+void change_font_size(char ** params);
 
-void clear_screen(int argc, char params[][LENGTH_PARAMETERS]);
+void tron();
 
+void clear_screen();
+
+void test_memory_manager();
+
+void test_scheduler();
+
+void test_priority();
+
+void test_synchronization();
+
+void ps();
+
+void kill(char ** params);
+
+void block(char ** params);
+
+void loop();
+
+void nice(char ** params);
+
+void cat();
+
+void wc();
+
+void filter();
+
+void philo();
+
+void mem();
+
+void pipe_commands();
+
+void thanks();
 #endif

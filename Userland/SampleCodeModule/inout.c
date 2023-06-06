@@ -20,6 +20,11 @@ static void put_string(const char *buffer){
     sys_write(STDOUT, buffer, _str_len(buffer));
 }
 
+static void put_string_to_fd(uint8_t fd,const char *buffer){
+    //lamo al syswrite 1=stdout
+    sys_write(fd, buffer, _str_len(buffer));
+}
+
 void buffer_action(char * buffer, uint64_t length){
 	int found_enter = 0;
 	if (length == 0){
@@ -30,28 +35,27 @@ void buffer_action(char * buffer, uint64_t length){
 	while(!found_enter){
 		
 		c = do_get_char();
-		//if (c != 0xFF){
-			// si se ingresa un enter se termina el string y salimos del loop
-			if (c == '\n'){
-				buffer[i] = '\0';
-				do_put_char(c);
-				found_enter = 1; 
-			}
-			// agregamos el char ingresado al buffer
-			else if (c >= 0) {
-				do_put_char(c);
-				if (c == 0x7F && i >= 0) {
-					if (i > 0){
-						i--;
-					}
+
+		if (c == '\n'){
+			buffer[i] = '\0';
+			do_put_char(c);
+			found_enter = 1; 
+		}
+
+		// add written char to buffer
+		else if (c >= 0) {
+			do_put_char(c);
+			if (c == 0x7F && i >= 0) {
+				if (i > 0){
+					i--;
 				}
-				// validacion del maximo de scan
-				else if (i < length-1) {
-					buffer[i] = c;
-					i++;
-				}    
 			}
-		//}
+			// validate max for scan
+			else if (i < length-1) {
+				buffer[i] = c;
+				i++;
+			}    
+		}
 	}
 }
 
@@ -169,7 +173,7 @@ void do_print_inforeg(){
 		printf("r14 = %x\n", reg[15]);
 		printf("r15 = %x\n", reg[16]);
 	} else {
-		printf("No se ha hecho un screenshot, presione la tecla CTRL e intente de nuevo.\n");
+		printf("No se ha hecho un screenshot, presione la tecla L SHIFT e intente de nuevo.\n");
 	}
 }
 
@@ -181,6 +185,10 @@ void do_clear_screen(uint64_t color) {
 
 void do_put_char(char c) {
 	sys_write(STDOUT, &c, 1);
+}
+
+void do_put_char_to_fd(uint8_t fd,char c) {
+	sys_write(fd, &c, 1);
 }
 
 void put_base(int num, int base){
@@ -206,14 +214,86 @@ void put_base(int num, int base){
 	put_string(hex);
 }
 
+void put_base_to_fd(uint8_t fd,int num, int base){
+
+	int i = 12;
+	int j = 0;
+
+	char hex[13];
+
+	put_string_to_fd(fd,"0x");
+	do{
+		hex[i] = "0123456789ABCDEF"[num % base];
+		i--;
+		num = num/base;
+	}while( i > 0 );
+
+	while( ++i < 13){
+		hex[j++] = hex[i];
+	}
+
+	hex[j] = 0;
+
+	put_string_to_fd(fd,hex);
+}
+
 void put_int(int num){
 	char strnum[MAX_INT];
 	itoa(num,strnum);
 	put_string(strnum);
 }
 
+void put_int_to_fd(uint8_t fd,int num){
+	char strnum[MAX_INT];
+	itoa(num,strnum);
+	put_string_to_fd(fd,strnum);
+}
+
+void print_to_fd(uint8_t fd,const char *format, ...) {
+	// point p_arg to first argument
+   	va_list p_arg;
+   	va_start(p_arg, format); // -> hace apuntar p_arg al primer argumento (no format)
+
+
+    while (*format != '\0') {
+		// loop mientras se impriman char normales
+        if (*format != '%') {
+            do_put_char_to_fd(fd,*format);
+            format++;
+        } 
+
+		// si hay un %, me fijo el siguiente para imprimir especial
+		else {
+
+        format++;
+
+        switch (*format) {
+            case 'd':
+			case 'D':
+                put_int_to_fd(fd,va_arg(p_arg, int));
+                break;
+            case 'c':
+			case 'C':
+                do_put_char_to_fd(fd,va_arg(p_arg, int));  // char promociona a int
+                break;
+            case 's':
+			case 'S':
+                put_string_to_fd(fd,va_arg(p_arg, char *));
+                break;
+			case 'x':
+            case 'X':
+                put_base_to_fd(fd,va_arg(p_arg, int), 16);
+        }
+
+        format++;
+		}
+    }
+	
+    va_end(p_arg);
+}
+
 // para una cantidad de argumentos variable usamos la lib stdarg.h
-void printf (const char *format, ...) {
+void printf(const char *format, ...) {
 	// point p_arg to first argument
    	va_list p_arg;
    	va_start(p_arg, format); // -> hace apuntar p_arg al primer argumento (no format)
@@ -255,3 +335,4 @@ void printf (const char *format, ...) {
 	
     va_end(p_arg);
 }
+

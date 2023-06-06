@@ -9,6 +9,8 @@
 #include <naive_graphics_console.h>
 #include <interrupts.h>
 #include <speaker.h>
+#include <memory_manager.h>
+#include <scheduler.h>
 
 extern uint8_t text;
 extern uint8_t rodata;
@@ -22,11 +24,14 @@ static const uint64_t page_size = 0x1000;
 static void * const sample_code_module_address = (void*)0x400000;
 static void * const sample_data_module_address = (void*)0x500000;
 
+static char * shell_args[] = {"shell", NULL};
+
 typedef int (*entry_point)();
 
 void clear_BSS(void * bss_address, uint64_t bss_size)
 {
 	mem_set(bss_address, 0, bss_size);
+	return;
 }
 
 void * get_stack_base()
@@ -55,9 +60,19 @@ void * initialize_kernel_binary()
 
 int main()
 {	
-	//carga
+	// load 
 	load_idt();
-	((entry_point)sample_code_module_address)();
+
+	memory_init();
+	
+	// Create shell before idle
+	create_process(shell_args, 1, STDIN, STDOUT, TRUE, (uint64_t) sample_code_module_address);
+	
+	// Create idle process and force to run shell
+	scheduler_init();
+	
+	
+	//((entry_point)sample_code_module_address)();
 	while(1);
 	return 0;
 }
