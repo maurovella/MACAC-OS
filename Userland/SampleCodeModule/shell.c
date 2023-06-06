@@ -23,33 +23,33 @@ void * mem_cpy(void * destination, const void * source, uint64_t length);
 static char* commands[] = {"help", "invalidopcode", "dividebyzero", "inforeg", "printmem", "time", "changefontsize", "tron", "clear", "testmm","testprio","testsc","ps","loop","cat","wc","filter","kill","nice","block","phylo","mem","pipecommands","thanks"};
 
 static program_info_CDT programs[] = {
-    {.name = "help", 			.function_ptr = &help, 				    .args_qty = 0,	.pipeable = 0 , .params_error_msg = NO_PARMAS_ERROR_MSG , .base_priority = 5},
-    {.name = "invalidopcode",   .function_ptr = &invalid_op_code,       .args_qty = 0, 	.pipeable = 0 , .params_error_msg = NO_PARMAS_ERROR_MSG , .base_priority = 5},
-    {.name = "dividebyzero",    .function_ptr = &divide_by_zero,        .args_qty = 0, 	.pipeable = 0 , .params_error_msg = NO_PARMAS_ERROR_MSG , .base_priority = 5},
-    {.name = "inforeg", 		.function_ptr = &inforeg, 			    .args_qty = 0, 	.pipeable = 0 , .params_error_msg = NO_PARMAS_ERROR_MSG , .base_priority = 5},
-    {.name = "printmem", 		.function_ptr = &print_mem, 		    .args_qty = 1, 	.pipeable = 0 , .params_error_msg = ONE_PARAM_ERROR_MSG , .base_priority = 5},
-    {.name = "time", 			.function_ptr = &time, 				    .args_qty = 0, 	.pipeable = 0 , .params_error_msg = NO_PARMAS_ERROR_MSG , .base_priority = 5},
-    {.name = "changefontsize",  .function_ptr = &change_font_size,  	.args_qty = 1, 	.pipeable = 0 , .params_error_msg = ONE_PARAM_ERROR_MSG , .base_priority = 5},
-    {.name = "tron", 			.function_ptr = &tron, 					.args_qty = 0, 	.pipeable = 0 , .params_error_msg = NO_PARMAS_ERROR_MSG , .base_priority = 5},
-    {.name = "clear", 			.function_ptr = &clear_screen, 			.args_qty = 0, 	.pipeable = 0 , .params_error_msg = NO_PARMAS_ERROR_MSG , .base_priority = 5},
-    {.name = "testmm", 			.function_ptr = &test_memory_manager,   .args_qty = 0, 	.pipeable = 0 , .params_error_msg = NO_PARMAS_ERROR_MSG , .base_priority = 5},
-    {.name = "testprio", 		.function_ptr = &test_priority, 		.args_qty = 0, 	.pipeable = 0 , .params_error_msg = NO_PARMAS_ERROR_MSG , .base_priority = 2},
-    {.name = "testsc", 			.function_ptr = &test_scheduler, 		.args_qty = 0, 	.pipeable = 1 , .params_error_msg = NO_PARMAS_ERROR_MSG , .base_priority = 5},
-	{.name = "ps",				.function_ptr = &ps,					.args_qty = 0,  .pipeable = 1 , .params_error_msg = NO_PARMAS_ERROR_MSG , .base_priority = 5},
-	{.name = "loop", 			.function_ptr = &loop,					.args_qty = 0,  .pipeable = 0 , .params_error_msg = NO_PARMAS_ERROR_MSG , .base_priority = 5},
-	{.name = "cat", 			.function_ptr = &cat,					.args_qty = 0,  .pipeable = 1 , .params_error_msg = NO_PARMAS_ERROR_MSG , .base_priority = 5},
-	{.name = "wc", 				.function_ptr = &wc,					.args_qty = 0,  .pipeable = 1 , .params_error_msg = NO_PARMAS_ERROR_MSG , .base_priority = 5},
-	{.name = "filter", 			.function_ptr = &filter,				.args_qty = 0,  .pipeable = 1 , .params_error_msg = NO_PARMAS_ERROR_MSG , .base_priority = 5},
-	{.name = "kill",			.function_ptr = &kill,					.args_qty = 1,  .pipeable = 0 , .params_error_msg = ONE_PARAM_ERROR_MSG , .base_priority = 5},
-	{.name = "nice",			.function_ptr = &nice,					.args_qty = 2,  .pipeable = 1 , .params_error_msg = TWO_PARAM_ERROR_MSG , .base_priority = 5},
-	{.name = "block",			.function_ptr = &block,					.args_qty = 1,  .pipeable = 0 , .params_error_msg = ONE_PARAM_ERROR_MSG , .base_priority = 5},
-	{.name = "phylo",			.function_ptr = &phylo,					.args_qty = 0,  .pipeable = 0 , .params_error_msg = NO_PARMAS_ERROR_MSG , .base_priority = 5},
-	{.name = "mem",				.function_ptr = &mem,					.args_qty = 0,  .pipeable = 1 , .params_error_msg = NO_PARMAS_ERROR_MSG , .base_priority = 5},
-	{.name = "pipecommands",	.function_ptr = &pipe_commands,			.args_qty = 0,  .pipeable = 0 , .params_error_msg = NO_PARMAS_ERROR_MSG , .base_priority = 5},
-	{.name = "thanks",			.function_ptr = &thanks,				.args_qty = 0,  .pipeable = 0 , .params_error_msg = NO_PARMAS_ERROR_MSG , .base_priority = 5}
+    {.name = "help", 			.function_ptr = (uint64_t) &help, 				.args_qty = 0,	.pipeable = 0 , .params_error_msg = NO_PARMAS_ERROR_MSG , .base_priority = 5},
+    {.name = "invalidopcode",   .function_ptr = (uint64_t) &invalid_op_code,    .args_qty = 0, 	.pipeable = 0 , .params_error_msg = NO_PARMAS_ERROR_MSG , .base_priority = 5},
+    {.name = "dividebyzero",    .function_ptr = (uint64_t) &divide_by_zero,     .args_qty = 0, 	.pipeable = 0 , .params_error_msg = NO_PARMAS_ERROR_MSG , .base_priority = 5},
+    {.name = "inforeg", 		.function_ptr = (uint64_t) &inforeg, 			.args_qty = 0, 	.pipeable = 0 , .params_error_msg = NO_PARMAS_ERROR_MSG , .base_priority = 5},
+    {.name = "printmem", 		.function_ptr = (uint64_t) &print_mem, 		    .args_qty = 1, 	.pipeable = 0 , .params_error_msg = ONE_PARAM_ERROR_MSG , .base_priority = 5},
+    {.name = "time", 			.function_ptr = (uint64_t) &time, 				.args_qty = 0, 	.pipeable = 0 , .params_error_msg = NO_PARMAS_ERROR_MSG , .base_priority = 5},
+    {.name = "changefontsize",  .function_ptr = (uint64_t) &change_font_size,  	.args_qty = 1, 	.pipeable = 0 , .params_error_msg = ONE_PARAM_ERROR_MSG , .base_priority = 5},
+    {.name = "tron", 			.function_ptr = (uint64_t) &tron, 				.args_qty = 0, 	.pipeable = 0 , .params_error_msg = NO_PARMAS_ERROR_MSG , .base_priority = 5},
+    {.name = "clear", 			.function_ptr = (uint64_t) &clear_screen, 		.args_qty = 0, 	.pipeable = 0 , .params_error_msg = NO_PARMAS_ERROR_MSG , .base_priority = 5},
+    {.name = "testmm", 			.function_ptr = (uint64_t) &test_memory_manager,.args_qty = 0, 	.pipeable = 0 , .params_error_msg = NO_PARMAS_ERROR_MSG , .base_priority = 5},
+    {.name = "testprio", 		.function_ptr = (uint64_t) &test_priority, 		.args_qty = 0, 	.pipeable = 0 , .params_error_msg = NO_PARMAS_ERROR_MSG , .base_priority = 1},
+    {.name = "testsc", 			.function_ptr = (uint64_t) &test_scheduler, 	.args_qty = 0, 	.pipeable = 1 , .params_error_msg = NO_PARMAS_ERROR_MSG , .base_priority = 1},
+	{.name = "ps",				.function_ptr = (uint64_t) &ps,					.args_qty = 0,  .pipeable = 1 , .params_error_msg = NO_PARMAS_ERROR_MSG , .base_priority = 5},
+	{.name = "loop", 			.function_ptr = (uint64_t) &loop,				.args_qty = 0,  .pipeable = 0 , .params_error_msg = NO_PARMAS_ERROR_MSG , .base_priority = 5},
+	{.name = "cat", 			.function_ptr = (uint64_t) &cat,				.args_qty = 0,  .pipeable = 1 , .params_error_msg = NO_PARMAS_ERROR_MSG , .base_priority = 5},
+	{.name = "wc", 				.function_ptr = (uint64_t) &wc,					.args_qty = 0,  .pipeable = 1 , .params_error_msg = NO_PARMAS_ERROR_MSG , .base_priority = 5},
+	{.name = "filter", 			.function_ptr = (uint64_t) &filter,				.args_qty = 0,  .pipeable = 1 , .params_error_msg = NO_PARMAS_ERROR_MSG , .base_priority = 5},
+	{.name = "kill",			.function_ptr = (uint64_t) &kill,				.args_qty = 1,  .pipeable = 0 , .params_error_msg = ONE_PARAM_ERROR_MSG , .base_priority = 5},
+	{.name = "nice",			.function_ptr = (uint64_t) &nice,				.args_qty = 2,  .pipeable = 1 , .params_error_msg = TWO_PARAM_ERROR_MSG , .base_priority = 5},
+	{.name = "block",			.function_ptr = (uint64_t) &block,				.args_qty = 1,  .pipeable = 0 , .params_error_msg = ONE_PARAM_ERROR_MSG , .base_priority = 5},
+	{.name = "phylo",			.function_ptr = (uint64_t) &phylo,				.args_qty = 0,  .pipeable = 0 , .params_error_msg = NO_PARMAS_ERROR_MSG , .base_priority = 5},
+	{.name = "mem",				.function_ptr = (uint64_t) &mem,				.args_qty = 0,  .pipeable = 1 , .params_error_msg = NO_PARMAS_ERROR_MSG , .base_priority = 5},
+	{.name = "pipecommands",	.function_ptr = (uint64_t) &pipe_commands,		.args_qty = 0,  .pipeable = 0 , .params_error_msg = NO_PARMAS_ERROR_MSG , .base_priority = 5},
+	{.name = "thanks",			.function_ptr = (uint64_t) &thanks,				.args_qty = 0,  .pipeable = 0 , .params_error_msg = NO_PARMAS_ERROR_MSG , .base_priority = 5}
 };
 static uint8_t validate_num_of_params(uint64_t params_size, program_info_ADT program, char ** params){
-	if(params_size == program->args_qty+1 && params[params_size -1][0] == '&' && params[params_size -1][1] == '\0'){
+	if(params_size == program->args_qty+1 && params[params_size -1][0] == '&' && params[params_size -1][1] == '\0') {
 		return BACKGROUND;
 	}
 	if(params_size != program->args_qty) {
@@ -132,7 +132,6 @@ static char ** prepare_parameters(char parameters[MAX_PARAMETERS][LENGTH_PARAMET
 	params[size] = NULL;
 	return params;
 }
-
 
 int piped_process_handle(char ** params, unsigned int params_size) {
 	if(params_size != 2 || params[0][0] != '|' || params[0][1] != '\0') {
