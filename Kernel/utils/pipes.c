@@ -75,8 +75,8 @@ int8_t create_pipe (unsigned int pipe_id) {
     int reading_sem_id = create_sem(0);
     int writing_sem_id = create_sem(PIPE_SIZE);
     if(reading_sem_id == INVALID_PIPE_ID || writing_sem_id == INVALID_PIPE_ID) {
-        destroy_sem(reading_sem_id);
-        destroy_sem(writing_sem_id);
+        close_sem(reading_sem_id);
+        close_sem(writing_sem_id);
         return NO_SPACE_FOR_PIPE;
     }
     // creo el buffer para el pipe asignado al pipe correspondiente
@@ -119,8 +119,8 @@ int8_t delete_pipe(unsigned int pipe_id) {
         return INVALID_PIPE_ID;
     }
 
-    destroy_sem(pipes[pos].read_sem_id);
-    destroy_sem(pipes[pos].write_sem_id);
+    close_sem(pipes[pos].read_sem_id);
+    close_sem(pipes[pos].write_sem_id);
     memory_free(pipes[pos].pipe_buffer);
 
     pipes[pos].pipe_id = 0;

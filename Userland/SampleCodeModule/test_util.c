@@ -4,6 +4,7 @@
 #include <stddef.h>
 #include <colors.h>
 #include <string_util.h>
+#include <commands.h>
 
 #define MINOR_WAIT 1000000 // TODO: Change this value to prevent a process from flooding the screen
 #define WAIT       100000000      // TODO: Change this value to make the wait long enough to see theese processes beeing run at least twice
@@ -18,7 +19,7 @@
 #define MAX_PROCESSES 20 // shell and idle are occupying 2 positions
 
 
-#define SEM_ID "sem"
+#define SEM_ID 5
 #define TOTAL_PAIR_PROCESSES 2
 
 typedef struct MM_rq{
@@ -270,23 +271,22 @@ void test_processes() {
   do_print_color("PROCESSES TEST PASSED!!!\n", GREEN);
 }
 
-/*
+
 int64_t global; // shared memory
 
 void slowInc(int64_t *p, int64_t inc) {
   uint64_t aux = *p;
-  my_yield(); // This makes the race condition highly probable
+  bussy_wait(30000); // This makes the race condition highly probable
   aux += inc;
   *p = aux;
 }
 
-uint64_t my_process_inc(uint64_t argc, char *argv[]) {
+uint64_t my_process_inc(char **argv) {
   uint64_t n;
   int8_t inc;
   int8_t use_sem;
 
-  if (argc != 3)
-    return -1;
+  printf("test_sync: starting process %d\n", sys_get_pid());
 
   if ((n = satoi(argv[0])) <= 0)
     return -1;
@@ -295,68 +295,57 @@ uint64_t my_process_inc(uint64_t argc, char *argv[]) {
   if ((use_sem = satoi(argv[2])) < 0)
     return -1;
 
-  if (use_sem)
-    if (!my_sem_open(SEM_ID, 1)) {
-      printf("test_sync: ERROR opening semaphore\n");
+  if (use_sem) {
+    if (sys_open_sem(SEM_ID, 1) != 0) {
+      printf("test_sync: ERROR creating semaphore\n");
       return -1;
     }
+    printf("test_sync: opened/created semaphore %d, with value: %d\n", SEM_ID, 1);
+  }
 
   uint64_t i;
   for (i = 0; i < n; i++) {
-    if (use_sem)
-      my_sem_wait(SEM_ID);
+    if (use_sem) {
+      sys_wait_sem(SEM_ID);
+      printf("dec: %d\n", SEM_ID);
+    }
     slowInc(&global, inc);
-    if (use_sem)
-      my_sem_post(SEM_ID);
+    if (use_sem) {
+      sys_post_sem(SEM_ID);
+      printf("inc: %d\n", SEM_ID);
+    }
   }
-
-  if (use_sem)
-    my_sem_close(SEM_ID);
 
   return 0;
 }
 
-uint64_t test_sync(uint64_t argc, char *argv[]) { //{n, use_sem, 0}
+uint64_t test_sync() { //{n, use_sem, 0}
   uint64_t pids[2 * TOTAL_PAIR_PROCESSES];
 
-  if (argc != 2)
-    return -1;
 
-  char *argvDec[] = {argv[0], "-1", argv[1], NULL};
-  char *argvInc[] = {argv[0], "1", argv[1], NULL};
+  char *argvDec[] = {"2", "-1", "1", NULL};
+  char *argvInc[] = {"2", "1", "1", NULL};
 
   global = 0;
 
   uint64_t i;
-  for (i = 0; i < TOTAL_PAIR_PROCESSES; i++) {
-    pids[i] = my_create_process("my_process_inc", 3, argvDec);
-    pids[i + TOTAL_PAIR_PROCESSES] = my_create_process("my_process_inc", 3, argvInc);
+  for (i = 0; i < TOTAL_PAIR_PROCESSES*2; i++) {
+    if (i % 2 == 0) {
+      pids[i] = sys_create_child_process(argvDec, MEDIUM, 1, 1, (uint64_t) &my_process_inc);
+      printf("pid created: %d\n", pids[i]);
+    }
+    else {
+      pids[i] = sys_create_child_process(argvInc, MEDIUM, 1, 1, (uint64_t) &my_process_inc);
+      printf("pid created: %d\n", pids[i]);
+    }
   }
 
-  for (i = 0; i < TOTAL_PAIR_PROCESSES; i++) {
-    my_wait(pids[i]);
-    my_wait(pids[i + TOTAL_PAIR_PROCESSES]);
-  }
-
+  sys_wait_for_children();
+  sys_close_sem(SEM_ID);
   printf("Final value: %d\n", global);
 
   return 0;
 }
-
-
-*/
-
-
-
-
-
-
-
-
-
-
-
-
 
 // Random
 static uint32_t m_z = 362436069;

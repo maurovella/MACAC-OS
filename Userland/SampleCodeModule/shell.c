@@ -20,7 +20,7 @@ static int parse_buffer(char command[BUFFER_LENGTH], char parameters[MAX_PARAMET
 static int find_idx_command(char *buff);
 void * mem_cpy(void * destination, const void * source, uint64_t length);
 
-static char* commands[] = {"help", "invalidopcode", "dividebyzero", "inforeg", "printmem", "time", "changefontsize", "tron", "clear", "testmm","testprio","testsc","ps","loop","cat","wc","filter","kill","nice","block","phylo","mem","pipecommands","thanks"};
+static char* commands[] = {"help", "invalidopcode", "dividebyzero", "inforeg", "printmem", "time", "changefontsize", "tron", "clear", "testmm","testprio","testsc","ps","loop","cat","wc","filter","kill","nice","block","phylo","mem","pipecommands","thanks", "testsync", "ps", "kill", "block", "loop", "nice", "cat", "wc", "filter", "phylo"};
 
 static program_info_CDT programs[] = {
     {.name = "help", 			.function_ptr = (uint64_t) &help, 				.args_qty = 0,	.pipeable = 0 , .params_error_msg = NO_PARMAS_ERROR_MSG , .base_priority = 5},
@@ -43,10 +43,11 @@ static program_info_CDT programs[] = {
 	{.name = "kill",			.function_ptr = (uint64_t) &kill,				.args_qty = 1,  .pipeable = 0 , .params_error_msg = ONE_PARAM_ERROR_MSG , .base_priority = 5},
 	{.name = "nice",			.function_ptr = (uint64_t) &nice,				.args_qty = 2,  .pipeable = 1 , .params_error_msg = TWO_PARAM_ERROR_MSG , .base_priority = 5},
 	{.name = "block",			.function_ptr = (uint64_t) &block,				.args_qty = 1,  .pipeable = 0 , .params_error_msg = ONE_PARAM_ERROR_MSG , .base_priority = 5},
-	{.name = "phylo",			.function_ptr = (uint64_t) &phylo,				.args_qty = 0,  .pipeable = 0 , .params_error_msg = NO_PARMAS_ERROR_MSG , .base_priority = 5},
+	{.name = "phylo",			.function_ptr = (uint64_t) &phylo,				.args_qty = 0,  .pipeable = 1 , .params_error_msg = NO_PARMAS_ERROR_MSG , .base_priority = 5},
 	{.name = "mem",				.function_ptr = (uint64_t) &mem,				.args_qty = 0,  .pipeable = 1 , .params_error_msg = NO_PARMAS_ERROR_MSG , .base_priority = 5},
-	{.name = "pipecommands",	.function_ptr = (uint64_t) &pipe_commands,		.args_qty = 0,  .pipeable = 0 , .params_error_msg = NO_PARMAS_ERROR_MSG , .base_priority = 5},
-	{.name = "thanks",			.function_ptr = (uint64_t) &thanks,				.args_qty = 0,  .pipeable = 0 , .params_error_msg = NO_PARMAS_ERROR_MSG , .base_priority = 5}
+	{.name = "pipecommands",	.function_ptr = (uint64_t) &pipe_commands,		.args_qty = 0,  .pipeable = 1 , .params_error_msg = NO_PARMAS_ERROR_MSG , .base_priority = 5},
+	{.name = "thanks",			.function_ptr = (uint64_t) &thanks,				.args_qty = 0,  .pipeable = 1 , .params_error_msg = NO_PARMAS_ERROR_MSG , .base_priority = 5},
+	{.name = "testsync", 		.function_ptr = (uint64_t) &test_synchronization,.args_qty = 0, .pipeable = 1 , .params_error_msg = NO_PARMAS_ERROR_MSG , .base_priority = 5}
 };
 static uint8_t validate_num_of_params(uint64_t params_size, program_info_ADT program, char ** params){
 	if(params_size == program->args_qty+1 && params[params_size -1][0] == '&' && params[params_size -1][1] == '\0') {
