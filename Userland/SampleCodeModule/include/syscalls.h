@@ -61,7 +61,7 @@ void sys_get_mem_info(uint64_t buffer[4]);
 
 void sys_delete_last_char();
 
-void sys_nice(uint32_t pid, uint8_t priority);
+int8_t sys_nice(uint32_t pid, uint8_t priority);
 
 int sys_create_pipe_available();
 

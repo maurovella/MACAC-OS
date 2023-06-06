@@ -149,8 +149,8 @@ static void sys_delete_last_char() {
 }
 
 
-static void sys_nice(uint32_t pid, uint8_t priority) {
-    change_process_state(pid, priority);
+static int8_t sys_nice(uint32_t pid, uint8_t priority) {
+    return change_priority(pid, priority);
 }
 
 static int sys_create_pipe_available() {
