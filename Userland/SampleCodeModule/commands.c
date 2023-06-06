@@ -8,6 +8,7 @@
 #include <stddef.h>
 #include <commands_utils.h>
 #include <data_types.h>
+#define EOF 0xFE
 
 #define is_hexa(a) ( (((a) >= '0' && (a) <= '9') || ((a) >= 'a' && (a) <= 'f') || ((a) >= 'A' && (a) <= 'F')) ? 1 : 0 )
 
@@ -334,7 +335,7 @@ void block(char ** params) {
 	return;
 }
 
-void get_buffer(char *buffer, char delim) {
+void get_buffer(char *buffer, char delim, uint8_t cat_flag) {
 	char c;
 	int letter = 0;
 	printf("  ");
@@ -351,26 +352,28 @@ void get_buffer(char *buffer, char delim) {
 		}
 		if (delim != '\n' && c == '\n') {
 		printf("  ");
+		if(cat_flag) {
+			buffer[letter] = '\0';
+			do_print_color(buffer, CYAN);
+			printf("  ");
+				// reseteo buffer
+			for (int i = 0; i < letter; i++) {
+				buffer[i] = '\0';
+			}
+			letter = 0;
+		}
+		}
 	}
-	}
-
-	
-
-	buffer[letter] = '\0';
 }
 
 void cat() {
 	char buffer[MAX_BUFFER];
-	get_buffer(buffer,'\n');
-
-	// imprimo contenido de buffer con do_print_color en un formato amigable
-	printf("  ");
-	do_print_color(buffer, CYAN);
+	get_buffer(buffer, EOF,1);
 }
 
 void wc() {
 	char buffer[MAX_BUFFER];
-	get_buffer(buffer, 'U');
+	get_buffer(buffer, EOF,0);
 	int letter = 0;
 	int words = 0;
 	int lines = 0;
@@ -411,7 +414,7 @@ void wc() {
 
 void filter() {
 	char buffer[MAX_BUFFER];
-	get_buffer(buffer, '\n');
+	get_buffer(buffer, '\n',0);
 	char no_vowels[MAX_BUFFER];
 	int letter = 0;
 	printf("  ");

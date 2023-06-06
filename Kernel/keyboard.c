@@ -3,8 +3,8 @@
 #include <stdint.h>
 #include <string.h>
 #include <scheduler.h>
-#define SPECIAL_CHARS 3
-
+#define SPECIAL_CHARS 4
+#define EOF 0xFE
 #define BUFFER_SIZE 1024
 
 
@@ -18,7 +18,7 @@ static const uint8_t char_hex_map[256] = {
     0,      0,      'L'/*left*/,    0,     'R'/*right*/,     0,      0,      'D'/*down*/,      0,
 };
 
-static const uint8_t special_hex_chars[SPECIAL_CHARS] = {0,'&','|'};
+static const uint8_t special_hex_chars[SPECIAL_CHARS] = {0,'&','|',EOF};
 
 static uint8_t buffer[BUFFER_SIZE] = {0};
 static uint64_t q_elements = 0;
@@ -28,15 +28,11 @@ static uint8_t ctrl_pressed = 0;
 
 static void ctrl_c_handler() {
     kill_all_processes();
-    ngc_print("Ctrl+C pressed\n");
 }
 
-static void ctrl_d_handler() {
-    ngc_print("Ctrl+D pressed\n");
-}
 
 void keyboard_handler(uint64_t tecla_hex){
-    uint8_t special_char = 0;
+    uint32_t special_char = 0;
     if (tecla_hex == 0x1D) {
         ctrl_pressed = 1;
         return;
@@ -45,9 +41,8 @@ void keyboard_handler(uint64_t tecla_hex){
         ctrl_pressed = 0;
         return;
     } else if (ctrl_pressed && tecla_hex == 0x20) {
-        ctrl_d_handler();
+        special_char = 3;
         ctrl_pressed = 0;
-        return;
     } else if (ctrl_pressed && tecla_hex == 0x07) {
         //ctrl_ampersand_handler();
         special_char = 1;
