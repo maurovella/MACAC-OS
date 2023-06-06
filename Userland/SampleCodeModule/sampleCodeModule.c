@@ -49,16 +49,16 @@ char *welcome_message = "\n\n\n\n\n\n\n\n\n\n\n\n                     ____    __
 
 int main() {
 	do_print_color(welcome_message, YELLOW);
-        sys_wait(30000000);
+        sys_wait(300000000);
         for(int i = 0; i < 60; i++) {
-                sys_wait(600000);
+                sys_wait(6000000);
                 printf("\n");
         }
         sys_clear_screen(BLACK);
         do_print_color(draw, RED);
-        sys_wait(30000000);
+        sys_wait(300000000);
         for(int i = 0; i < 60; i++) {
-                sys_wait(600000);
+                sys_wait(6000000);
                 printf("\n");
         }
 	sys_clear_screen(BLACK);

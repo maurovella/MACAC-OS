@@ -98,7 +98,7 @@ int8_t create_pipe (unsigned int pipe_id) {
     return SUCCESS;
 }
 
-static find_pipe(unsigned int pipe_id) {
+static int find_pipe(unsigned int pipe_id) {
     int i = 0;
     while (i < MAX_PIPES) {
         if (pipes[i].pipe_id == pipe_id) {

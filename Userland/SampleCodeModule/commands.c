@@ -414,6 +414,7 @@ void wc() {
 }
 
 void filter() {
+	
 	char buffer[MAX_BUFFER];
 	get_buffer(buffer, '\n',0);
 	char no_vowels[MAX_BUFFER];
@@ -431,9 +432,8 @@ void filter() {
 	do_print_color(no_vowels, CYAN);
 }
 
-void phylo() {
-	
-	//do_phylo();
+void philo() {
+	do_philo();
 	return;
 }
 
@@ -470,7 +470,7 @@ void pipe_commands() {
 	printf("  cat\n");
 	printf("  wc\n");
 	printf("  filter\n");
-	printf("  phylo\n");
+	printf("  philo\n");
 	printf("  mem\n");
 	printf("  test_scheduler\n");
 	printf("  test_priority\n");

@@ -18,6 +18,7 @@ extern uint8_t screenshot;
 typedef int64_t (*syscall_type) (uint64_t, uint64_t, uint64_t, uint64_t, uint64_t);
 
 static void sys_write_handler(uint64_t fd, uint64_t buffer, uint64_t bytes){
+    fd = get_current_output();
     if (fd == STDOUT) {
         for (uint64_t i = 0; i < bytes; i++){
             ngc_print_char(((char*)buffer)[i]);
@@ -30,14 +31,19 @@ static void sys_write_handler(uint64_t fd, uint64_t buffer, uint64_t bytes){
 }
 
 static int64_t sys_read_handler(uint64_t fd, char * buffer, uint64_t bytes){
-    if (fd != STDIN && fd != KBDIN) return -1;
-    int64_t i = 0;
-    char c;
-    while(i < bytes && (c = get_first_char()) != 0xFF) {
-        buffer[i] = c;
-        i++;
+    fd = get_current_input();
+    if (fd == STDIN || fd == BACKGROUND) {
+        int64_t i = 0;
+        char c;
+        while(i < bytes && (c = get_first_char()) != 0xFF) {
+            buffer[i] = c;
+            i++;
+        }
+        return i;
+    } else {
+        return read_pipe(fd, buffer, bytes);
     }
-    return i;
+   
 }
 
 static uint64_t sys_time_handler(){

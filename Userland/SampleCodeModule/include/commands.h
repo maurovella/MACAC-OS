@@ -54,7 +54,7 @@ void wc();
 
 void filter();
 
-void phylo();
+void philo();
 
 void mem();
 

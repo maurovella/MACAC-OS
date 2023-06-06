@@ -1,192 +1,172 @@
-/*#include <stdio.h>
-#include <stdlib.h>
-#include <unistd.h>
-#include <sys/types.h>
-#include <sys/ipc.h>
-#include <sys/sem.h>
-#include <signal.h>
-#include <time.h>
+#include <inout.h>
+#include <syscalls.h>
+#include <stdint.h>
+#include <string_util.h>
 
-#define MAX_FILOSOFOS 10
-#define IZQUIERDA(id) ((id) + num_filosofos - 1) % num_filosofos
-#define DERECHA(id) ((id) + 1) % num_filosofos
+#define MAX_PHYLOS 10
+#define MIN_PHYLOS 5
+#define LEFT    (i + curr_philos - 1) % curr_philos
+#define RIGHT   (i + 1) % curr_philos
+#define THINKING    0
+#define HUNGRY      1
+#define EATING      2
 
-enum { PENSANDO, HAMBRIENTO, COMIENDO };
+#define TRUE 1
+#define FALSE (!TRUE)
 
-typedef struct {
-    int id;
-    int estado;
-} Filosofo;
+#define MUTEX 123
+#define PRINT_MUTEX 456
 
-int semid;
-int num_filosofos;
-Filosofo* filosofos;
+typedef int sem_t;
+int end = FALSE;
 
+int state[MAX_PHYLOS] = { 0 };
+sem_t s[MAX_PHYLOS] = { 0 };
+sem_t safe[MAX_PHYLOS] = { 0 };
+int pids[MAX_PHYLOS] = { 0 };
+int curr_philos = 0;
 
-void tomar_tenedores(Filosofo* filosofo) {
-    int tenedor_izquierdo = filosofo->id;
-    int tenedor_derecho = (filosofo->id + 1) % num_filosofos;
+void philosopher(char ** num);
+void take_forks(int i);
+void add_philo();
+void remove_philo();
+void put_forks(int i);
+void test(int i);
+void eat();
+void think();
 
-    // Intentar tomar el tenedor izquierdo
-    if (semctl(semid, tenedor_izquierdo, GETVAL, 0) == 1) {
-        printf("Filósofo %d: Esperando tenedor izquierdo\n", filosofo->id);
-        sem_wait(&semid, tenedor_izquierdo);
+void do_philo() {
+    end = FALSE;
+    curr_philos = 0;
+    sys_close_sem(MUTEX);
+    sys_close_sem(PRINT_MUTEX);
+    sys_create_sem_by_id(MUTEX, 1);
+    sys_create_sem_by_id(PRINT_MUTEX, 1);
+
+    for(int i = 0 ; i < MIN_PHYLOS; i++){
+        add_philo();
     }
 
-    // Intentar tomar el tenedor derecho
-    if (semctl(semid, tenedor_derecho, GETVAL, 0) == 1) {
-        printf("Filósofo %d: Esperando tenedor derecho\n", filosofo->id);
-        sem_wait(&semid, tenedor_derecho);
-    }
-}
-
-void soltar_tenedores(Filosofo* filosofo) {
-    int tenedor_izquierdo = filosofo->id;
-    int tenedor_derecho = (filosofo->id + 1) % num_filosofos;
-
-    sem_post(&semid, tenedor_izquierdo);
-    sem_post(&semid, tenedor_derecho);
-}
-
-void verificar(Filosofo* filosofo) {
-    if (filosofo->estado == HAMBRIENTO &&
-        filosofos[IZQUIERDA(filosofo->id)].estado != COMIENDO &&
-        filosofos[DERECHA(filosofo->id)].estado != COMIENDO) {
-        filosofo->estado = COMIENDO;
-        sem_post(&semid, filosofo->id);
-    }
-}
-
-void filosofo(Filosofo* filosofo) {
-    while (1) {
-        // Filósofo pensando
-        // ...
-
-        // Filósofo tiene hambre y quiere comer
-        tomar_tenedores(filosofo);
-
-        // Filósofo comiendo
-        // ...
-
-        // Filósofo terminó de comer y suelta los tenedores
-        soltar_tenedores(filosofo);
-    }
-}
-
-// Resto del código...
-
-int main() {
-    num_filosofos = 5;
-    filosofos = memory_alloc(num_filosofos * sizeof(Filosofo));
-
-    // Crear e inicializar los semáforos
-    semid = semget(IPC_PRIVATE, num_filosofos, IPC_CREAT | 0666);
-    for (int i = 0; i < num_filosofos; i++) {
-        semctl(semid, i, SETVAL, 1);
-    }
-
-    // Configurar el manejo de la señal SIGINT (Ctrl+C)
-    signal(SIGINT, manejar_senal);
-
-    // Crear los procesos de los filósofos
-    pid_t pid;
-    for (int i = 0; i < num_filosofos; i++) {
-        filosofos[i].id = i;
-        filosofos[i].estado = PENSANDO;
-
-        pid = fork();
-        if (pid < 0) {
-            printf("Error al crear el proceso del filósofo %d\n", i);
-            return 1;
-        } else if (pid == 0) {
-            // Proceso hijo (filósofo)
-            filosofo(&filosofos[i]);
-            return 0;
-        }
-    }
-
-    // Ciclo principal
-    while (1) {
-        // Leer la entrada del usuario
-        char opcion;
-        scanf(" %c", &opcion);
-
-        // Realizar la acción correspondiente según la opción seleccionada
-        switch (opcion) {
+    char action_buffer[1];
+    while(!end){
+        sys_read(STDIN, action_buffer, 1);
+        switch(action_buffer[0]){
             case 'a':
-                if (num_filosofos < MAX_FILOSOFOS) {
-                    agregar_filosofo(filosofos);
-                } else {
-                    printf("Se ha alcanzado el máximo número de filósofos.\n");
-                }
+                add_philo();
                 break;
-            case 'e':
-                if (num_filosofos > 1) {
-                    eliminar_filosofo(filosofos);
-                } else {
-                    printf("No se puede eliminar más filósofos. Mínimo alcanzado.\n");
-                }
+            case 'r':
+                remove_philo();
                 break;
-            default:
-                printf("Opción inválida. Intenta de nuevo.\n");
+            case 'q':
+                end = TRUE;
                 break;
         }
     }
 
-    // Liberar memoria
-    free(filosofos);
+    for(int i = 0 ; i < curr_philos; i++){
+        sys_kill_process(pids[i]);
+        sys_close_sem(s[i]);
+        sys_close_sem(safe[i]);
+    }
 
-    return 0;
+    sys_close_sem(MUTEX);
+    sys_close_sem(PRINT_MUTEX);
 }
 
+void add_philo() {
+    sys_wait_sem(MUTEX);
+    if(curr_philos == MAX_PHYLOS){
+        printf("Maximun number of phylosofers reached\n");
+    } else {
+        state[curr_philos] = THINKING;
+        s[curr_philos] = sys_create_sem(0);
+        safe[curr_philos] = sys_create_sem(1);
 
-void agregar_filosofo(Filosofo* filosofos) {
-    if (num_filosofos >= MAX_FILOSOFOS) {
-        printf("Se ha alcanzado el máximo número de filósofos.\n");
+        char philosopher_string[11] = { "philosopher" };
+        char ** philos = { 0 };
+
+        char ** args = (char **) sys_malloc(3 * sizeof(char *));
+        char * arg_buffer = (char *) sys_malloc(8);
+        itoa(curr_philos, arg_buffer);
+
+        _str_cpy(args[0], philosopher_string, 12);
+        args[1] = arg_buffer;
+        philos = args;
+        pids[curr_philos] = sys_create_child_process(philos, 3, STDIN, STDOUT, (uint64_t) &philosopher);
+        if( pids[curr_philos] <= 0) {
+            printf("ERROR: creating philosophers.\n");
+            return;
+        }
+
+        curr_philos++;
+    }
+    sys_post_sem(MUTEX);
+}
+
+void remove_philo(){
+    if(curr_philos == MIN_PHYLOS){
+        printf("Minimun number of phylosofers reached\n");
         return;
     }
 
-    // Incrementar el contador de filósofos
-    num_filosofos++;
+    sys_wait_sem(safe[curr_philos-1]);
+    sys_wait_sem(MUTEX);
 
-    // Asignar el nuevo filósofo
-    filosofos[num_filosofos - 1].id = num_filosofos - 1;
-    filosofos[num_filosofos - 1].estado = PENSANDO;
+    curr_philos--;
+    sys_close_sem(safe[curr_philos]);
+    sys_kill_process(pids[curr_philos]);
+    sys_close_sem(s[curr_philos]);
+    
+    sys_post_sem(MUTEX);
+}
 
-    // Crear el proceso del nuevo filósofo
-    pid_t pid = fork();
-    if (pid < 0) {
-        printf("Error al crear el proceso del filósofo %d\n", num_filosofos - 1);
-        return;
-    } else if (pid == 0) {
-        // Proceso hijo (nuevo filósofo)
-        filosofo(&filosofos[num_filosofos - 1]);
-        return;
+void philosopher(char ** num) {
+    int i = atoi(num[1]);
+    while(!end) {
+        sys_wait_sem(safe[i]);
+        think();
+        take_forks(i);
+        eat();
+        put_forks(i);
+        sys_post_sem(safe[i]);
     }
 }
 
-void eliminar_filosofo(Filosofo* filosofos) {
-    if (num_filosofos <= 1) {
-        printf("No se puede eliminar más filósofos. Mínimo alcanzado.\n");
-        return;
-    }
-
-    // Obtener un índice de filósofo aleatorio para eliminar
-    int indice_eliminar = rand() % num_filosofos;
-
-    // Filósofo a eliminar
-    Filosofo filosofo_eliminar = filosofos[indice_eliminar];
-
-    // Esperar a que el filósofo termine su ejecución
-    int estado_hijo;
-    waitpid(filosofo_eliminar.pid, &estado_hijo, 0);
-
-    // Desplazar los filósofos restantes hacia la izquierda para llenar el espacio vacío
-    for (int i = indice_eliminar; i < num_filosofos - 1; i++) {
-        filosofos[i] = filosofos[i + 1];
-    }
-
-    // Decrementar el contador de filósofos
-    num_filosofos--;
+void take_forks(int i) {
+    sys_wait_sem(MUTEX);
+    state[i] = HUNGRY;
+    test(i);
+    sys_post_sem(MUTEX);
+    sys_wait_sem(s[i]);
 }
-*/
+
+void put_forks(int i) {
+    sys_wait_sem(MUTEX);
+    state[i] = THINKING;
+    test(LEFT);
+    test(RIGHT);
+    sys_post_sem(MUTEX);
+}
+
+void test(int i) {
+    if(state[i] == HUNGRY && state[LEFT] != EATING && state[RIGHT] != EATING) {
+        state[i] = EATING;
+        sys_post_sem(s[i]);
+    }
+}
+
+void eat() {
+    for(int i = 0; i < 5000000; i++)
+        ;
+    sys_wait_sem(PRINT_MUTEX);
+    for(int i = 0; i < curr_philos; i++) {
+        printf(state[i] == EATING? "E " : ". ");
+    }
+    printf("\n");
+    sys_post_sem(PRINT_MUTEX);
+}
+
+void think() {
+    for(int i = 0; i < 5000000; i++)
+        ;
+}
