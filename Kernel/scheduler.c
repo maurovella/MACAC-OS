@@ -59,6 +59,7 @@ void change_process_state(uint32_t pid, uint8_t new_state){
 }
 
 void idle_process() {
+    ngc_print("Idle process running\n");
     while (1) {
         _hlt();
     }
@@ -312,5 +313,11 @@ void kill_all_processes() {
     if (current_process_killed) {
         force_timer_tick();
     }
+    return;
+}
+
+void force_next_process() {
+    process_list[current_process_idx].remaining_ticks = 0;
+    force_timer_tick();
     return;
 }

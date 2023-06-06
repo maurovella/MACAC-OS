@@ -19,7 +19,7 @@
 #define MAX_PROCESSES 20 // shell and idle are occupying 2 positions
 
 
-#define SEM_ID 5
+#define SEM_ID 1
 #define TOTAL_PAIR_PROCESSES 2
 
 typedef struct MM_rq{
@@ -35,9 +35,6 @@ typedef struct P_rq {
   uint32_t pid;
   enum State state;
 } p_rq;
-
-
-
 
 int64_t prio[TOTAL_PROCESSES] = {LOWEST, MEDIUM, HIGHEST};
 
@@ -182,7 +179,7 @@ void test_prio() {
   test_prio_block_unblock_processes(pids);
 
   bussy_wait(WAIT);
-  do_print_color("KILLING...\n", ORANGE);
+  do_print_color("\nKILLING...\n", ORANGE);
   
   test_prio_kill_processes(pids);
 
@@ -195,13 +192,14 @@ void test_processes() {
   uint8_t action;
   uint64_t max_processes = MAX_PROCESSES;
   uint64_t test = 0;
-  p_rq p_rqs[max_processes];
+  p_rq p_rqs[MAX_PROCESSES];
 
   while (test < 5) {
     test++;
-    printf("\n\n\n\n\n");
-    printf("Test %d\n", test);
     printf("\n\n\n\n");
+    do_print_color("TEST ", CYAN);
+    printf("%d\n", test);
+    printf("\n\n\n");
     // Create max_processes processes
     for (rq = 0; rq < max_processes; rq++) {
       int32_t pid_return = sys_create_child_process(NULL, 1, STDIN, STDOUT, (uint64_t) &endless_loop);
@@ -274,10 +272,15 @@ void test_processes() {
 
 int64_t global; // shared memory
 
-void slowInc(int64_t *p, int64_t inc) {
+void slowInc(int64_t *p, int64_t inc, uint64_t pid) {
   uint64_t aux = *p;
-  bussy_wait(30000); // This makes the race condition highly probable
+  //bussy_wait(30000);
+  sys_yield(); // This makes the race condition highly probable
+  do_print_color("continues after yield. process: ", CYAN);
+  printf("%d\n", pid);
+  printf("critical section. ACCESSED VARIABLE: %d\n", aux);
   aux += inc;
+  printf("critical section. MODIFIED VARIABLE: %d\n", aux);
   *p = aux;
 }
 
@@ -286,14 +289,12 @@ uint64_t my_process_inc(char **argv) {
   int8_t inc;
   int8_t use_sem;
 
-  printf("test_sync: starting process %d\n", sys_get_pid());
+  do_print_color("test_sync: ", CYAN);
+  printf("starting process %d\n", sys_get_pid());
 
-  if ((n = satoi(argv[0])) <= 0)
-    return -1;
-  if ((inc = satoi(argv[1])) == 0)
-    return -1;
-  if ((use_sem = satoi(argv[2])) < 0)
-    return -1;
+  if ((n = satoi(argv[0])) <= 0) return -1;
+  if ((inc = satoi(argv[1])) == 0) return -1;
+  if ((use_sem = satoi(argv[2])) < 0) return -1;
 
   if (use_sem) {
     if (sys_open_sem(SEM_ID, 1) != 0) {
@@ -305,14 +306,21 @@ uint64_t my_process_inc(char **argv) {
 
   uint64_t i;
   for (i = 0; i < n; i++) {
+    uint64_t curr_pid = sys_get_pid();
     if (use_sem) {
+      do_print_color("mutex ", 0x00007f); // red
+      printf("process %d ", curr_pid);
       sys_wait_sem(SEM_ID);
-      printf("dec: %d\n", SEM_ID);
+      printf("process %d ", curr_pid);
+      do_print_color(" -> decremented\n", 0x00007f); // red
     }
-    slowInc(&global, inc);
+    slowInc(&global, inc, curr_pid);
     if (use_sem) {
+      do_print_color("mutex ", 0x007f00); // green
+      printf("process %d ", curr_pid);
       sys_post_sem(SEM_ID);
-      printf("inc: %d\n", SEM_ID);
+      printf("process %d ", curr_pid);
+      do_print_color("incremented\n", 0x007f00); // green
     }
   }
 
@@ -320,7 +328,7 @@ uint64_t my_process_inc(char **argv) {
 }
 
 uint64_t test_sync() { //{n, use_sem, 0}
-  uint64_t pids[2 * TOTAL_PAIR_PROCESSES];
+  uint64_t pids[TOTAL_PAIR_PROCESSES*2];
 
 
   char *argvDec[] = {"2", "-1", "1", NULL};
@@ -331,11 +339,13 @@ uint64_t test_sync() { //{n, use_sem, 0}
   uint64_t i;
   for (i = 0; i < TOTAL_PAIR_PROCESSES*2; i++) {
     if (i % 2 == 0) {
-      pids[i] = sys_create_child_process(argvDec, MEDIUM, 1, 1, (uint64_t) &my_process_inc);
+      pids[i] = sys_create_child_process(argvDec, 4, STDIN, STDOUT, (uint64_t) &my_process_inc);
+      do_print_color("\nDECREMENT PROCESS\n", CYAN);
       printf("pid created: %d\n", pids[i]);
     }
     else {
-      pids[i] = sys_create_child_process(argvInc, MEDIUM, 1, 1, (uint64_t) &my_process_inc);
+      pids[i] = sys_create_child_process(argvInc, MEDIUM, STDIN, STDOUT, (uint64_t) &my_process_inc);
+      do_print_color("\nINCREMENT PROCESS\n", CYAN);
       printf("pid created: %d\n", pids[i]);
     }
   }

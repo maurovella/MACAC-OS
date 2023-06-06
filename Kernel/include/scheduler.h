@@ -93,4 +93,6 @@ extern void force_timer_tick();
 
 uint8_t get_all_processes(process_info * processes);
 
+void force_next_process();
+
 #endif // SCHEDULER_H

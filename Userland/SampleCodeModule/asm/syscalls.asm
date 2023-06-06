@@ -35,6 +35,7 @@ GLOBAL sys_wait_sem
 GLOBAL sys_post_sem
 GLOBAL sys_close_sem
 GLOBAL sys_open_sem
+GLOBAL sys_yield
 
 section .text
 sys_read:
@@ -216,5 +217,10 @@ sys_post_sem:
 
 sys_close_sem:
     mov rax, 0x23
+    int 80h
+    ret
+
+sys_yield:
+    mov rax, 0x24
     int 80h
     ret

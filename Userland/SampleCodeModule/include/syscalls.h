@@ -83,4 +83,6 @@ uint8_t sys_post_sem(uint64_t sem_id);
 
 uint8_t sys_close_sem(uint64_t sem_id);
 
+void sys_yield();
+
 #endif

@@ -47,7 +47,7 @@ static program_info_CDT programs[] = {
 	{.name = "mem",				.function_ptr = (uint64_t) &mem,				.args_qty = 0,  .pipeable = 1 , .params_error_msg = NO_PARMAS_ERROR_MSG , .base_priority = 5},
 	{.name = "pipecommands",	.function_ptr = (uint64_t) &pipe_commands,		.args_qty = 0,  .pipeable = 1 , .params_error_msg = NO_PARMAS_ERROR_MSG , .base_priority = 5},
 	{.name = "thanks",			.function_ptr = (uint64_t) &thanks,				.args_qty = 0,  .pipeable = 1 , .params_error_msg = NO_PARMAS_ERROR_MSG , .base_priority = 5},
-	{.name = "testsync", 		.function_ptr = (uint64_t) &test_synchronization,.args_qty = 0, .pipeable = 1 , .params_error_msg = NO_PARMAS_ERROR_MSG , .base_priority = 5}
+	{.name = "testsync", 		.function_ptr = (uint64_t) &test_synchronization,.args_qty = 0, .pipeable = 1 , .params_error_msg = NO_PARMAS_ERROR_MSG , .base_priority = 3}
 };
 static uint8_t validate_num_of_params(uint64_t params_size, program_info_ADT program, char ** params){
 	if(params_size == program->args_qty+1 && params[params_size -1][0] == '&' && params[params_size -1][1] == '\0') {

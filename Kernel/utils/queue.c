@@ -22,6 +22,7 @@ void create_queue(queue_ADT queue, unsigned int size) {
 }
 
 unsigned int get_queue_length(queue_ADT queue) {
+    uint64_t size = queue->size;
     return queue->length;
 }
 
@@ -32,6 +33,9 @@ void enqueue(queue_ADT queue, uint64_t elem) {
 
     queue->elements[queue->write_pos] = elem;
     queue->write_pos = (queue->write_pos + 1) % queue->size;
+    uint64_t elem_written = queue->elements[queue->write_pos];
+    uint64_t elem_read = queue->elements[queue->read_pos];
+    uint64_t pos_write = queue->write_pos;
     queue->length++;
 }
 
@@ -41,7 +45,8 @@ uint64_t dequeue(queue_ADT queue) {
     }
 
     uint64_t elem = queue->elements[queue->read_pos];
-    queue->read_pos = (queue->read_pos + 1) % queue->size;
+    queue->read_pos = (queue->read_pos + 1) % (queue->size);
+    uint64_t elem_sig = queue->elements[queue->read_pos];
     queue->length--;
 
     return elem;

@@ -194,6 +194,10 @@ static uint8_t sys_get_current_input(uint8_t output) {
     return get_current_output();
 }
 
+static void sys_yield() {
+    return force_next_process();
+}
+
 static syscall_type syscalls[]  = {
     (syscall_type) sys_read_handler, 
     (syscall_type) sys_write_handler, 
@@ -230,7 +234,8 @@ static syscall_type syscalls[]  = {
     (syscall_type) sys_open_sem,
     (syscall_type) sys_wait_sem,
     (syscall_type) sys_post_sem,
-    (syscall_type) sys_close_sem
+    (syscall_type) sys_close_sem,
+    (syscall_type) sys_yield
 };
 
 //  paso syscall_id por rax, se come r10 por rcx, y r9 por rax
