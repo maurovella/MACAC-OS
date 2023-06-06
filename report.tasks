@@ -1,0 +1,96 @@
+www.viva64.com/en/w	1	err	Help: The documentation for all analyzer warnings is available here: https://www.viva64.com/en/w/.
+/root/Bootloader/BMFS/bmfs.c	238	note	V576 Incorrect format. Consider checking the third actual argument of the 'printf' function. The SIGNED integer type argument is expected.
+/root/Bootloader/BMFS/bmfs.c	254	note	V576 Incorrect format. Consider checking the third actual argument of the 'printf' function. The SIGNED integer type argument is expected.
+/root/Bootloader/BMFS/bmfs.c	254	note	V576 Incorrect format. Consider checking the fourth actual argument of the 'printf' function. The SIGNED integer type argument is expected.
+/root/Bootloader/BMFS/bmfs.c	369	note	V584 The 'diskSize' value is present on both sides of the '>' operator. The expression is incorrect or it can be simplified.
+/root/Bootloader/BMFS/bmfs.c	408	note	V576 Incorrect format. Consider checking the second actual argument of the 'printf' function. Under certain conditions the pointer can be null.
+/root/Bootloader/BMFS/bmfs.c	452	note	V575 The potential null pointer is passed into 'memset' function. Inspect the first argument.
+/root/Bootloader/BMFS/bmfs.c	482	note	V575 The potential null pointer is passed into 'rewind' function. Inspect the first argument.
+/root/Bootloader/BMFS/bmfs.c	552	err	V595 The 'disk' pointer was utilized before it was verified against nullptr. Check lines: 552, 575.
+/root/Bootloader/BMFS/bmfs.c	689	note	V576 Incorrect format. Consider checking the second actual argument of the 'printf' function. The SIGNED integer type argument is expected.
+/root/Kernel/kernel.c	26	note	V566 The integer constant is converted to pointer. Possibly an error or a bad coding style: (void *) 0x400000
+/root/Kernel/kernel.c	27	note	V566 The integer constant is converted to pointer. Possibly an error or a bad coding style: (void *) 0x500000
+/root/Kernel/utils/semaphore.c	48	warn	V547 Expression 'pos_found == - 1' is always false.
+/root/Kernel/utils/semaphore.c	71	warn	V560 A part of conditional expression is always true: pos_found == - 1.
+/root/Kernel/utils/semaphore.c	94	warn	V560 A part of conditional expression is always true: pos_found == - 1.
+/root/Kernel/utils/semaphore.c	112	err	V547 Expression 'pos_found == - 1' is always false.
+/root/Kernel/utils/semaphore.c	114	warn	V557 Array overrun is possible. The value of 'pos_found' index could reach 255.
+/root/Kernel/utils/semaphore.c	115	warn	V557 Array overrun is possible. The value of 'pos_found' index could reach 255.
+/root/Kernel/utils/semaphore.c	116	warn	V557 Array overrun is possible. The value of 'pos_found' index could reach 255.
+/root/Kernel/utils/semaphore.c	120	warn	V557 Array overrun is possible. The value of 'pos_found' index could reach 255.
+/root/Kernel/utils/semaphore.c	122	warn	V557 Array overrun is possible. The value of 'pos_found' index could reach 255.
+/root/Kernel/utils/semaphore.c	132	err	V547 Expression 'pos_found == - 1' is always false.
+/root/Kernel/utils/semaphore.c	134	warn	V557 Array overrun is possible. The value of 'pos_found' index could reach 255.
+/root/Kernel/utils/semaphore.c	135	warn	V557 Array overrun is possible. The value of 'pos_found' index could reach 255.
+/root/Kernel/utils/semaphore.c	136	warn	V557 Array overrun is possible. The value of 'pos_found' index could reach 255.
+/root/Kernel/utils/semaphore.c	141	warn	V557 Array overrun is possible. The value of 'pos_found' index could reach 255.
+/root/Kernel/utils/semaphore.c	143	warn	V557 Array overrun is possible. The value of 'pos_found' index could reach 255.
+/root/Kernel/utils/semaphore.c	147	warn	V557 Array overrun is possible. The value of 'pos_found' index could reach 255.
+/root/Kernel/utils/semaphore.c	156	err	V547 Expression 'pos_found == - 1' is always false.
+/root/Kernel/utils/semaphore.c	158	warn	V557 Array overrun is possible. The value of 'pos_found' index could reach 255.
+/root/Kernel/utils/semaphore.c	159	warn	V557 Array overrun is possible. The value of 'pos_found' index could reach 255.
+/root/Kernel/utils/semaphore.c	160	warn	V557 Array overrun is possible. The value of 'pos_found' index could reach 255.
+/root/Kernel/utils/semaphore.c	164	warn	V557 Array overrun is possible. The value of 'pos_found' index could reach 255.
+/root/Kernel/utils/semaphore.c	166	warn	V557 Array overrun is possible. The value of 'pos_found' index could reach 255.
+/root/Kernel/utils/semaphore.c	189	err	V547 Expression 'free_pos == - 1' is always false.
+/root/Kernel/utils/pipes.c	79	warn	V560 A part of conditional expression is always false: reading_sem_id == - 1.
+/root/Kernel/utils/pipes.c	79	warn	V560 A part of conditional expression is always false: writing_sem_id == - 1.
+/root/Kernel/utils/queue.c	19	err	V647 The value of 'int' type is assigned to the pointer of 'unsigned long long' type.
+/root/Userland/SampleCodeModule/test_util.c	71	err	V576 Incorrect format. Consider checking the second actual argument of the 'printf' function. To print the value of pointer the '%p' should be used.
+/root/Userland/SampleCodeModule/test_util.c	71	note	V576 Incorrect format. Consider checking the third actual argument of the 'printf' function. The SIGNED integer type argument is expected.
+/root/Userland/SampleCodeModule/test_util.c	214	note	V576 Incorrect format. Consider checking the second actual argument of the 'printf' function. The SIGNED integer type argument is expected.
+/root/Userland/SampleCodeModule/test_util.c	235	note	V576 Incorrect format. Consider checking the second actual argument of the 'printf' function. The SIGNED integer type argument is expected.
+/root/Userland/SampleCodeModule/test_util.c	249	note	V576 Incorrect format. Consider checking the second actual argument of the 'printf' function. The SIGNED integer type argument is expected.
+/root/Userland/SampleCodeModule/test_util.c	264	note	V576 Incorrect format. Consider checking the second actual argument of the 'printf' function. The SIGNED integer type argument is expected.
+/root/Userland/SampleCodeModule/test_util.c	282	note	V576 Incorrect format. Consider checking the second actual argument of the 'printf' function. The integer argument of 32-bit size is expected.
+/root/Userland/SampleCodeModule/test_util.c	283	note	V576 Incorrect format. Consider checking the second actual argument of the 'printf' function. The integer argument of 32-bit size is expected.
+/root/Userland/SampleCodeModule/test_util.c	285	note	V576 Incorrect format. Consider checking the second actual argument of the 'printf' function. The integer argument of 32-bit size is expected.
+/root/Userland/SampleCodeModule/test_util.c	314	note	V576 Incorrect format. Consider checking the second actual argument of the 'printf' function. The integer argument of 32-bit size is expected.
+/root/Userland/SampleCodeModule/test_util.c	316	note	V576 Incorrect format. Consider checking the second actual argument of the 'printf' function. The integer argument of 32-bit size is expected.
+/root/Userland/SampleCodeModule/test_util.c	322	note	V576 Incorrect format. Consider checking the second actual argument of the 'printf' function. The integer argument of 32-bit size is expected.
+/root/Userland/SampleCodeModule/test_util.c	324	note	V576 Incorrect format. Consider checking the second actual argument of the 'printf' function. The integer argument of 32-bit size is expected.
+/root/Userland/SampleCodeModule/test_util.c	346	note	V576 Incorrect format. Consider checking the second actual argument of the 'printf' function. The integer argument of 32-bit size is expected.
+/root/Userland/SampleCodeModule/test_util.c	351	note	V576 Incorrect format. Consider checking the second actual argument of the 'printf' function. The integer argument of 32-bit size is expected.
+/root/Userland/SampleCodeModule/test_util.c	357	note	V576 Incorrect format. Consider checking the second actual argument of the 'printf' function. The integer argument of 32-bit size is expected.
+/root/Userland/SampleCodeModule/include/commands.h	22	note	V1003 The macro 'IS_ALLOWED_CHAR' is a dangerous expression. The parameter 'c' must be surrounded by parentheses.
+/root/Userland/SampleCodeModule/include/commands.h	23	note	V1003 The macro 'IS_NOT_VOWEL' is a dangerous expression. The parameter 'c' must be surrounded by parentheses.
+/root/Userland/SampleCodeModule/phylo.c	37	err	V614 Uninitialized buffer 'action_buffer' used. Consider checking the second actual argument of the 'sys_read' function.
+/root/Userland/SampleCodeModule/commands.c	41	warn	V618 It's dangerous to call the 'printf' function in such a manner, as the line being passed could contain format specification. The example of the safe code: printf("%s", str);
+/root/Userland/SampleCodeModule/commands.c	148	err	V614 Uninitialized variable 'ans' used.
+/root/Userland/SampleCodeModule/commands.c	288	err	V614 Potentially uninitialized pointer 'state_name' used. Consider checking the fifth actual argument of the 'printf' function.
+/root/Userland/SampleCodeModule/commands.c	288	note	V576 Incorrect format. Consider checking the third actual argument of the 'printf' function. The SIGNED integer type argument is expected.
+/root/Userland/SampleCodeModule/commands.c	288	err	V576 Incorrect format. Consider checking the sixth actual argument of the 'printf' function. To print the value of pointer the '%p' should be used.
+/root/Userland/SampleCodeModule/commands.c	288	err	V576 Incorrect format. Consider checking the seventh actual argument of the 'printf' function. To print the value of pointer the '%p' should be used.
+/root/Userland/SampleCodeModule/commands.c	288	note	V576 Incorrect format. Consider checking the eighth actual argument of the 'printf' function. The integer argument of 32-bit size is expected.
+/root/Userland/SampleCodeModule/commands.c	288	note	V576 Incorrect format. Consider checking the tenth actual argument of the 'printf' function. The SIGNED integer type argument is expected.
+/root/Userland/SampleCodeModule/commands.c	313	note	V576 Incorrect format. Consider checking the second actual argument of the 'printf' function. The SIGNED integer type argument is expected.
+/root/Userland/SampleCodeModule/commands.c	327	note	V576 Incorrect format. Consider checking the second actual argument of the 'printf' function. The SIGNED integer type argument is expected.
+/root/Userland/SampleCodeModule/commands.c	335	err	V614 Uninitialized variable 'c' used.
+/root/Userland/SampleCodeModule/commands.c	435	note	V576 Incorrect format. Consider checking the second actual argument of the 'printf' function. The integer argument of 32-bit size is expected.
+/root/Userland/SampleCodeModule/commands.c	436	note	V576 Incorrect format. Consider checking the second actual argument of the 'printf' function. The integer argument of 32-bit size is expected.
+/root/Userland/SampleCodeModule/commands.c	437	note	V576 Incorrect format. Consider checking the second actual argument of the 'printf' function. The integer argument of 32-bit size is expected.
+/root/Userland/SampleCodeModule/commands.c	438	note	V576 Incorrect format. Consider checking the second actual argument of the 'printf' function. The integer argument of 32-bit size is expected.
+/root/Userland/SampleCodeModule/shell.c	140	note	V522 Dereferencing of the null pointer 'params' might take place. The potential null pointer is passed into 'piped_process_handle' function. Inspect the first argument. Check lines: 140, 217.
+/root/Userland/SampleCodeModule/tron.c	34	warn	V764 Possible incorrect order of arguments passed to 'sys_paint_rect' function: 'height' and 'width'.
+/root/Userland/SampleCodeModule/tron.c	134	warn	V560 A part of conditional expression is always true: ticks % speed == 0.
+/root/Userland/SampleCodeModule/tron.c	183	err	V614 Uninitialized variable 'd' used.
+/root/Userland/SampleCodeModule/inout.c	97	err	V614 Uninitialized variable 'out' used. Consider checking the second actual argument of the 'sys_read' function.
+/root/Userland/SampleCodeModule/inout.c	105	err	V614 Uninitialized buffer 'buffer' used. Consider checking the second actual argument of the 'sys_read' function.
+/root/Userland/SampleCodeModule/inout.c	141	err	V614 Uninitialized variable 'buffer[buff_idx ++]' used.
+/root/Userland/SampleCodeModule/inout.c	160	note	V576 Incorrect format. Consider checking the second actual argument of the 'printf' function. The integer argument of 32-bit size is expected.
+/root/Userland/SampleCodeModule/inout.c	161	note	V576 Incorrect format. Consider checking the second actual argument of the 'printf' function. The integer argument of 32-bit size is expected.
+/root/Userland/SampleCodeModule/inout.c	162	note	V576 Incorrect format. Consider checking the second actual argument of the 'printf' function. The integer argument of 32-bit size is expected.
+/root/Userland/SampleCodeModule/inout.c	163	note	V576 Incorrect format. Consider checking the second actual argument of the 'printf' function. The integer argument of 32-bit size is expected.
+/root/Userland/SampleCodeModule/inout.c	164	note	V576 Incorrect format. Consider checking the second actual argument of the 'printf' function. The integer argument of 32-bit size is expected.
+/root/Userland/SampleCodeModule/inout.c	165	note	V576 Incorrect format. Consider checking the second actual argument of the 'printf' function. The integer argument of 32-bit size is expected.
+/root/Userland/SampleCodeModule/inout.c	166	note	V576 Incorrect format. Consider checking the second actual argument of the 'printf' function. The integer argument of 32-bit size is expected.
+/root/Userland/SampleCodeModule/inout.c	167	note	V576 Incorrect format. Consider checking the second actual argument of the 'printf' function. The integer argument of 32-bit size is expected.
+/root/Userland/SampleCodeModule/inout.c	168	note	V576 Incorrect format. Consider checking the second actual argument of the 'printf' function. The integer argument of 32-bit size is expected.
+/root/Userland/SampleCodeModule/inout.c	169	note	V576 Incorrect format. Consider checking the second actual argument of the 'printf' function. The integer argument of 32-bit size is expected.
+/root/Userland/SampleCodeModule/inout.c	170	note	V576 Incorrect format. Consider checking the second actual argument of the 'printf' function. The integer argument of 32-bit size is expected.
+/root/Userland/SampleCodeModule/inout.c	171	note	V576 Incorrect format. Consider checking the second actual argument of the 'printf' function. The integer argument of 32-bit size is expected.
+/root/Userland/SampleCodeModule/inout.c	172	note	V576 Incorrect format. Consider checking the second actual argument of the 'printf' function. The integer argument of 32-bit size is expected.
+/root/Userland/SampleCodeModule/inout.c	173	note	V576 Incorrect format. Consider checking the second actual argument of the 'printf' function. The integer argument of 32-bit size is expected.
+/root/Userland/SampleCodeModule/inout.c	174	note	V576 Incorrect format. Consider checking the second actual argument of the 'printf' function. The integer argument of 32-bit size is expected.
+/root/Userland/SampleCodeModule/inout.c	175	note	V576 Incorrect format. Consider checking the second actual argument of the 'printf' function. The integer argument of 32-bit size is expected.
+/root/Userland/SampleCodeModule/inout.c	176	note	V576 Incorrect format. Consider checking the second actual argument of the 'printf' function. The integer argument of 32-bit size is expected.

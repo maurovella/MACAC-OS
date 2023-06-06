@@ -1,4 +1,6 @@
-//#ifdef WITH_BUDDY_MM_
+// This is a personal academic project. Dear PVS-Studio, please check it.
+// PVS-Studio Static Code Analyzer for C, C++ and C#: http://www.viva64.com
+#ifdef WITH_BUDDY_MM_
 
 #include "include/memory_manager.h"
 #include "include/buddy_mm.h"
@@ -161,4 +163,4 @@ void memory_free(void * ptr) {
 
 
 
-//#endif
+#endif
