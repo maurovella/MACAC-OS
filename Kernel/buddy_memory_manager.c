@@ -18,7 +18,7 @@ static uint64_t get_fit_order(uint64_t size) {
     return order < MIN_ALLOC_LOG2 ? MIN_ALLOC_LOG2 : order;
 }
 
-static memory_info * get_mem_info() {
+static memory_info * get_buddy_mem_info() {
     return (memory_info *) HEAP_START;
 }
 
@@ -35,7 +35,7 @@ void memory_init() {
     buddy_size = (uint64_t) ((uint64_t) HEAP_END - (uint64_t) user_memory_start);
 
     // we initialize the memory_info status
-    memory_info * memory_info_status = get_mem_info();
+    memory_info * memory_info_status = get_buddy_mem_info();
     memory_info_status->free_bytes = buddy_size;
 
     return 0;
@@ -116,7 +116,7 @@ void * memory_alloc(uint64_t request) {
 
     if (block_index == -1) return NULL;
 
-    memory_info * memory_info_status = get_mem_info();
+    memory_info * memory_info_status = get_buddy_mem_info();
 
     memory_info_status->allocated_bytes += POW_2(order);
     memory_info_status->free_bytes -= memory_info_status->allocated_bytes;
@@ -152,7 +152,7 @@ void memory_free(void * ptr) {
 
     free_block_rec(buddy_idx);
 
-    memory_info * memory_info_status = get_mem_info();
+    memory_info * memory_info_status = get_buddy_mem_info();
 
     memory_info_status->allocated_bytes -= POW_2(buddy_tree[buddy_idx].order);
     memory_info_status->free_bytes += memory_info_status->allocated_bytes;
