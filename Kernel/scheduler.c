@@ -91,6 +91,8 @@ int8_t change_priority(uint32_t pid, uint8_t priority) {
     } else {
         process_list[idx].priority = priority;
     }
+    // Not a bug, a feature
+    process_list[idx].assigned_ticks = calculate_ticks(process_list[idx].priority);
     return TRUE;
 }
 
@@ -245,7 +247,7 @@ uint64_t next_process(uint64_t stack_pointer, uint64_t stack_segment) {
 
     if (inactive_processes == dim) {
         current_process_idx = get_process_idx(idle_pid);
-        change_process_state(idle_pid, RUNNING);
+        change_process_state(idle_pid, READY);
     } else if (process_list[current_process_idx].pid != idle_pid) {
         change_process_state(idle_pid, PAUSED);
     }
@@ -265,7 +267,7 @@ uint32_t calculate_ticks(uint8_t priority) {
     uint32_t ticks = 1;
     for (int i = 0; i < priority; i++)
     {
-        ticks *= 4;
+        ticks *= 2;
     }
     return ticks;
 }
@@ -289,4 +291,20 @@ uint8_t get_all_processes(process_info * info) {
         }
     }
     return j;
+}
+
+void kill_all_processes() {
+    uint8_t current_process_killed = FALSE;
+    for (int i = 0; i < MAX_PROCESSES; i++) {
+        if (process_list[i].state != DEAD && !process_list[i].immortal) {
+            destroy_process(i);
+            if (current_process_idx == i) {
+                current_process_killed = TRUE;
+            }
+        }
+    }
+    if (current_process_killed) {
+        force_timer_tick();
+    }
+    return;
 }

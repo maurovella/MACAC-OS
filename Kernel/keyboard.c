@@ -27,7 +27,7 @@ static uint64_t write_index = 0;         // iter last element
 static uint8_t ctrl_pressed = 0;
 
 static void ctrl_c_handler() {
-    kill_process(get_pid());
+    kill_all_processes();
     ngc_print("Ctrl+C pressed\n");
 }
 
