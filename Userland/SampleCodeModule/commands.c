@@ -1,13 +1,5 @@
-#include <stdint.h>
 #include <commands.h>
-#include <tron.h>
-#include <colors.h>
-#include <inout.h>
-#include <string_util.h>
-#include <test_util.h>
-#include <stddef.h>
-#include <commands_utils.h>
-#include <data_types.h>
+
 #define EOF 0xFE
 
 #define is_hexa(a) ( (((a) >= '0' && (a) <= '9') || ((a) >= 'a' && (a) <= 'f') || ((a) >= 'A' && (a) <= 'F')) ? 1 : 0 )
@@ -234,7 +226,7 @@ int calculate_max_len(process_info * processes, uint8_t size) {
 }
 
 void ps() {
-	process_info * processes = sys_malloc(sizeof(process_info *));
+	process_info * processes = (process_info *) sys_malloc(sizeof(process_info *));
 	uint8_t size = sys_get_all_processes(processes);
 	int max_len = calculate_max_len(processes, size);
 	
@@ -303,12 +295,11 @@ void ps() {
 
 void loop() {
 	int pid = sys_get_pid();
-	uint8_t write_fd = sys_get_current_output();
 	//imprimo el pid del proceso que ejecuta el loop y luego "in loop"
-	print_to_fd(write_fd,"I'm the process with pid: %d",pid);
-	print_to_fd(write_fd,"\n");
+	printf("I'm the process with pid: %d",pid);
+	printf("\n");
 	while(1) {
-		print_to_fd(write_fd,"in loop\n");
+		printf("in loop\n");
 		wait(50000);
 	}
 

@@ -1,6 +1,17 @@
 #ifndef COMMANDS_H
 #define COMMANDS_H
 
+#include <stdint.h>
+#include <tron.h>
+#include <colors.h>
+#include <inout.h>
+#include <string_util.h>
+#include <test_util.h>
+#include <stddef.h>
+#include <commands_utils.h>
+#include <data_types.h>
+#include <philo.h>
+
 #define MAX_PARAMETERS 5
 #define LENGTH_PARAMETERS 256
 #define BUFFER_LENGTH 256
@@ -46,7 +57,6 @@ void block(char ** params);
 void loop();
 
 void nice(char ** params);
-
 
 void cat();
 

@@ -1,21 +1,4 @@
-#include <inout.h>
-#include <syscalls.h>
-#include <stdint.h>
-#include <string_util.h>
-
-#define MAX_PHYLOS 10
-#define MIN_PHYLOS 5
-#define LEFT    (i + curr_philos - 1) % curr_philos
-#define RIGHT   (i + 1) % curr_philos
-#define THINKING    0
-#define HUNGRY      1
-#define EATING      2
-
-#define TRUE 1
-#define FALSE (!TRUE)
-
-#define MUTEX 123
-#define PRINT_MUTEX 456
+#include "include/philo.h"
 
 typedef int sem_t;
 int end = FALSE;
@@ -26,14 +9,14 @@ sem_t safe[MAX_PHYLOS] = { 0 };
 int pids[MAX_PHYLOS] = { 0 };
 int curr_philos = 0;
 
-void philosopher(char ** num);
-void take_forks(int i);
-void add_philo();
-void remove_philo();
-void put_forks(int i);
-void test(int i);
-void eat();
-void think();
+static void philosopher(char ** num);
+static void take_forks(int i);
+static void add_philo();
+static void remove_philo();
+static void put_forks(int i);
+static void test(int i);
+static void eat();
+static void think();
 
 void do_philo() {
     end = FALSE;
@@ -73,7 +56,7 @@ void do_philo() {
     sys_close_sem(PRINT_MUTEX);
 }
 
-void add_philo() {
+static void add_philo() {
     sys_wait_sem(MUTEX);
     if(curr_philos == MAX_PHYLOS){
         printf("Maximun number of phylosofers reached\n");
@@ -103,7 +86,7 @@ void add_philo() {
     sys_post_sem(MUTEX);
 }
 
-void remove_philo(){
+static void remove_philo(){
     if(curr_philos == MIN_PHYLOS){
         printf("Minimun number of phylosofers reached\n");
         return;
@@ -120,7 +103,7 @@ void remove_philo(){
     sys_post_sem(MUTEX);
 }
 
-void philosopher(char ** num) {
+static void philosopher(char ** num) {
     int i = atoi(num[1]);
     while(!end) {
         sys_wait_sem(safe[i]);
@@ -132,7 +115,7 @@ void philosopher(char ** num) {
     }
 }
 
-void take_forks(int i) {
+static void take_forks(int i) {
     sys_wait_sem(MUTEX);
     state[i] = HUNGRY;
     test(i);
@@ -140,7 +123,7 @@ void take_forks(int i) {
     sys_wait_sem(s[i]);
 }
 
-void put_forks(int i) {
+static void put_forks(int i) {
     sys_wait_sem(MUTEX);
     state[i] = THINKING;
     test(LEFT);
@@ -148,14 +131,14 @@ void put_forks(int i) {
     sys_post_sem(MUTEX);
 }
 
-void test(int i) {
+static void test(int i) {
     if(state[i] == HUNGRY && state[LEFT] != EATING && state[RIGHT] != EATING) {
         state[i] = EATING;
         sys_post_sem(s[i]);
     }
 }
 
-void eat() {
+static void eat() {
     for(int i = 0; i < 5000000; i++)
         ;
     sys_wait_sem(PRINT_MUTEX);
@@ -166,7 +149,7 @@ void eat() {
     sys_post_sem(PRINT_MUTEX);
 }
 
-void think() {
+static void think() {
     for(int i = 0; i < 5000000; i++)
         ;
 }
