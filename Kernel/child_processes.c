@@ -18,25 +18,32 @@ uint8_t all_children_finished(uint32_t parent_pid) {
 }
 
 void delete_children(uint32_t parent_pid) {
-    for (int i = 0; i < MAX_CHILDREN_PROCESSES; i++) {
-        if (children_processes[i].parent_pid == parent_pid) {
-            children_processes[i].state = DEAD;
-        }
-    }
+    for(int i=0 ; i<MAX_CHILDREN_PROCESSES; i++){
+		if(children_processes[i].parent_pid == parent_pid){
+			children_processes[i].parent_pid = 0;
+			children_processes[i].child_pid = 0;
+			children_processes[i].state = DEAD;
+		}
+	}
 }
 
 void set_dead_process(uint32_t pid) {
-    for (int i = 0; i < MAX_CHILDREN_PROCESSES; i++) {
-        if (children_processes[i].state == READY && children_processes[i].child_pid == pid) {
-            children_processes[i].state = DEAD;
-            uint32_t parent_pid = children_processes[i].parent_pid;
-            if (all_children_finished(parent_pid)) {
-                delete_children(parent_pid);
-                change_process_state(parent_pid, READY);
-            }
-        }
-        
-    }
+    for(int i=0 ; i<MAX_CHILDREN_PROCESSES; i++){
+		if( children_processes[i].state == READY && children_processes[i].child_pid == pid){
+			children_processes[i].state = DEAD;
+
+
+			// Check if siblings are alive. If they're all dead wake up parent.
+
+			unsigned int father = children_processes[i].parent_pid;
+			if(all_children_finished(father)){
+				delete_children(father);
+				change_process_state(father, READY);
+			}
+
+			return;
+		}
+	}
 }
 
 void add_child(uint32_t parent_pid, uint32_t child_pid) {
@@ -58,13 +65,13 @@ int32_t create_child_process(char ** params, uint8_t priority, uint8_t input, ui
     return child_pid;
 }
 
-uint8_t has_children(uint32_t pid) {
-    for (int i = 0; i < MAX_CHILDREN_PROCESSES; i++) {
-        if (children_processes[i].state != DEAD && children_processes[i].parent_pid == pid) {
-            return TRUE;
-        }
-    }
-    return FALSE;
+uint8_t has_children(unsigned int pid){
+	for(int i=0; i<MAX_CHILDREN_PROCESSES; i++){
+		if(children_processes[i].parent_pid == pid){
+			return 1;
+		}
+	}
+	return 0;
 }
 
 void wait_for_children() {

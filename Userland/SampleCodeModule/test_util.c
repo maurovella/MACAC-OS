@@ -2,9 +2,11 @@
 #include <inout.h>
 #include <stdint.h>
 #include <stddef.h>
+#include <colors.h>
+#include <string_util.h>
 
 #define MINOR_WAIT 1000000 // TODO: Change this value to prevent a process from flooding the screen
-#define WAIT       10000000      // TODO: Change this value to make the wait long enough to see theese processes beeing run at least twice
+#define WAIT       100000000      // TODO: Change this value to make the wait long enough to see theese processes beeing run at least twice
 
 #define TOTAL_PROCESSES 3
 #define LOWEST 1  // TODO: Change as required
@@ -57,7 +59,8 @@ void test_mm(){
     int test = 0;
     while (test < 50) {
         test++;
-        printf("Test %d\n", test);
+        do_print_color("Test: ", CYAN);
+        printf("%d\n", test);
         rq = 0;
         total = 0;
 
@@ -67,7 +70,7 @@ void test_mm(){
             mm_rqs[rq].address = (void *)sys_malloc(mm_rqs[rq].size);
             printf("address: %x size: %d\n", mm_rqs[rq].address, mm_rqs[rq].size);
             if(mm_rqs[rq].address == NULL){
-                printf("NO MORE MEM AVAILABLE\n");
+                do_print_color("NO MORE MEM AVAILABLE\n", RED);
                 return;
             }
 
@@ -89,7 +92,7 @@ void test_mm(){
         for (i = 0; i < rq; i++)
             if (mm_rqs[i].address)
                 if (!memcheck(mm_rqs[i].address, i, mm_rqs[i].size)) {
-                    printf("test_mm ERROR\n");
+                    do_print_color("test_mm ERROR\n", RED);
                     return;
                 }
 
@@ -99,25 +102,47 @@ void test_mm(){
                 sys_free(mm_rqs[i].address);
             }
     }
-    printf("TEST PASSED!!!\n");
+    do_print_color("MEMORY TEST PASSED!!!\n", GREEN);
 }
 
 static void test_prio_create_processes(int64_t * pids) {
-  pids[0] = sys_create_process(NULL, LOWEST, 0, 1, (uint64_t) &endless_loop);
-  pids[1] = sys_create_process(NULL, MEDIUM, 0, 1, (uint64_t) &endless_loop);
-  pids[2] = sys_create_process(NULL, HIGHEST, 0, 1, (uint64_t) &endless_loop);
+  pids[0] = sys_create_child_process(NULL, LOWEST, STDIN, STDOUT, (uint64_t) &endless_loop_print);
+  pids[1] = sys_create_child_process(NULL, MEDIUM, STDIN, STDOUT, (uint64_t) &endless_loop_print);
+  pids[2] = sys_create_child_process(NULL, HIGHEST, STDIN, STDOUT, (uint64_t) &endless_loop_print);
 }
 
 static void test_prio_change_priorities(int64_t * pids) {
-  sys_nice(pids[0], MEDIUM);
-  sys_nice(pids[1], HIGHEST);
-  sys_nice(pids[2], LOWEST);
+  int8_t result = 0;
+  if ((result = sys_nice(pids[0], MEDIUM)) == -1) {
+    do_print_color("test_prio: ERROR changing priority\n", RED);
+    return;
+  }
+  if ((result = sys_nice(pids[1], HIGHEST)) == -1) {
+    do_print_color("test_prio: ERROR changing priority\n", RED);
+    return;
+  }
+  if ((result = sys_nice(pids[2], LOWEST)) == -1) {
+    do_print_color("test_prio: ERROR changing priority\n", RED);
+    return;
+  }
+  do_print_color("priorities changed...\n", ORANGE);
 }
 
 static void test_prio_change_priorities_when_blocked(int64_t * pids) {
-  sys_nice(pids[0], HIGHEST);
-  sys_nice(pids[1], LOWEST);
-  sys_nice(pids[2], MEDIUM);
+  int8_t result = 0;
+  if ((result = sys_nice(pids[0], HIGHEST)) == -1) {
+    do_print_color("test_prio: ERROR changing priority\n", RED);
+    return;
+  }
+  if ((result = sys_nice(pids[1], LOWEST)) == -1) {
+    do_print_color("test_prio: ERROR changing priority\n", RED);
+    return;
+  }
+  if ((result = sys_nice(pids[2], MEDIUM)) == -1) {
+    do_print_color("test_prio: ERROR changing priority\n", RED);
+    return;
+  }
+  do_print_color("priorities changed...\n", ORANGE);
 }
 
 static void test_prio_block_unblock_processes(int64_t * pids) {
@@ -138,29 +163,29 @@ void test_prio() {
   test_prio_create_processes(pids);
 
   bussy_wait(WAIT);
-  printf("\nCHANGING PRIORITIES...\n");
+  do_print_color("\nCHANGING PRIORITIES...\n", ORANGE);
   
   test_prio_change_priorities(pids);
   
   bussy_wait(WAIT);
-  printf("\nBLOCKING...\n");
+  do_print_color("\nBLOCKING...\n", DARK_BLUE);
 
   test_prio_block_unblock_processes(pids);
 
-  printf("CHANGING PRIORITIES WHILE BLOCKED...\n");
+  do_print_color("\nCHANGING PRIORITIES WHILE BLOCKED...\n", ORANGE);
     
   test_prio_change_priorities_when_blocked(pids);
 
-  printf("UNBLOCKING...\n");
+  do_print_color("\nUNBLOCKING...\n", DARK_BLUE);
 
   test_prio_block_unblock_processes(pids);
 
   bussy_wait(WAIT);
-  printf("\nKILLING...\n");
+  do_print_color("KILLING...\n", ORANGE);
   
   test_prio_kill_processes(pids);
 
-  printf("TEST PASSED!!!\n");
+  do_print_color("PRIORITIES TEST PASSED!!!\n", GREEN);
 }
 
 void test_processes() {
@@ -178,13 +203,14 @@ void test_processes() {
     printf("\n\n\n\n");
     // Create max_processes processes
     for (rq = 0; rq < max_processes; rq++) {
-      int32_t pid_return = sys_create_child_process(NULL, 3, STDIN, STDOUT, (uint64_t) &endless_loop_print);
+      int32_t pid_return = sys_create_child_process(NULL, 1, STDIN, STDOUT, (uint64_t) &endless_loop);
       if (pid_return == -2 || pid_return == -3) {
-        printf("test_processes: ERROR creating process\n");
+        do_print_color("test_processes: ERROR creating process\n", RED);
         return ;
       } else {
         p_rqs[rq].pid = pid_return;
-        printf("Created process %d\n", p_rqs[rq].pid);
+        do_print_color("Created process: ", CYBER_GRAPE);
+        printf("%d\n", p_rqs[rq].pid);
         p_rqs[rq].state = RUNNING;
         alive++;
       }
@@ -201,10 +227,11 @@ void test_processes() {
             if (p_rqs[rq].state == RUNNING || p_rqs[rq].state == BLOCKED) {
               aux_return = sys_kill_process(p_rqs[rq].pid);
               if (aux_return == -1 || aux_return == -4) {
-                printf("test_processes: ERROR killing process\n");
+                do_print_color("test_processes: ERROR killing process\n", RED);
                 return;
               }
-              printf("Killed process %d\n", p_rqs[rq].pid);
+              do_print_color("Killed process: ", ORANGE);
+              printf(" %d\n", p_rqs[rq].pid);
               p_rqs[rq].state = KILLED;
               alive--;
             }
@@ -214,10 +241,11 @@ void test_processes() {
             if (p_rqs[rq].state == RUNNING) {
               aux_return = sys_block_or_unblock_process(p_rqs[rq].pid);
               if (aux_return == -1) {
-                printf("test_processes: ERROR blocking process\n");
+                do_print_color("test_processes: ERROR blocking process\n", RED);
                 return ;
               }
-              printf("Blocked process %d\n", p_rqs[rq].pid);
+              do_print_color("Blocked process ", CYAN);
+              printf("%d\n", p_rqs[rq].pid);
               p_rqs[rq].state = BLOCKED;
             }
             break;
@@ -225,18 +253,21 @@ void test_processes() {
       }
 
       // Randomly unblocks processes
-      for (rq = 0; rq < max_processes; rq++)
-        if (p_rqs[rq].state == BLOCKED && GetUniform(100) % 2) {
+      for (rq = 0; rq < max_processes; rq++) {
+          if (p_rqs[rq].state == BLOCKED && GetUniform(100) % 2) {
           if (sys_block_or_unblock_process(p_rqs[rq].pid) == -1) {
             printf("test_processes: ERROR unblocking process\n");
             return ;
           }
-          printf("Unblocked process %d\n", p_rqs[rq].pid);
+          do_print_color("Unblocked process ", CYAN);
+          printf("%d\n", p_rqs[rq].pid);
           p_rqs[rq].state = RUNNING;
         }
+      }
+        
     }
   }
-  printf("TEST PASSED!!!\n");
+  do_print_color("PROCESSES TEST PASSED!!!\n", GREEN);
 }
 
 /*
@@ -391,7 +422,17 @@ void endless_loop() {
 
 void endless_loop_print() {
   int32_t pid = sys_get_pid();
+  /*
+  char * number;
+  itoa(pid, number);
+  uint8_t color = (pid * 12) %256;
+  color <<= 2;
+  color += 0x7F;
+  color <<= 2;
+  color += 0x7F;
+  */
   while (1) {
+    // do_print_color(number, color);
     printf("%d ", pid);
     bussy_wait(MINOR_WAIT);
   }
