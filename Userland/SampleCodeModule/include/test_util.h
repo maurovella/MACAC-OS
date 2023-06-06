@@ -12,5 +12,6 @@ void endless_loop_print(/*uint64_t wait*/);
 void test_mm();
 void test_processes();
 void test_prio();
+uint64_t test_sync();
 
 #endif

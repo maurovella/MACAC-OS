@@ -29,6 +29,12 @@ GLOBAL sys_create_pipe_available
 GLOBAL sys_delete_pipe
 GLOBAL sys_get_current_output
 GLOBAL sys_get_current_input
+GLOBAL sys_create_sem
+GLOBAL sys_create_sem_by_id
+GLOBAL sys_wait_sem
+GLOBAL sys_post_sem
+GLOBAL sys_close_sem
+GLOBAL sys_open_sem
 
 section .text
 sys_read:
@@ -180,5 +186,35 @@ sys_get_current_output:
 
 sys_get_current_input:
     mov rax, 0x1D
+    int 80h
+    ret
+
+sys_create_sem:
+    mov rax, 0x1E
+    int 80h
+    ret
+
+sys_create_sem_by_id:
+    mov rax, 0x1F
+    int 80h
+    ret
+
+sys_open_sem:
+    mov rax, 0x20
+    int 80h
+    ret
+
+sys_wait_sem:
+    mov rax, 0x21
+    int 80h
+    ret
+
+sys_post_sem:
+    mov rax, 0x22
+    int 80h
+    ret
+
+sys_close_sem:
+    mov rax, 0x23
     int 80h
     ret

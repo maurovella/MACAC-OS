@@ -10,7 +10,7 @@
 #include "memory_manager.h"
 #include "scheduler.h"
 #include "pipes.h"
-#
+#include "semaphore.h"
 
 extern uint64_t info[17];
 extern uint8_t screenshot;
@@ -133,6 +133,30 @@ static int32_t sys_get_pid() {
     return get_pid();
 }
 
+static uint8_t sys_create_sem(uint64_t init_value) {
+    return create_sem(init_value);
+}
+
+static uint8_t sys_create_sem_by_id(uint64_t sem_id, uint64_t init_value) {
+    return create_sem_by_id(sem_id, init_value);
+}
+
+static uint8_t sys_open_sem(uint64_t sem_id, uint64_t init_value) {
+    return open_sem(sem_id, init_value);
+}
+
+static uint8_t sys_wait_sem(uint64_t sem_id) {
+    return wait_sem(sem_id);
+}
+
+static uint8_t sys_post_sem(uint64_t sem_id) {
+    return post_sem(sem_id);
+}
+
+static uint8_t sys_close_sem(uint64_t sem_id) {
+    return close_sem(sem_id);
+}
+
 static uint8_t sys_get_all_processes(process_info * processes) {
     return get_all_processes(processes);
 }
@@ -200,7 +224,13 @@ static syscall_type syscalls[]  = {
     (syscall_type) sys_create_pipe_available,
     (syscall_type) sys_delete_pipe,
     (syscall_type) sys_get_current_output,
-    (syscall_type) sys_get_current_input
+    (syscall_type) sys_get_current_input,
+    (syscall_type) sys_create_sem,
+    (syscall_type) sys_create_sem_by_id,
+    (syscall_type) sys_open_sem,
+    (syscall_type) sys_wait_sem,
+    (syscall_type) sys_post_sem,
+    (syscall_type) sys_close_sem
 };
 
 //  paso syscall_id por rax, se come r10 por rcx, y r9 por rax
