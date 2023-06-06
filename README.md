@@ -32,4 +32,3 @@ nasm, qemu, gcc, make
 
   $> ./run.sh
   (perhaps run.sh has to be modified by adding a sudo if ran in linux or/and running the command 'sed -i -e 's/\r$//' run.sh')
-
