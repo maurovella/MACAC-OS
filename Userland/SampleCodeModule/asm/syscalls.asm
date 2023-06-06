@@ -27,6 +27,8 @@ GLOBAL sys_delete_last_char
 GLOBAL sys_nice
 GLOBAL sys_create_pipe_available
 GLOBAL sys_delete_pipe
+GLOBAL sys_get_current_output
+GLOBAL sys_get_current_input
 
 section .text
 sys_read:
@@ -168,5 +170,15 @@ sys_create_pipe_available:
 
 sys_delete_pipe:
     mov rax, 0x1B
+    int 80h
+    ret
+
+sys_get_current_output:
+    mov rax, 0x1C
+    int 80h
+    ret
+
+sys_get_current_input:
+    mov rax, 0x1D
     int 80h
     ret
