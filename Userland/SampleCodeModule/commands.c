@@ -459,6 +459,12 @@ void test_priority() {
 	return;
 }
 
+void test_synchronization() {
+	printf("Testeando sync..\n");
+	test_sync();
+	return;
+}
+
 void pipe_commands() {
 	printf("List of pipeable commands:\n");
 	printf("  cat\n");
