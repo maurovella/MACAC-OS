@@ -308,8 +308,16 @@ void loop() {
 }
 
 void kill(char ** params) {
-	uint32_t pid = atoi(params[0]);
-	uint32_t deleted_pid = sys_kill_process(pid);
+	int32_t pid = atoi(params[0]);
+	int32_t deleted_pid = sys_kill_process(pid);
+	if (deleted_pid == -1) {
+		do_print_color("Error: pid not found\n", RED);
+		return;
+	}
+	else if (deleted_pid == -4) {
+		do_print_color("Error: cannot kill inmortal process\n", RED);
+		return;
+	}
 	printf("Process with pid %d was deleted\n", deleted_pid);
 	return;
 }
@@ -322,8 +330,12 @@ void nice(char ** params) {
 }
 
 void block(char ** params) {
-	uint32_t pid = atoi(params[0]);
-	uint32_t changed_process = sys_block_or_unblock_process(pid);
+	int32_t pid = atoi(params[0]);
+	int32_t changed_process = sys_block_or_unblock_process(pid);
+	if (changed_process == -1) {
+		do_print_color("Error: pid not found\n", RED);
+		return;
+	}
 	printf("Process with pid %d was blocked\n", changed_process);
 	return;
 }
