@@ -140,87 +140,82 @@ sys_wait:
     int 80h
     ret
 
-sys_change_priority:
+sys_get_pid:
     mov rax, 0x14
     int 80h
     ret
 
-sys_get_pid:
+sys_get_all_processes:
     mov rax, 0x15
     int 80h
     ret
 
-sys_get_all_processes:
+sys_get_mem_info:
     mov rax, 0x16
     int 80h
     ret
 
-sys_get_mem_info:
+sys_delete_last_char:
     mov rax, 0x17
     int 80h
     ret
 
-sys_delete_last_char:
+sys_nice:
     mov rax, 0x18
     int 80h
     ret
 
-sys_nice:
+sys_create_pipe_available:
     mov rax, 0x19
     int 80h
     ret
 
-sys_create_pipe_available:
+sys_delete_pipe:
     mov rax, 0x1A
     int 80h
     ret
 
-sys_delete_pipe:
+sys_get_current_output:
     mov rax, 0x1B
     int 80h
     ret
 
-sys_get_current_output:
+sys_get_current_input:
     mov rax, 0x1C
     int 80h
     ret
 
-sys_get_current_input:
+sys_create_sem:
     mov rax, 0x1D
     int 80h
     ret
 
-sys_create_sem:
+sys_create_sem_by_id:
     mov rax, 0x1E
     int 80h
     ret
 
-sys_create_sem_by_id:
+sys_open_sem:
     mov rax, 0x1F
     int 80h
     ret
 
-sys_open_sem:
+sys_wait_sem:
     mov rax, 0x20
     int 80h
     ret
 
-sys_wait_sem:
+sys_post_sem:
     mov rax, 0x21
     int 80h
     ret
 
-sys_post_sem:
+sys_close_sem:
     mov rax, 0x22
     int 80h
     ret
 
-sys_close_sem:
-    mov rax, 0x23
-    int 80h
-    ret
-
 sys_yield:
-    mov rax, 0x24
+    mov rax, 0x23
     int 80h
     ret
