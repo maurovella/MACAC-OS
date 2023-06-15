@@ -3,25 +3,26 @@
 
 #include <stdint.h>
 
-#define FLAGS                      	0x202				
-#define STACK_SEGMENT              	0x0				
-#define CODE_SEGMENT               	0x8
-#define MAX_PROCESSES              	100
-#define MAX_CHILDREN_PROCESSES 50
-#define NO_PROCESS_FOUND           -1
-#define TRUE                       	1
-#define FALSE                      	0
-#define DEAD                       	0
-#define BLOCK                      	1
-#define READY                      	2
-#define RUNNING                    	3
-#define PAUSED						4	
-#define PAUSED_BY_CHILD				5
-#define PAUSED_BY_SEM 			    6
-#define NO_SPACE_FOR_PROCESS       -2
-#define PROCESSES_LIMIT_REACHED    -3
-#define CANT_KILL_IMMORTAL_PROCESS -4
-#define STACK_SIZE                 4096 // 4KB
+#define FLAGS                      	 0x202				
+#define STACK_SEGMENT              	 0x0				
+#define CODE_SEGMENT               	 0x8
+#define MAX_PROCESSES              	 100
+#define MAX_CHILDREN_PROCESSES       50
+#define NO_PROCESS_FOUND            -1
+#define TRUE                       	 1
+#define FALSE                      	 0
+#define DEAD                       	 0
+#define BLOCK                      	 1
+#define READY                      	 2
+#define RUNNING                    	 3
+#define PAUSED						 4	
+#define PAUSED_BY_CHILD				 5
+#define PAUSED_BY_SEM 			     6
+#define NO_SPACE_FOR_PROCESS        -2
+#define PROCESSES_LIMIT_REACHED     -3
+#define CANT_KILL_IMMORTAL_PROCESS  -4
+#define CANT_BLOCK_IMMORTAL_PROCESS -5
+#define STACK_SIZE                   4096 // 4KB
 
 #define STDIN 0
 #define STDOUT 1
@@ -69,7 +70,7 @@ uint32_t get_pid();
 
 uint8_t get_process_idx(uint32_t pid);
 
-int8_t change_priority(uint32_t pid, uint8_t priority);
+int32_t change_priority(uint32_t pid, uint8_t priority);
 
 uint8_t get_state(uint32_t pid);
 
@@ -94,5 +95,11 @@ extern void force_timer_tick();
 uint8_t get_all_processes(process_info * processes);
 
 void force_next_process();
+
+uint8_t get_current_output();
+
+uint8_t get_current_input();
+
+void kill_all_processes();
 
 #endif // SCHEDULER_H

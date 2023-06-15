@@ -51,7 +51,7 @@ void scheduler_init() {
 }
 
 void change_process_state(uint32_t pid, uint8_t new_state){
-	uint8_t first_free_pos = get_process_idx(pid);
+	int8_t first_free_pos = get_process_idx(pid);
 	if (first_free_pos == NO_PROCESS_FOUND) {
         return;
     }
@@ -88,8 +88,8 @@ uint8_t get_process_idx(uint32_t pid) {
     return NO_PROCESS_FOUND;
 }
 
-int8_t change_priority(uint32_t pid, uint8_t priority) {
-    uint8_t idx = get_process_idx(pid);
+int32_t change_priority(uint32_t pid, uint8_t priority) {
+    int8_t idx = get_process_idx(pid);
     if (idx == NO_PROCESS_FOUND) {
         return NO_PROCESS_FOUND;
     }
@@ -106,7 +106,7 @@ int8_t change_priority(uint32_t pid, uint8_t priority) {
 }
 
 uint8_t get_state(uint32_t pid) {
-    uint8_t idx = get_process_idx(pid);
+    int8_t idx = get_process_idx(pid);
     if (idx == NO_PROCESS_FOUND) {
         return NO_PROCESS_FOUND;
     }
@@ -114,9 +114,12 @@ uint8_t get_state(uint32_t pid) {
 }
 
 int32_t block_or_unblock(uint32_t pid) {
-    uint8_t idx = get_process_idx(pid);
+    int8_t idx = get_process_idx(pid);
     if (idx == NO_PROCESS_FOUND) {
         return NO_PROCESS_FOUND;
+    }
+    if (process_list[idx].immortal) {
+        return CANT_BLOCK_IMMORTAL_PROCESS;
     }
     if (process_list[idx].state == BLOCK) {
         process_list[idx].state = READY;
@@ -225,9 +228,9 @@ int32_t kill_process(uint32_t pid) {
         return CANT_KILL_IMMORTAL_PROCESS;
     }
     destroy_process(idx);
-    //if (_str_cmp(process_list[idx].params[0], "tron") == 0) {
-    //    ngc_paint_screen(BLACK);
-    //}
+    if (_str_cmp(process_list[idx].params[0], "tron") == 0) {
+        ngc_paint_screen(BLACK);
+    }
     if (current_process_idx == idx) {
         force_timer_tick();
     }

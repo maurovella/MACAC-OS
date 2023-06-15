@@ -15,29 +15,38 @@ void help(){
 	// se corre el comando de todas formas
 	
 	const char* help_string = 
+	"\n----------------------------------------------------COMMANDS-----------------------------------------------------\n"
 	"HELP                 Provides help information for commands.\n"
     "DIVIDEBYZERO         Command to verify the operation of the exception routine \"Divide by zero\"\n"
 	"INVALIDOPCODE        Command to verify the operation of the exception routine \"Invalid Opcode\"\n"
 	"INFOREG              Prints on screen the value of all registers.\n"
 	"PRINTMEM             Receives as argument a pointer and performs a memory dump of 32 bytes from the\n"
 	"                     address received as an argument.\n"
-	"MEM	              Prints HEAP memory status.\n"
+	"MEM                  Prints HEAP memory status.\n"
 	"TIME                 Command to display the system day and time.\n"
 	"CHANGEFONTSIZE       Changes font size: insert 1 2 3 for the desired level.\n"
 	"TRON                 Get ready to play Tron!.\n"
 	"CLEAR                Clear screen\n"
 	"TESTMM               Test memory manager\n"
 	"TESTPRIO             Test prioritys\n"
-	"TESTSC          	  Test scheduler\n"
-	"PS                   Prints all the processes\n"
+	"TESTSC               Test scheduler\n"
+	"PS                   Prints information about all the processes\n"
 	"LOOP                 Prints \"in loop\" every five seconds\n"
-	"KILL 			   	  Receives an especific pid and kills it\n"
-	"NICE 				  Receives an especific pid and a priority and changes the priority of the process\n"
-	"BLOCK 				  Receives an especific pid and change it states to block or ready depending on the current state\n"
-	"CAT 				  Prints stdin content\n"
-	"WC 				  Prints the number of words in stdin\n"
-	"FILTER 			  Prints stdin content without vocals\n"
-	"PHYLO 				  Prints the phylosophers problem\n";
+	"KILL                 Receives a specific pid and kills it\n"
+	"NICE                 Receives a specific pid and a priority and changes the priority of the process\n"
+	"BLOCK                Receives a specific pid and changes its state to block or ready depending on the\n"
+	"                     current state\n"
+	"CAT                  Prints stdin content\n"
+	"WC                   Prints the number of words in stdin\n"
+	"FILTER               Prints stdin content without vocals\n"
+	"PHILO                Runs the dining philosophers problem\n"
+	"\n-----------------------------------------------KEYBOARD SHORTCUTS------------------------------------------------\n"
+	"CTRL + C             Kills current process\n"
+	"CTRL + D             Sends EOF through STDIN\n"
+	"L SHIFT              Takes a screenshot of the value of all the registers\n"
+	"CTRL + 1             Writes \"|\" in stdin\n"
+	"CTRL + 6             Writes \"&\" in stdin\n"
+	"\n-----------------------------------------------------------------------------------------------------------------\n";
 	printf(help_string);
 }
 
@@ -318,25 +327,34 @@ void kill(char ** params) {
 		do_print_color("Error: cannot kill inmortal process\n", RED);
 		return;
 	}
-	printf("Process with pid %d was deleted\n", deleted_pid);
+	printf("Process with pid %d was killed\n", pid);
 	return;
 }
 
 void nice(char ** params) {
-	uint32_t pid = atoi(params[0]);
-	uint32_t new_priority = atoi(params[1]);
-	sys_nice(pid, new_priority);
+	int32_t pid = atoi(params[0]);
+	int32_t new_priority = atoi(params[1]);
+	int32_t altered_process = sys_nice(pid, new_priority);
+	if (altered_process == -1) {
+		do_print_color("Error: pid not found\n", RED);
+		return;
+	}
+	printf("Process with pid %d was changed to priority %d\n", pid, new_priority);
 	return;
 }
 
 void block(char ** params) {
 	int32_t pid = atoi(params[0]);
-	int32_t changed_process = sys_block_or_unblock_process(pid);
-	if (changed_process == -1) {
+	int32_t altered_process = sys_block_or_unblock_process(pid);
+	if (altered_process == -1) {
 		do_print_color("Error: pid not found\n", RED);
 		return;
 	}
-	printf("Process with pid %d was blocked\n", changed_process);
+	if (altered_process == -5) {
+		do_print_color("Error: cannot block inmortal process\n", RED);
+		return;
+	}
+	printf("Process with pid %d was blocked\n", pid);
 	return;
 }
 
@@ -404,7 +422,7 @@ void wc() {
 		letter++;
 	}
 
-	// Imprimir resultados en formato amigable con do_print_color en color cian
+	// Imprimir resultados en formato amigable con do_print_color en color cyan
 	printf("\n");
 	printf("  ");
 	do_print_color("Words: ", CYAN);
