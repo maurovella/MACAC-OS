@@ -3,7 +3,6 @@
 #include <keyboard.h>
 #include <naive_graphics_console.h>
 #include <stdint.h>
-#include <string.h>
 #include <scheduler.h>
 #define SPECIAL_CHARS 4
 #define EOF 0xFE

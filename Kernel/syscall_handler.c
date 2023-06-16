@@ -2,7 +2,7 @@
 // PVS-Studio Static Code Analyzer for C, C++ and C#: http://www.viva64.com
 #include <stdint.h>
 #include "defs.h"
-#include <string.h>
+#include "_string.h"
 #include "keyboard.h"
 #include "naive_RTC.h"
 #include "naive_graphics_console.h"
@@ -68,7 +68,14 @@ static void sys_font_handler(uint64_t level){
 }
 
 static void sys_print_color_handler(const char *buffer, uint64_t color){
-    ngc_print_color(buffer, color);
+    uint64_t fd = get_current_output();
+    if (fd == STDOUT) {
+        ngc_print_color(buffer, color);
+    } else if(fd == BACKGROUND) {
+        return;
+    } else {
+        write_pipe(fd, (char *)buffer, _str_len(buffer));
+    }
 }
 
 static void sys_clear_screen_handler(uint64_t color) {

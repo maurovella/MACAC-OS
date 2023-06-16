@@ -3,7 +3,6 @@
 #include <naive_graphics_console.h>
 #include <font.h>
 #include <stdint.h>
-#include <string.h>
 #include <lib.h>
 
 struct vbe_mode_info_structure {
