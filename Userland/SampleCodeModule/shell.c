@@ -123,6 +123,7 @@ static char ** prepare_parameters(char parameters[MAX_PARAMETERS][LENGTH_PARAMET
 		mem_cpy(param, parameters[i], param_size);
 		params[i] = param;
 	}
+
 	void * name_alloc = (void *) sys_malloc(_str_len(name) + 1);
 
 	if(name_alloc == NULL){
@@ -185,7 +186,8 @@ void normal_process_handle(char ** params, unsigned int params_size, int command
 	}
 
 	if(is_valid == BACKGROUND) {
-		params[params_size - 1] = NULL;
+		params[params_size - 1] = params[params_size];
+		params[params_size] = NULL;
 		sys_create_process(params, programs[command_idx].base_priority, STDIN, BACKGROUND, programs[command_idx].function_ptr);
 	} else {
 		int pid = sys_create_child_process(params, programs[command_idx].base_priority, STDIN, STDOUT, programs[command_idx].function_ptr);

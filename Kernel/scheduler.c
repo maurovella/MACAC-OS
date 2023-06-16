@@ -4,7 +4,7 @@
 #include <scheduler.h>
 #include <interrupts.h>
 #include <memory_manager.h>
-#include <string.h>
+#include "_string.h"
 #include <naive_graphics_console.h>
 #include <defs.h>
 
@@ -228,7 +228,7 @@ int32_t kill_process(uint32_t pid) {
         return CANT_KILL_IMMORTAL_PROCESS;
     }
     destroy_process(idx);
-    if (_str_cmp(process_list[idx].params[0], "tron") == 0) {
+    if (process_list[idx].params != NULL && _str_cmp(process_list[idx].params[0], "tron") == 0) {
         ngc_paint_screen(BLACK);
     }
     if (current_process_idx == idx) {
@@ -289,7 +289,13 @@ uint8_t get_all_processes(process_info * info) {
     for (int i = 0; i < MAX_PROCESSES; i++) {
         if (process_list[i].state != DEAD) {
             if (process_list[i].params != NULL) {
-                info[j].name = process_list[i].params[0];
+                uint8_t k = 0;
+                while (process_list[i].params[k] != NULL) {
+                    k++;
+                }
+                info[j].name = process_list[i].params[k - 1];
+            } else {
+                info[j].name = "No name";
             }
             info[j].pid = process_list[i].pid;
             info[j].priority = process_list[i].priority;

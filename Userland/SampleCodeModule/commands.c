@@ -236,7 +236,7 @@ int calculate_max_len(process_info * processes, uint8_t size) {
 }
 
 void ps() {
-	process_info * processes = (process_info *) sys_malloc(sizeof(process_info *));
+	process_info * processes = (process_info *) sys_malloc(100 * sizeof(process_info));
 	uint8_t size = sys_get_all_processes(processes);
 	int max_len = calculate_max_len(processes, size);
 	
