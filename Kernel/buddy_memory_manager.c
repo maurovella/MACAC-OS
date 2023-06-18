@@ -20,12 +20,12 @@ static uint64_t get_fit_order(uint64_t size) {
     return order < MIN_ALLOC_LOG2 ? MIN_ALLOC_LOG2 : order;
 }
 
-static memory_info * get_buddy_mem_info() {
+static memory_info * get_mem_info() {
     return (memory_info *) HEAP_START;
 }
 
 void memory_init() {
-    max_order = get_fit_power(HEAP_SIZE);
+    max_order = get_fit_order(HEAP_SIZE);
 
     uint64_t max_nodes = POW_2(max_order - MIN_ALLOC_LOG2 + 1) - 1;
     
@@ -40,14 +40,14 @@ void memory_init() {
     memory_info * memory_info_status = get_buddy_mem_info();
     memory_info_status->free_bytes = buddy_size;
 
-    return 0;
+    return;
 }
 
-static get_left_child(uint64_t _buddy_idx) {
+static uint64_t get_left_child(uint64_t _buddy_idx) {
     return _buddy_idx * 2 + 1;
 }
 
-static get_right_child(uint64_t _buddy_idx) {
+static uint64_t get_right_child(uint64_t _buddy_idx) {
     return _buddy_idx * 2 + 2;
 }
 
@@ -95,7 +95,7 @@ uint64_t get_order_start_idx(uint64_t _order) {
 }
 
 static void * get_node_pointer(uint64_t _buddy_idx, uint64_t _order) {
-    return (void *) ((uint64_t) HEAP_START + (_buddy_idx - get_class_start_idx(_order)) * POW_2(_order));
+    return (void *) ((uint64_t) HEAP_START + (_buddy_idx - get_order_start_idx(_order)) * POW_2(_order));
 }
 
 static uint64_t get_buddy_idx(void * _block_pointer) {
@@ -108,9 +108,9 @@ static uint64_t get_sibling_idx(uint64_t _buddy_idx) {
 }
 
 void * memory_alloc(uint64_t request) {
-    if (request <= 0 || request + HEADER_SIZE > buddy_size) return NULL;
+    if (request <= 0 || request + sizeof(header_info) > buddy_size) return NULL;
 
-    uint64_t order = get_fit_power(request + HEADER_SIZE);
+    uint64_t order = get_fit_order(request + sizeof(header_info));
 
     if (order > max_order) return NULL;
     
@@ -128,7 +128,7 @@ void * memory_alloc(uint64_t request) {
     // set block index at the beginning of the block (to identify it easier for memory_free)
     *(uint64_t *) block_address = block_index;   
 
-    return (void *) ((uint64_t) block_address + HEADER_SIZE);
+    return (void *) ((uint64_t) block_address + sizeof(header_info));
 }
 
 static void free_block_rec(uint64_t _buddy_idx) {
@@ -145,7 +145,7 @@ static void free_block_rec(uint64_t _buddy_idx) {
 void memory_free(void * ptr) {
     if (ptr == NULL) return;
 
-    void * block_pointer = (void *) ((uint64_t) ptr - HEADER_SIZE);
+    void * block_pointer = (void *) ((uint64_t) ptr - sizeof(header_info));
 
     uint64_t buddy_idx = get_buddy_idx(block_pointer);
     

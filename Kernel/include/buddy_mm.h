@@ -1,4 +1,4 @@
-//#ifdef WITH_BUDDY_MM_
+#ifdef WITH_BUDDY_MM_
 
 #include <stdint.h>
 
@@ -13,4 +13,4 @@ typedef struct buddy_node_t {
     uint64_t order;
 } buddy_node_t;
 
-//#endif
+#endif

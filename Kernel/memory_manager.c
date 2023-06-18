@@ -1,5 +1,6 @@
 // This is a personal academic project. Dear PVS-Studio, please check it.
 // PVS-Studio Static Code Analyzer for C, C++ and C#: http://www.viva64.com
+#ifndef WITH_BUDDY_MM_
 #include "memory_manager.h"
 
 static memory_info mem_info = { 0 };
@@ -143,3 +144,5 @@ void * memory_realloc(void * ptr, uint64_t _size) {
 memory_info * get_mem_info() {
     return &mem_info;
 }
+
+#endif
