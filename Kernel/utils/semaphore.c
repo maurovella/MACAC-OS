@@ -1,13 +1,13 @@
 // This is a personal academic project. Dear PVS-Studio, please check it.
 // PVS-Studio Static Code Analyzer for C, C++ and C#: http://www.viva64.com
-#include <semaphore.h>
+#include "../include/semaphore.h"
 #include <naive_graphics_console.h>
 
 typedef struct sem_info{
     uint64_t sem_id;
     uint64_t sem_val;
 
-    uint8_t is_locked;
+    uint64_t is_locked;
     queue_ADT waiters;
 } sem_info;
 

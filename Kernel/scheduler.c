@@ -31,7 +31,7 @@ typedef struct process {
     //process * children;
 } process;
 
-process process_list[MAX_PROCESSES];    // Lista de procesos
+static process process_list[MAX_PROCESSES];    // Lista de procesos
 
 static uint32_t pid_value = 0;         // ID de los procesos (va incrementando)
 //static uint8_t iter = 0;
@@ -249,10 +249,11 @@ uint64_t next_process(uint64_t stack_pointer, uint64_t stack_segment) {
     uint8_t inactive_processes = 0;
     
     while (!found && (inactive_processes < dim)) {
-        current_process_idx = (current_process_idx + 1) % dim;
+        current_process_idx = (current_process_idx + 1) % MAX_PROCESSES;
+
         if (process_list[current_process_idx].state == READY) {
             found = TRUE;
-        } else {
+        } else if (process_list[current_process_idx].state != DEAD) {
             inactive_processes++;
         }
     }

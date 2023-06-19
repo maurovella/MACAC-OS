@@ -4,6 +4,7 @@
 #include <stdint.h>
 #include <queue.h>
 #include <scheduler.h>
+#include <lock.h>
 
 #define EMPTY_SEM 0
 #define MAX_SEM 30

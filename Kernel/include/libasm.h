@@ -1,8 +1,10 @@
 #ifndef _LIBASM_H_
 #define _LIBASM_H_
 
-int _xadd(unsigned int * lock, int value);
+#include <stdint.h>
 
-int _xchg(unsigned int * lock, int value);
+extern int _xadd(uint64_t * lock, int value);
+
+extern int _xchg(uint64_t * lock, int value);
 
 #endif
