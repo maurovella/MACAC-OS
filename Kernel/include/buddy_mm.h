@@ -1,5 +1,5 @@
 #ifdef WITH_BUDDY_MM_
-
+#ifndef BUDDY_MM_H
 #include <stdint.h>
 
 #define POW_2(x) ((size_t)1 << (x))
@@ -13,4 +13,5 @@ typedef struct buddy_node_t {
     uint64_t order;
 } buddy_node_t;
 
+#endif
 #endif

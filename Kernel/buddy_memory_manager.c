@@ -2,8 +2,8 @@
 // PVS-Studio Static Code Analyzer for C, C++ and C#: http://www.viva64.com
 #ifdef WITH_BUDDY_MM_
 
-#include "include/memory_manager.h"
-#include "include/buddy_mm.h"
+#include "memory_manager.h"
+#include "buddy_mm.h"
 
 buddy_node_t * buddy_tree = (buddy_node_t *) HEAP_START + sizeof(memory_info);
 uint64_t max_order;
@@ -20,7 +20,7 @@ static uint64_t get_fit_order(uint64_t size) {
     return order < MIN_ALLOC_LOG2 ? MIN_ALLOC_LOG2 : order;
 }
 
-static memory_info * get_mem_info() {
+memory_info * get_mem_info() {
     return (memory_info *) HEAP_START;
 }
 
@@ -30,14 +30,14 @@ void memory_init() {
     uint64_t max_nodes = POW_2(max_order - MIN_ALLOC_LOG2 + 1) - 1;
     
     // check that the size of the buddy_tree is less than HEAP_SIZE
-    if (max_nodes * sizeof(buddy_node_t) > HEAP_SIZE) return -1;
+    if (max_nodes * sizeof(buddy_node_t) > HEAP_SIZE) return;
 
     // we declare where the buddy tree nodes start and the buddy_tree whole size
     user_memory_start = buddy_tree + max_nodes * sizeof(buddy_node_t);
     buddy_size = (uint64_t) ((uint64_t) HEAP_END - (uint64_t) user_memory_start);
 
     // we initialize the memory_info status
-    memory_info * memory_info_status = get_buddy_mem_info();
+    memory_info * memory_info_status = get_mem_info();
     memory_info_status->free_bytes = buddy_size;
 
     return;
@@ -49,6 +49,10 @@ static uint64_t get_left_child(uint64_t _buddy_idx) {
 
 static uint64_t get_right_child(uint64_t _buddy_idx) {
     return _buddy_idx * 2 + 2;
+}
+
+static uint64_t get_parent_idx(uint64_t _buddy_idx) {
+    return (_buddy_idx + 1) / 2 - 1;
 }
 
 static uint64_t get_smallest_available_block_rec(uint64_t _order, uint64_t _current_order, uint64_t _buddy_idx) {
@@ -107,10 +111,10 @@ static uint64_t get_sibling_idx(uint64_t _buddy_idx) {
     return _buddy_idx % 2 == 0 ? _buddy_idx - 1 : _buddy_idx + 1;
 }
 
-void * memory_alloc(uint64_t request) {
-    if (request <= 0 || request + sizeof(header_info) > buddy_size) return NULL;
+void * memory_alloc(uint64_t _size) {
+    if (_size <= 0 || _size + sizeof(uint64_t) > buddy_size) return NULL;
 
-    uint64_t order = get_fit_order(request + sizeof(header_info));
+    uint64_t order = get_fit_order(_size + sizeof(uint64_t));
 
     if (order > max_order) return NULL;
     
@@ -118,7 +122,7 @@ void * memory_alloc(uint64_t request) {
 
     if (block_index == -1) return NULL;
 
-    memory_info * memory_info_status = get_buddy_mem_info();
+    memory_info * memory_info_status = get_mem_info();
 
     memory_info_status->allocated_bytes += POW_2(order);
     memory_info_status->free_bytes -= memory_info_status->allocated_bytes;
@@ -128,7 +132,7 @@ void * memory_alloc(uint64_t request) {
     // set block index at the beginning of the block (to identify it easier for memory_free)
     *(uint64_t *) block_address = block_index;   
 
-    return (void *) ((uint64_t) block_address + sizeof(header_info));
+    return (void *) ((uint64_t) block_address + sizeof(uint64_t));
 }
 
 static void free_block_rec(uint64_t _buddy_idx) {
@@ -145,7 +149,7 @@ static void free_block_rec(uint64_t _buddy_idx) {
 void memory_free(void * ptr) {
     if (ptr == NULL) return;
 
-    void * block_pointer = (void *) ((uint64_t) ptr - sizeof(header_info));
+    void * block_pointer = (void *) ((uint64_t) ptr - sizeof(uint64_t));
 
     uint64_t buddy_idx = get_buddy_idx(block_pointer);
     
@@ -154,7 +158,7 @@ void memory_free(void * ptr) {
 
     free_block_rec(buddy_idx);
 
-    memory_info * memory_info_status = get_buddy_mem_info();
+    memory_info * memory_info_status = get_mem_info();
 
     memory_info_status->allocated_bytes -= POW_2(buddy_tree[buddy_idx].order);
     memory_info_status->free_bytes += memory_info_status->allocated_bytes;
