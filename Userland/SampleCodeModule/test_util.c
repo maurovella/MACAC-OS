@@ -276,7 +276,7 @@ int64_t global; // shared memory
 
 void slowInc(int64_t *p, int64_t inc, uint64_t pid) {
   uint64_t aux = *p;
-  //bussy_wait(30000);
+  //bussy_wait(300000);
   sys_yield(); // This makes the race condition highly probable
   do_print_color("continues after yield. process: ", CYAN);
   printf("%d\n", pid);
@@ -331,10 +331,13 @@ uint64_t my_process_inc(char **argv) {
 
 uint64_t test_sync() { //{n, use_sem, 0}
   uint64_t pids[TOTAL_PAIR_PROCESSES*2];
-
-
+  uint8_t use_sem = 0;
   char *argvDec[] = {"2", "-1", "1", NULL};
   char *argvInc[] = {"2", "1", "1", NULL};
+  if (!use_sem) {
+    argvDec[2] = "0";
+    argvInc[2] = "0";
+  }
 
   global = 0;
 
@@ -353,7 +356,9 @@ uint64_t test_sync() { //{n, use_sem, 0}
   }
 
   sys_wait_for_children();
-  sys_close_sem(SEM_ID);
+  if (use_sem) {
+     sys_close_sem(SEM_ID);
+  }
   printf("Final value: %d\n", global);
 
   return 0;
